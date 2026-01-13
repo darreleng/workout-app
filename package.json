@@ -1,0 +1,28 @@
+{
+  "name": "workout-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "tsx watch backend/index.ts",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "install-all": "npm install --prefix frontend && npm install --prefix backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darreleng/workout-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/darreleng/workout-app/issues"
+  },
+  "homepage": "https://github.com/darreleng/workout-app#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
