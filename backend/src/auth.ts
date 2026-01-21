@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { pool } from './db/db';
+import { username } from 'better-auth/plugins';
 
 export const auth = betterAuth({
     database: pool,
@@ -11,5 +12,8 @@ export const auth = betterAuth({
         clientId: process.env.GITHUB_CLIENT_ID as string, 
         clientSecret: process.env.GITHUB_CLIENT_SECRET as string, 
         }, 
-  }
+    },
+    plugins: [
+        username()
+    ]
 });
