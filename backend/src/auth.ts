@@ -4,6 +4,9 @@ import { username } from 'better-auth/plugins';
 
 export const auth = betterAuth({
     database: pool,
+    trustedOrigins: [
+        "http://localhost:5173"
+    ],
     emailAndPassword: { 
         enabled: true, 
     }, 
