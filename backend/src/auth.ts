@@ -1,6 +1,5 @@
 import { betterAuth } from 'better-auth';
 import { pool } from './db/db';
-import { username } from 'better-auth/plugins';
 
 export const auth = betterAuth({
     database: pool,
