@@ -9,12 +9,21 @@ import Home from './Home'
 import ProtectedRoute from './ProtectedRoute'
 import WorkoutList from './WorkoutList'
 import Login from './Login'
-import Signup from './Signup'
+import SignUp from './SignUp'
+import AuthLayout from './AuthLayout'
+import ForgotPassword from './ForgotPassword'
+import ResetPassword from './ResetPassword'
 
 const router = createBrowserRouter([
   { path: "/", Component: Home },
-  { path: "/signup", Component: Signup },
-  { path: "/login", Component: Login },
+  { Component: AuthLayout, 
+    children: [
+      { path: "/signup", Component: SignUp },
+      { path: "/login", Component: Login },
+      { path: "/forgot-password", Component: ForgotPassword },
+      { path: "/reset-password", Component: ResetPassword },
+    ]
+   },
   { Component: ProtectedRoute, 
     children: [{
       Component: MainLayout,

@@ -1,5 +1,8 @@
 import { betterAuth } from 'better-auth';
 import { pool } from './db/db';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
     database: pool,
@@ -8,11 +11,20 @@ export const auth = betterAuth({
     ],
     emailAndPassword: { 
         enabled: true, 
-    }, 
+        sendResetPassword: async ({ user, url, token }, request) => {
+            await resend.emails.send({
+                from: 'onboarding@resend.dev',
+                to: user.email,
+                subject: 'Reset your password',
+                html: `Click the link to reset your password: ${url}`
+            });
+        }
+    },
     socialProviders: { 
-        github: { 
-        clientId: process.env.GITHUB_CLIENT_ID as string, 
-        clientSecret: process.env.GITHUB_CLIENT_SECRET as string, 
+        google: { 
+            clientId: process.env.GOOGLE_CLIENT_ID as string, 
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
         }, 
     }
 });
+
