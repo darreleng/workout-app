@@ -1,11 +1,10 @@
+import { useNavigate, Outlet } from "react-router";
 import { authClient } from "./auth-client";
-import { Outlet, useNavigate, useLocation } from "react-router";
 import { Center, Loader } from "@mantine/core";
 
-export default function ProtectedRoute() {
+export default function PublicRoute() {
     const { data: session, isPending } = authClient.useSession();
     const navigate = useNavigate();
-    const location = useLocation();
 
     if (isPending) {
         return (
@@ -15,9 +14,10 @@ export default function ProtectedRoute() {
         );
     }
 
-    if (!session) navigate('/signin', { replace: true, state: { from: location } });
+    if (session) navigate('/workouts', { replace: true });
 
     return (
         <Outlet />
     )
-};
+}
+

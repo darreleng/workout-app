@@ -13,24 +13,30 @@ import SignUp from './SignUp'
 import AuthLayout from './AuthLayout'
 import ForgotPassword from './ForgotPassword'
 import ResetPassword from './ResetPassword'
+import Profile from './Profile'
+import PublicRoute from './PublicRoute'
 
 const router = createBrowserRouter([
-  { path: "/", Component: Home },
-  { Component: AuthLayout, 
+  { Component: PublicRoute,
     children: [
-      { path: "/signup", Component: SignUp },
-      { path: "/signin", Component: SignIn },
-      { path: "/forgot-password", Component: ForgotPassword },
-      { path: "/reset-password", Component: ResetPassword },
+      { path: "/", Component: Home },
+      { Component: AuthLayout, 
+        children: [
+          { path: "/signup", Component: SignUp },
+          { path: "/signin", Component: SignIn },
+          { path: "/forgot-password", Component: ForgotPassword },
+          { path: "/reset-password", Component: ResetPassword },
+        ]
+      }
     ]
-   },
+  },
   { Component: ProtectedRoute, 
     children: [{
       Component: MainLayout,
       children: [
         { path: "/workouts", Component: WorkoutList },
         // { path: "/stats", Component: Stats },
-        // { path: "/profile", Component: Profile },
+        { path: "/profile", Component: Profile },
 
       ]
     }
