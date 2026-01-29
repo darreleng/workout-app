@@ -46,14 +46,10 @@ export default function SignUp() {
     return (
         <>
             <Text size="lg" fw={500}>
-                Welcome to Workout App, sign up with
+                Sign up for WorkoutLogger
             </Text>
 
-            <Group grow mb="md" mt="md">
-                <GoogleButton radius="xl">Google</GoogleButton>
-            </Group>
-
-            <Divider label="Or continue with email" labelPosition="center" my="lg" />
+            <Divider my="lg" />
 
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>
@@ -80,14 +76,14 @@ export default function SignUp() {
                         {...form.getInputProps('password')}
                         radius="md"
                     />
-                    
+
                     {serverError && serverError}
                 </Stack>
 
                 <Group justify="space-between" mt="xl">
                     <Stack align='flex-start' gap='xs'>
-                        <Anchor component={Link} to="/login" c="dimmed" size="xs">
-                            Back to login
+                        <Anchor component={Link} to="/signin" c="dimmed" size="xs">
+                            Back to sign in
                         </Anchor>
 
                         <Anchor component={Link} to="/forgot-password" size="xs">

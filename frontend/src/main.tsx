@@ -8,7 +8,7 @@ import MainLayout from './MainLayout'
 import Home from './Home'
 import ProtectedRoute from './ProtectedRoute'
 import WorkoutList from './WorkoutList'
-import Login from './Login'
+import SignIn from './SignIn'
 import SignUp from './SignUp'
 import AuthLayout from './AuthLayout'
 import ForgotPassword from './ForgotPassword'
@@ -19,7 +19,7 @@ const router = createBrowserRouter([
   { Component: AuthLayout, 
     children: [
       { path: "/signup", Component: SignUp },
-      { path: "/login", Component: Login },
+      { path: "/signin", Component: SignIn },
       { path: "/forgot-password", Component: ForgotPassword },
       { path: "/reset-password", Component: ResetPassword },
     ]

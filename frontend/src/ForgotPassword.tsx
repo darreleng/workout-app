@@ -54,8 +54,8 @@ export default function ForgotPassword() {
                     />
 
                     <Group justify="space-between" mt="xl">
-                        <Anchor component={Link} to="/login" size="xs">
-                            Back to login
+                        <Anchor component={Link} to="/signin" size="xs">
+                            Back to sign in
                         </Anchor>
 
                         <Button type="submit" radius="xl" loading={loading}>Reset</Button>
@@ -64,7 +64,7 @@ export default function ForgotPassword() {
             }
 
             {isSubmitted && 
-                <Button component={Link} to="/login" fullWidth>Back to login</Button>
+                <Button component={Link} to="/signin" fullWidth>Back to sign in</Button>
             }
         </>
     )

@@ -13,7 +13,7 @@ const schema = z.object({
     password: z.string().min(6, "Password must be at least 6 characters"),
 })
 
-export default function Login() {
+export default function SignIn() {
     const [loading, setLoading] = useState(false);
     const [serverError, setServerError] = useState<string | undefined>(undefined);
     const navigate = useNavigate();
@@ -46,17 +46,28 @@ export default function Login() {
         setLoading(false);
     }
 
+    async function handleGoogleSignIn() {
+        setLoading(true);
+        const { error } = await authClient.signIn.social({
+            provider: "google",
+            callbackURL: `${window.location.origin}/workouts`
+        });
+
+        if (error) setServerError(error.message || "Could not connect to Google");
+        setLoading(false);
+    }
+
     return (
         <>
             <Text size="lg" fw={500}>
-                Welcome to Workout App, login with
+                Sign in to WorkoutLogger with
             </Text>
 
             <Group grow mb="md" mt="md">
-                <GoogleButton radius="xl">Google</GoogleButton>
+                <GoogleButton radius="xl" onClick={handleGoogleSignIn}>Google</GoogleButton>
             </Group>
 
-            <Divider label="Or continue with email" labelPosition="center" my="lg" />
+            <Divider label="Or email" labelPosition="center" my="lg" />
 
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>             
@@ -91,7 +102,7 @@ export default function Login() {
                         
                     </Stack>
 
-                    <Button type="submit" radius="xl" loading={loading}>Login</Button>
+                    <Button type="submit" radius="xl" loading={loading}>Sign in</Button>
                 </Group>
 
             </form>
