@@ -2,10 +2,17 @@ import { pool as db } from "src/db/db";
 import { createExercise } from "./exerciseModel";
 import { ExerciseInput } from "@shared/workoutSchema";
 
-export async function getAllWorkouts(userId: string) {
-    const query = 'SELECT * FROM workouts WHERE user_id = $1 ORDER BY created_at ASC';
-    const { rows } = await db.query(query, [userId]);
-    return rows;
+export async function getAllWorkouts(userId: string, cursor: string | null) {
+    const limit = 10;
+    const startingId = (cursor) ? cursor : 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+    const query = 'SELECT * FROM workouts WHERE user_id = $1 AND id < $2 ORDER BY id DESC LIMIT $3';
+    const { rows } = await db.query(query, [userId, startingId, limit + 1]);
+
+    const hasNextPage = rows.length > limit;
+    const itemsToReturn = hasNextPage ? rows.slice(0, -1) : rows;
+    const nextCursor = hasNextPage ? itemsToReturn[itemsToReturn.length - 1].id : null;
+    
+    return { itemsToReturn, nextCursor };
 }
 
 export async function createWorkoutWithExercises(userId: string, name: string, exercises: ExerciseInput[]) {

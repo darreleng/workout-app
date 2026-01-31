@@ -17,9 +17,12 @@ export async function createWorkoutWithExercises(req: Request, res: Response) {
         res.status(500).json({ error: "Could not create workout" });
     }
 }
+
 export async function getAllWorkouts(req: Request, res: Response) {
-    try {       
-        const workouts = await WorkoutModel.getAllWorkouts(req.user!.id);
+    try {
+        const { id } = req.user!;       
+        const cursor = typeof req.query.cursor === 'string' ? req.query.cursor : null;
+        const workouts = await WorkoutModel.getAllWorkouts(id, cursor);
         res.status(200).json(workouts);
     } catch (error) {
         console.error(error);

@@ -7,6 +7,7 @@ export default function Profile() {
         await authClient.signOut();
     }
 
+    const { data } = authClient.useSession();
 
     return (
     <>
@@ -19,11 +20,11 @@ export default function Profile() {
             />
             <div>
                 <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
-                Software engineer
+                    Software engineer
                 </Text>
 
                 <Text fz="lg" fw={500}>
-                Robert Glassbreaker
+                    {data?.user.name}
                 </Text>
 
                 <Group wrap="nowrap" gap={10} mt={3}>

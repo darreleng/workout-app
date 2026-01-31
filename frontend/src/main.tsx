@@ -2,12 +2,14 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import '@mantine/core/styles.css'
 import { MantineProvider } from '@mantine/core'
 import MainLayout from './MainLayout'
 import Home from './Home'
 import ProtectedRoute from './ProtectedRoute'
-import WorkoutList from './WorkoutList'
+import Workouts from './Workouts'
 import SignIn from './SignIn'
 import SignUp from './SignUp'
 import AuthLayout from './AuthLayout'
@@ -15,6 +17,8 @@ import ForgotPassword from './ForgotPassword'
 import ResetPassword from './ResetPassword'
 import Profile from './Profile'
 import PublicRoute from './PublicRoute'
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   { Component: PublicRoute,
@@ -34,7 +38,7 @@ const router = createBrowserRouter([
     children: [{
       Component: MainLayout,
       children: [
-        { path: "/workouts", Component: WorkoutList },
+        { path: "/workouts", Component: Workouts },
         // { path: "/stats", Component: Stats },
         { path: "/profile", Component: Profile },
 
@@ -47,8 +51,11 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MantineProvider>
-      <RouterProvider router={router}/>
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider>
+        <RouterProvider router={router}/>
+      </MantineProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   </StrictMode>,
 )
