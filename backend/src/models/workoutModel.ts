@@ -1,6 +1,6 @@
 import { pool as db } from "src/db/db";
-import { createExercise } from "./exerciseModel";
-import { ExerciseInput } from "@shared/workoutSchema";
+// import { createExercise } from "./exerciseModel";
+// import { ExerciseInput } from "@shared/workoutSchema";
 
 export async function getAllWorkouts(userId: string, cursor: string | null) {
     const limit = 10;
@@ -15,33 +15,39 @@ export async function getAllWorkouts(userId: string, cursor: string | null) {
     return { itemsToReturn, nextCursor };
 }
 
-export async function createWorkoutWithExercises(userId: string, name: string, exercises: ExerciseInput[]) {
-    const client = await db.connect();
-    try {
-        await client.query('BEGIN');
+// export async function createWorkoutWithExercises(userId: string, name: string, exercises: ExerciseInput[]) {
+//     const client = await db.connect();
+//     try {
+//         await client.query('BEGIN');
 
-        const workoutSql = 'INSERT INTO workouts (user_id, name) VALUES ($1, $2) RETURNING id';
-        const workoutRes = await client.query(workoutSql, [userId, name]);
-        const workoutId = workoutRes.rows[0].id;
+//         const workoutSql = 'INSERT INTO workouts (user_id, name) VALUES ($1, $2) RETURNING id';
+//         const workoutRes = await client.query(workoutSql, [userId, name]);
+//         const workoutId = workoutRes.rows[0].id;
 
-        for (const exercise of exercises) {
-            await createExercise(
-                userId,
-                workoutId,
-                exercise,
-                client
-            )
-        };
+//         for (const exercise of exercises) {
+//             await createExercise(
+//                 userId,
+//                 workoutId,
+//                 exercise,
+//                 client
+//             )
+//         };
 
-        await client.query('COMMIT');
-        return { workoutId, name };
-    } catch (error) {
-        await client.query('ROLLBACK');
-        throw error;
-    } finally {
-        client.release();
-    }
-};
+//         await client.query('COMMIT');
+//         return { workoutId, name };
+//     } catch (error) {
+//         await client.query('ROLLBACK');
+//         throw error;
+//     } finally {
+//         client.release();
+//     }
+// };
+
+export async function createWorkout(userId: string) {
+    const query = 'INSERT INTO workouts (user_id) VALUES ($1) RETURNING *';
+    const { rows } = await db.query(query, [userId]);
+    return rows[0];
+}
 
 export async function getWorkout(userId:string, workoutId: string) {
     const query = 'SELECT * FROM workouts WHERE id = $1 AND user_id = $2';
