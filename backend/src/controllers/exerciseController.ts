@@ -19,7 +19,7 @@ export async function deleteExercise(req: Request, res: Response) {
         const { exerciseId } = req.params;
         const userId = req.user!.id;
         const deletedExercise = await ExerciseModel.deleteExercise(userId, exerciseId as string);
-        if (!deletedExercise) return res.status(404).json({ error: "Exercise not found or unauthorised." });
+        if (!deletedExercise) return res.status(404).json({ message: "Exercise not found or unauthorised." });
         res.status(200).json({ message: "Exercise deleted successfully." });
     } catch (error) {
         console.error(error);
@@ -34,7 +34,7 @@ export async function createExercise(req: Request, res: Response) {
         const { workoutId } = req.params; 
         const userId = req.user!.id;
         const newExercise = await ExerciseModel.createExercise(userId, workoutId as string, result.data);
-        if (!newExercise) return res.status(403).json({ error: "You don't own this workout."});
+        if (!newExercise) return res.status(403).json({ message: "You don't own this workout."});
         res.status(201).json(newExercise);
     } catch (error) {
         console.error(error);
@@ -49,11 +49,11 @@ export async function updateExercise(req: Request, res: Response) {
         const { exerciseId } = req.params;
         const userId = req.user!.id;
         const updatedExercise = await ExerciseModel.updateExercise(userId, exerciseId as string, result.data);
-        if (!updatedExercise) return res.status(403).json({ error: "You don't own this exercise."});
+        if (!updatedExercise) return res.status(403).json({ message: "You don't own this exercise."});
         res.status(200).json(updatedExercise);
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal server error." });
+        res.status(500).json({ message: "Internal server error." });
     }
 }

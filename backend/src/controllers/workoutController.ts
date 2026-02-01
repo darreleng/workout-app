@@ -5,7 +5,7 @@ import { WorkoutSchema, WorkoutWithExercisesSchema } from "@shared/workoutSchema
 export async function createWorkoutWithExercises(req: Request, res: Response) {
     try {
         const result = WorkoutWithExercisesSchema.safeParse(req.body);
-        if (!result.success) return res.status(400).json({ errors: result.error.issues });
+        if (!result.success) return res.status(400).json({ message: "Validation failed", errors: result.error.issues });
 
         const { name, exercises } = result.data;
         const userId = req.user!.id; 
@@ -14,7 +14,7 @@ export async function createWorkoutWithExercises(req: Request, res: Response) {
         res.status(201).json(newWorkout);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Could not create workout" });
+        res.status(500).json({ message: "Could not create workout" });
     }
 }
 
@@ -26,7 +26,7 @@ export async function getAllWorkouts(req: Request, res: Response) {
         res.status(200).json(workouts);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal server error." });
+        res.status(500).json({ message: "Internal server error." });
     }
 }
 
@@ -38,7 +38,7 @@ export async function getWorkout(req: Request, res: Response) {
         res.status(200).json(workout);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal server error." });
+        res.status(500).json({ message: "Internal server error." });
     }
 }
 
@@ -49,12 +49,12 @@ export async function deleteWorkout(req: Request, res: Response) {
         
         const deletedWorkout = await WorkoutModel.deleteWorkout(userId, workoutId as string);
 
-        if (!deletedWorkout) return res.status(404).json({ error: "Workout not found or unauthorised." });
+        if (!deletedWorkout) return res.status(404).json({ message: "Workout not found or unauthorised." });
 
         res.status(200).json({ message: "Workout deleted successfully" });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal server error." });
+        res.status(500).json({ message: "Internal server error." });
     }
 }
 
@@ -69,12 +69,12 @@ export async function updateWorkoutName(req: Request, res: Response) {
 
         const updatedWorkout = await WorkoutModel.updateWorkoutName(userId, workoutId as string, name);
         
-        if (!updatedWorkout) return res.status(404).json({ error: "Workout not found or unauthorised." });
+        if (!updatedWorkout) return res.status(404).json({ message: "Workout not found or unauthorised." });
 
         res.status(200).json(updatedWorkout);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal server error." });
+        res.status(500).json({ message: "Internal server error." });
     }
 }
 
