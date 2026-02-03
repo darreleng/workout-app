@@ -1,4 +1,4 @@
-import { ExerciseSchema } from "@shared/workoutSchema";
+import { ExerciseNameSchema, ExerciseSchema } from "@shared/schemas";
 import * as ExerciseModel from "src/models/exerciseModel";
 import { Request, Response } from "express";
 
@@ -10,7 +10,7 @@ export async function getAllExercises(req: Request, res: Response) {
         res.status(200).json(exercises);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ errror: "Internal server error." });
+        res.status(500).json({ message: "Internal server error." });
     }
 }
 
@@ -23,22 +23,39 @@ export async function deleteExercise(req: Request, res: Response) {
         res.status(200).json({ message: "Exercise deleted successfully." });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ errror: "Internal server error." });
+        res.status(500).json({ message: "Internal server error." });
     }
 }
 
+// export async function createExercise(req: Request, res: Response) {
+//     try {
+//         const result = ExerciseSchema.safeParse(req.body);
+//         if (!result.success) return res.status(400).json({ errors: result.error.issues });
+//         const { workoutId } = req.params; 
+//         const userId = req.user!.id;
+//         const newExercise = await ExerciseModel.createExercise(userId, workoutId as string, result.data);
+//         if (!newExercise) return res.status(403).json({ message: "You don't own this workout."});
+//         res.status(201).json(newExercise);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ errror: "Internal server error." });
+//     }
+// }
+
 export async function createExercise(req: Request, res: Response) {
     try {
-        const result = ExerciseSchema.safeParse(req.body);
-        if (!result.success) return res.status(400).json({ errors: result.error.issues });
-        const { workoutId } = req.params; 
+        const result = ExerciseNameSchema.safeParse(req.body.name);
+        console.log(req.body)
+        console.log(result.data)
+        if (!result.success) return res.status(400).json({ errors: result.error.issues[0].message });
+        const { workoutId } = req.params;
         const userId = req.user!.id;
         const newExercise = await ExerciseModel.createExercise(userId, workoutId as string, result.data);
         if (!newExercise) return res.status(403).json({ message: "You don't own this workout."});
         res.status(201).json(newExercise);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ errror: "Internal server error." });
+        res.status(500).json( { message: "Internal server error" });
     }
 }
 

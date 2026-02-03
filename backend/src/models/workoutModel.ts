@@ -49,19 +49,19 @@ export async function createWorkout(userId: string) {
     return rows[0];
 }
 
-export async function getWorkout(userId:string, workoutId: string) {
+export async function getWorkout(userId: string, workoutId: string) {
     const query = 'SELECT * FROM workouts WHERE id = $1 AND user_id = $2';
     const { rows } = await db.query(query, [workoutId, userId]);
     return rows[0];
 };
 
-export async function deleteWorkout(userId:string, workoutId: string) {
+export async function deleteWorkout(userId: string, workoutId: string) {
     const query = 'DELETE FROM workouts WHERE id = $1 AND user_id = $2';
     const { rows } = await db.query(query, [workoutId, userId]);
     return rows[0];
 };
 
-export async function updateWorkoutName(userId:string, workoutId: string, name: string) {
+export async function updateWorkoutName(userId: string, workoutId: string, name: string) {
     const query = 'UPDATE workouts SET name = $1 WHERE id = $2 AND user_id = $3 RETURNING *';
     const { rows } = await db.query(query, [name, workoutId, userId]);
     return rows[0];

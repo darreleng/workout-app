@@ -15,3 +15,5 @@ router.delete('/:workoutId', deleteWorkout);
 router.use('/:workoutId/exercises', exerciseRouter);
 
 export default router;
+
+
