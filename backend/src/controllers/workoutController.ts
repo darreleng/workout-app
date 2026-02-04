@@ -38,11 +38,22 @@ export async function getAllWorkouts(req: Request, res: Response) {
     }
 }
 
-export async function getWorkout(req: Request, res: Response) {
+// export async function getWorkout(req: Request, res: Response) {
+//     try {
+//         const { workoutId } = req.params;
+//         const userId = req.user!.id;
+//         const workout = await WorkoutModel.getWorkout(userId, workoutId as string);
+//         res.status(200).json(workout);
+//     } catch (error) {
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// }
+
+export async function getWorkoutWithExercisesAndSets(req: Request, res: Response) {
     try {
         const { workoutId } = req.params;
         const userId = req.user!.id;
-        const workout = await WorkoutModel.getWorkout(userId, workoutId as string);
+        const workout = await WorkoutModel.getWorkoutWithExercisesAndSets(userId, workoutId as string);
         res.status(200).json(workout);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
