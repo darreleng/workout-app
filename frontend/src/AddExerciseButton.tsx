@@ -21,33 +21,40 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         });
         return res.json();
     },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workout', workoutId] });
-            setName('');
-        },
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['workout', workoutId] }),
     });
 
-    function handleSubmit() {
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
         const validationResult = ExerciseNameSchema.safeParse(name);
         if (!validationResult.success) return setError(validationResult.error.issues[0].message);
         mutation.mutate(validationResult.data);
         close();
-    }
+        setName('');
+    };
+
+    function handleClose() {
+        close();
+        setError('');
+        setName('');
+    };
 
     return (
         <Group mt="md">
-            <Modal opened={opened} onClose={close} withCloseButton={false}>
-                Exercise name:
-                <TextInput 
-                    placeholder="e.g., Bench Press" 
-                    value={name} 
-                    onChange={(e) => setName(e.currentTarget.value)}
-                    error={error}
-                />
-                <Group grow>
-                    <Button color='red' onClick={close}>Cancel</Button>
-                    <Button color='green' onClick={handleSubmit}>Create</Button>
-                </Group>
+            <Modal opened={opened} onClose={handleClose} withCloseButton={false}>
+                <form onSubmit={handleSubmit}>
+                    Exercise name:
+                    <TextInput 
+                        placeholder="e.g., Bench Press" 
+                        value={name} 
+                        onChange={(e) => setName(e.currentTarget.value)}
+                        error={error}
+                    />
+                    <Group grow>
+                        <Button color='red' onClick={handleClose}>Cancel</Button>
+                        <Button color='green' type='submit'>Create</Button>
+                    </Group>
+                </form>
             </Modal>
 
             <Button leftSection={<IconPlus stroke={2} size={20} />} fullWidth onClick={open}>

@@ -18,7 +18,7 @@ export default function Workout(){
 
     const { id } = useParams();
     const { data: workout, error } = useQuery({
-        queryKey: ['workouts', id],
+        queryKey: ['workout', id],
         queryFn: async () => {
             const res = await fetch(`http://localhost:3000/api/workouts/${id}`, {credentials: 'include'});
             const data = await res.json();
@@ -45,7 +45,6 @@ export default function Workout(){
             )}
                 <Stack>
                     <AddExerciseButton workoutId={id!} />
-                    {/* <Button leftSection={<IconPlus stroke={2} size={20} />} fullWidth>Add new exercise</Button> */}
                     <Group grow={true} >
                         <Button color="red">Discard workout</Button>
                         <Button color="green">Save workout</Button>
