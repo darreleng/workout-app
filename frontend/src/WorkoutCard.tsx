@@ -6,7 +6,7 @@ interface WorkoutProps {
     created_at: Date;
 }
 
-export default function WorkoutCardClosed({name, created_at}: WorkoutProps) {
+export default function WorkoutCard({name, created_at}: WorkoutProps) {
     return (
         <Paper shadow="xs" mih={100} mt={4} mb={4} p={16}>
             <Group justify="space-between">

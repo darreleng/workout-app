@@ -5,7 +5,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import '@mantine/core/styles.css'
+import '@mantine/notifications/styles.css';
 import { MantineProvider } from '@mantine/core'
+import { Notifications } from '@mantine/notifications';
 import MainLayout from './MainLayout'
 import Home from './Home'
 import ProtectedRoute from './ProtectedRoute'
@@ -17,6 +19,7 @@ import ForgotPassword from './ForgotPassword'
 import ResetPassword from './ResetPassword'
 import Profile from './Profile'
 import PublicRoute from './PublicRoute'
+import Workout from './Workout';
 
 const queryClient = new QueryClient();
 
@@ -35,24 +38,25 @@ const router = createBrowserRouter([
     ]
   },
   { Component: ProtectedRoute, 
-    children: [{
-      Component: MainLayout,
-      children: [
-        { path: "/workouts", Component: Workouts },
-        // { path: "/stats", Component: Stats },
-        { path: "/profile", Component: Profile },
-
-      ]
-    }
-
+    children: [
+      { Component: MainLayout, 
+        children: [
+          { path: "/workouts", Component: Workouts },
+          // { path: "/stats", Component: Stats },
+          { path: "/profile", Component: Profile },
+        ]
+      },
+    { path: "/workouts/:id", Component: Workout}
     ]
   }
 ])
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <MantineProvider>
+        <Notifications position='bottom-center' />
         <RouterProvider router={router}/>
       </MantineProvider>
       <ReactQueryDevtools initialIsOpen={false} />

@@ -1,14 +1,17 @@
 import { Box, Button, Center, Title, ScrollArea, Text, Loader } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useIntersection } from "@mantine/hooks";
 import { useEffect, useRef } from "react";
-import { IconPlus } from '@tabler/icons-react'
-import { useInfiniteQuery } from '@tanstack/react-query';
-import WorkoutCardClosed from "./WorkoutCardClosed";
+import { IconPlus, IconX } from '@tabler/icons-react'
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import WorkoutCard from "./WorkoutCard";
+import { useNavigate } from "react-router";
 
 interface Workout {
   id: string;
   name: string;
   created_at: string;
+  completed_at: string;
 }
 
 export default function Workouts() {
@@ -42,21 +45,55 @@ export default function Workouts() {
         }
     }, [entry, fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-    if (isPending) return <div>Loading workouts...</div>;
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+
+    const mutation = useMutation({
+        mutationFn: async () => {
+            const res = await fetch('http://localhost:3000/api/workouts', { 
+                method: 'POST', 
+                credentials: 'include',
+            });
+
+            if (!res.ok) throw await res.json();
+            return res.json();
+        },
+        onSuccess: (newWorkout) => {
+            queryClient.invalidateQueries({ queryKey: ['workouts'] });
+            navigate(`/workouts/${newWorkout.id}`);
+        },
+        onError: (error) => {
+            notifications.show({
+                title: 'Failed to start a new workout',
+                message: error.message,
+                color: 'red',
+                autoClose: 2000,
+                icon: <IconX stroke={2} size={20} />,            
+        });
+    }
+    });
+
+    if (isPending) return <div><Loader size='sm' /></div>; 
     if (error) return <div>Error: {error.message}</div>;
-    console.log(workouts)
 
     return (
         <Center>
             <Box p={24} bg={'#dee2e6'} miw={700}>
                 <Title order={1}>Workouts</Title>
-                <Button leftSection={<IconPlus stroke={2} size={20}/>} fullWidth>Start a new workout</Button>
+                <Button 
+                    leftSection={<IconPlus stroke={2} size={20}/>} 
+                    loading={mutation.isPending} 
+                    onClick={() => mutation.mutate()}
+                    fullWidth
+                >
+                    Start a new workout
+                </Button>
                 {/* TODO: adjust the height and sizes of cards */}
                 <ScrollArea viewportRef={containerRef} type="never" h={500}>
                     {workouts.pages.map((page, i) => (
                         <div key={i}>
                             {page.itemsToReturn.map((workout: Workout) => (
-                                <WorkoutCardClosed 
+                                <WorkoutCard
                                     key={workout.id}
                                     name={workout.name} 
                                     created_at={new Date(workout.created_at)}
