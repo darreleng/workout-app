@@ -29,7 +29,7 @@ export async function deleteExercise(userId: string, exerciseId: string) {
 }
 
 export async function getExercises(userId: string, workoutId: string) {
-    const query = 'SELECT * FROM exercises WHERE workout_id = $2 AND workout_id IN (SELECT id FROM workouts WHERE user_id = $1)';
+    const query = 'SELECT e.* FROM exercises e JOIN workouts w ON e.workout_id = w.id WHERE w.id = $2 AND w.user_id = $1';
     const { rows } = await db.query(query, [userId, workoutId]);
     return rows;
 }

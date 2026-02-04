@@ -21,23 +21,27 @@ export async function createWorkout(userId: string) {
     return rows[0];
 }
 
-// export async function getWorkout(userId: string, workoutId: string) {
-//     const query = 'SELECT * FROM workouts WHERE id = $1 AND user_id = $2';
-//     const { rows } = await db.query(query, [workoutId, userId]);
-//     return rows[0];
-// };
+export async function getWorkout(userId: string, workoutId: string) {
+    const query = 'SELECT * FROM workouts WHERE id = $2 AND user_id = $1';
+    const { rows } = await db.query(query, [userId, workoutId]);
+    return rows[0];
+};
 
 export async function getWorkoutWithExercisesAndSets(userId: string, workoutId: string) {
+    const workout = getWorkout(userId, workoutId);
     const allExercises = await getExercises(userId, workoutId);
     const allSets = await getSets(userId, workoutId);
 
-    const workoutWithExercisesAndSets = allExercises.map(exercise => {
+    const exercisesWithSets = allExercises.map(exercise => {
         return {
             ...exercise,
             sets: allSets.filter(sets => sets.exercise_id === exercise.id)
         }
     })
-    return workoutWithExercisesAndSets;
+    return {
+        ...workout,
+        exercises: exercisesWithSets
+    }
 }
 
 export async function deleteWorkout(userId: string, workoutId: string) {
