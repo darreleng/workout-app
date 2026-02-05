@@ -56,7 +56,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <MantineProvider>
-        <Notifications position='bottom-center' />
+        <Notifications position='bottom-center' zIndex={9999}/>
         <RouterProvider router={router}/>
       </MantineProvider>
       <ReactQueryDevtools initialIsOpen={false} />

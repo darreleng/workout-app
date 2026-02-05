@@ -1,26 +1,27 @@
 import { ActionIcon, Button, Group, Paper, Stack, Title, Text, NumberInput, TextInput } from "@mantine/core";
-import type { ExerciseType } from "../../shared/schemas";
-import { IconPlus } from "@tabler/icons-react";
+import type { ExerciseCardProps } from "../../shared/schemas";
+import AddSetButton from "./AddSetButton";
 
-export default function ExerciseCard(props: ExerciseType) {
-
+export default function ExerciseCard(props: ExerciseCardProps) {
+    console.log(props)
     return (
-    <Paper>
-        <Stack>
-            <Group>
-                <Title>{props.name}</Title>
-                <ActionIcon aria-label="Discard exercise"></ActionIcon>
-            </Group>
-            <Group>
-                {/* <NumberInput label={'SET'} disabled hideControls={true} defaultValue={props.sets}></NumberInput>
-                <NumberInput label={'KG'} defaultValue={props.weight_kg}></NumberInput>
-                <NumberInput label={'REPS'} defaultValue={props.reps}></NumberInput>
-                <NumberInput label={'REST'} defaultValue={props.rest_seconds}></NumberInput> */}
-                
-            </Group>
-        </Stack>
-        <Button leftSection={<IconPlus stroke={2} size={20}/>} fullWidth>Add set</Button>
-    </Paper>
+        <Paper>
+            <Stack>
+                <Group>
+                    <Title>{props.name}</Title>
+                    <ActionIcon aria-label="Discard exercise"></ActionIcon>
+                </Group>
+                {props.sets.map(set => (
+                    <Group key={set.id}>
+                        <NumberInput label='SET' disabled hideControls={true} defaultValue={set.set_number} />
+                        <NumberInput label='KG' defaultValue={set.weight_kg} />
+                        <NumberInput label='REPS' defaultValue={set.reps} />
+                        <NumberInput label='REST' defaultValue={set.rest_seconds} />
+                    </Group>
+                ))}
+            </Stack>
+            <AddSetButton exerciseId={props.id!} workoutId={props.workout_id!}/>
+        </Paper>
 
     )
 }

@@ -13,14 +13,16 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
 
     const mutation = useMutation({
         mutationFn: async (exerciseName: string) => {
-        const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}/exercises`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: exerciseName }),
-            credentials: 'include',
-        });
-        return res.json();
-    },
+            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}/exercises`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: exerciseName }),
+                credentials: 'include',
+            });
+            const data = await res.json();
+            if (!res.ok) throw data;
+            return data;
+        },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['workout', workoutId] }),
     });
 
@@ -40,7 +42,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
     };
 
     return (
-        <Group mt="md">
+        <>
             <Modal opened={opened} onClose={handleClose} withCloseButton={false}>
                 <form onSubmit={handleSubmit}>
                     Exercise name:
@@ -58,8 +60,8 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
             </Modal>
 
             <Button leftSection={<IconPlus stroke={2} size={20} />} fullWidth onClick={open}>
-                Add Exercise
+                Add exercise
             </Button>
-        </Group>
+        </>
     );
 }
