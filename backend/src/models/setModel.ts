@@ -1,21 +1,13 @@
 import { pool as db } from "src/db/db";
-// import type { SetType } from "@shared/schemas";
 
 export async function getSets(userId: string, workoutId: string) {
-    const query = 'SELECT s.* FROM sets s JOIN exercises e ON s.exercise_id = e.id JOIN workouts w ON e.workout_id = w.id WHERE w.id = $2 AND w.user_id = $1';
+    const query = 'SELECT s.* FROM sets s JOIN exercises e ON s.exercise_id = e.id JOIN workouts w ON e.workout_id = w.id WHERE w.id = $2 AND w.user_id = $1 ORDER BY s.set_number ASC';
     const { rows } = await db.query(query, [userId, workoutId]);
     return rows;
 }
 
-// export async function createSet(userId: string, setData: SetType) {
-//     const { exercise_id, set, weight_kg, reps, rest_seconds }  = setData;
-//     const query = 'INSERT INTO sets (exercise_id, set_number, weight_kg, reps, rest_seconds) SELECT $2, $3, $4, $5, $6 WHERE EXISTS (SELECT 1 FROM exercises where id = $2 AND user_id = $1) RETURNING *'
-//     const { rows } = await db.query(query, [userId, exercise_id, set, weight_kg, reps, rest_seconds]);
-//     return rows;
-// }
-
 export async function createSet(userId: string, exerciseId: string) {
-    const query = `INSERT INTO sets (exercise_id) SELECT $2 WHERE EXISTS (SELECT 1 FROM exercises e JOIN workouts w ON e.workout_id = w.id WHERE e.id = $2 AND w.user_id = $1) RETURNING *;`
+    const query = `INSERT INTO sets (exercise_id) SELECT $2 WHERE EXISTS (SELECT 1 FROM exercises e JOIN workouts w ON e.workout_id = w.id WHERE e.id = $2 AND w.user_id = $1) RETURNING *;`;
     const { rows } = await db.query(query, [userId, exerciseId]);
                             
 if (rows.length === 0) {
@@ -23,3 +15,23 @@ if (rows.length === 0) {
     }
     return rows[0];
 }
+
+export async function updateSet(userId: string, setId: string, field: { weight_kg?: number, reps?: number, rest_seconds?: number }) {
+    const query = 
+    `UPDATE sets SET 
+        weight_kg = COALESCE($3, weight_kg), 
+        reps = COALESCE($4, reps), 
+        rest_seconds = COALESCE($5, rest_seconds)
+    WHERE id = $2 
+    AND EXISTS (
+        SELECT 1 FROM exercises e
+        JOIN workouts w ON e.workout_id = w.id
+        WHERE e.id = sets.exercise_id -- Link the set to the exercise
+        AND w.user_id = $1
+    )
+    RETURNING *`;
+    const values = [userId, setId, field.weight_kg ?? null, field.reps ?? null, field.rest_seconds ?? null];
+    const { rows } = await db.query(query, values);
+    return rows[0]; 
+}
+

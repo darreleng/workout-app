@@ -1,20 +1,6 @@
 import * as SetModel from "src/models/setModel";
 import { Request, Response } from "express";
 
-// export async function createSet(req: Request, res: Response) {
-//     try {
-//         const result = SetSchema.safeParse(req.body);
-//         if (!result.success) return res.status(400).json({ errors: result.error.issues[0].message });
-//         const userId = req.user!.id;
-//         const newExercise = await SetModel.createSet(userId, {...result.data});
-//         if (!newExercise) return res.status(403).json({ message: "You don't own this exercise."});
-//         res.status(201).json(newExercise);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json( { message: "Internal server error" });
-//     }
-// }
-
 export async function createSet(req: Request, res: Response) {
     try {
         const { exerciseId } = req.params;
@@ -22,6 +8,20 @@ export async function createSet(req: Request, res: Response) {
         const newSet = await SetModel.createSet(userId, exerciseId as string);
         if (!newSet) return res.status(403).json({ message: "You don't own this exercise."});
         res.status(201).json(newSet);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json( { message: "Internal server error" });
+    }
+}
+
+export async function updateSet(req: Request, res: Response) {
+    try {
+        const userId = req.user!.id;
+        const { setId } = req.params;
+        const field = req.body;
+        const updatedSet = await SetModel.updateSet(userId, setId as string, field); 
+        if (!updatedSet) return res.status(403).json({ message: "You don't own this set."}); 
+        res.status(201).json({ message: 'Set updated' });
     } catch (error) {
         console.error(error);
         res.status(500).json( { message: "Internal server error" });

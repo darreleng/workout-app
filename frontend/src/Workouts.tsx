@@ -69,8 +69,8 @@ export default function Workouts() {
                 color: 'red',
                 autoClose: 2000,
                 icon: <IconX stroke={2} size={20} />,            
-        });
-    }
+            });
+        }
     });
 
     if (isPending) return <div><Loader size='sm' /></div>; 
