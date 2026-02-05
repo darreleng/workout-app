@@ -17,9 +17,9 @@ import { Request, Response } from "express";
 
 export async function createSet(req: Request, res: Response) {
     try {
-        const { exerciseId } = req.body;
+        const { exerciseId } = req.params;
         const userId = req.user!.id;
-        const newSet = await SetModel.createSet(userId, exerciseId);
+        const newSet = await SetModel.createSet(userId, exerciseId as string);
         if (!newSet) return res.status(403).json({ message: "You don't own this exercise."});
         res.status(201).json(newSet);
     } catch (error) {

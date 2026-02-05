@@ -15,7 +15,11 @@ export async function getSets(userId: string, workoutId: string) {
 // }
 
 export async function createSet(userId: string, exerciseId: string) {
-    const query = 'INSERT INTO sets (exerciseId) SELECT $2 WHERE EXISTS (SELECT 1 FROM exercises where id = $2 AND user_id = $1) RETURNING *'
+    const query = `INSERT INTO sets (exercise_id) SELECT $2 WHERE EXISTS (SELECT 1 FROM exercises e JOIN workouts w ON e.workout_id = w.id WHERE e.id = $2 AND w.user_id = $1) RETURNING *;`
     const { rows } = await db.query(query, [userId, exerciseId]);
+                            
+if (rows.length === 0) {
+        throw new Error("Unauthorized or Exercise not found");
+    }
     return rows[0];
 }
