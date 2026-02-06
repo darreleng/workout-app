@@ -7,7 +7,11 @@ export async function getSets(userId: string, workoutId: string) {
 }
 
 export async function createSet(userId: string, exerciseId: string) {
-    const query = `INSERT INTO sets (exercise_id) SELECT $2 WHERE EXISTS (SELECT 1 FROM exercises e JOIN workouts w ON e.workout_id = w.id WHERE e.id = $2 AND w.user_id = $1) RETURNING *;`;
+    const query = 
+    `INSERT INTO sets (exercise_id, set_number)
+     SELECT $2, COALESCE(MAX(set_number), 0) + 1 
+     FROM sets WHERE exercise_id = $2 
+     AND EXISTS (SELECT 1 FROM exercises e JOIN workouts w ON e.workout_id = w.id WHERE e.id = $2 AND w.user_id = $1) RETURNING *;`;
     const { rows } = await db.query(query, [userId, exerciseId]);
                             
 if (rows.length === 0) {
