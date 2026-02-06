@@ -11,7 +11,6 @@ interface Workout {
   id: string;
   name: string;
   created_at: string;
-  completed_at: string;
 }
 
 export default function Workouts() {
@@ -95,8 +94,7 @@ export default function Workouts() {
                             {page.itemsToReturn.map((workout: Workout) => (
                                 <WorkoutCard
                                     key={workout.id}
-                                    name={workout.name} 
-                                    created_at={new Date(workout.created_at)}
+                                    {...workout}
                                 />
                             ))}
                         </div>
