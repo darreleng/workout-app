@@ -1,5 +1,6 @@
 import * as SetModel from "src/models/setModel";
 import { Request, Response } from "express";
+import { UpdateSetSchema } from "@shared/schemas";
 
 export async function createSet(req: Request, res: Response) {
     try {
@@ -19,6 +20,8 @@ export async function updateSet(req: Request, res: Response) {
         const userId = req.user!.id;
         const { setId } = req.params;
         const field = req.body;
+        const result = UpdateSetSchema.safeParse(field);
+        if (!result.success) return res.status(400).json({ message: result.error.issues[0].message });
         const updatedSet = await SetModel.updateSet(userId, setId as string, field); 
         if (!updatedSet) return res.status(403).json({ message: "You don't own this set."}); 
         res.status(201).json({ message: 'Set updated' });
