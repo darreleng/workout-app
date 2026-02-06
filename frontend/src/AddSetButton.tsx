@@ -15,7 +15,9 @@ export default function AddSetButton({ exerciseId, workoutId }: { exerciseId: st
             if (!res.ok) throw data;
             return data;
         },
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['workout', workoutId] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['workout', workoutId] })
+        },
         onError: (error) => {
             notifications.show({
                 title: 'Failed to add a set',

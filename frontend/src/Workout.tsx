@@ -48,7 +48,7 @@ console.log("Workout Data:", workout);
                 </Group>
 
             {workout.exercises.map((exercise: ExerciseCardProps) => (
-                <ExerciseCard key={exercise.id} {...exercise} />
+                <ExerciseCard key={exercise.id} {...exercise} workoutId={id} />
             )
             
             )} 
