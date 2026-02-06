@@ -28,7 +28,7 @@ export async function getWorkout(userId: string, workoutId: string) {
 };
 
 export async function getWorkoutWithExercisesAndSets(userId: string, workoutId: string) {
-    const workout = getWorkout(userId, workoutId);
+    const workout = await getWorkout(userId, workoutId);
     const allExercises = await getExercises(userId, workoutId);
     const allSets = await getSets(userId, workoutId);
 
