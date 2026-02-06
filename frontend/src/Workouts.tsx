@@ -6,15 +6,9 @@ import { IconPlus, IconX } from '@tabler/icons-react'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WorkoutCard from "./WorkoutCard";
 import { useNavigate } from "react-router";
-
-interface Workout {
-  id: string;
-  name: string;
-  created_at: string;
-}
+import type { WorkoutProps } from "../../shared/schemas";
 
 export default function Workouts() {
-
     const containerRef = useRef<HTMLDivElement>(null);
     const { ref, entry } = useIntersection({
         root: containerRef.current
@@ -91,7 +85,7 @@ export default function Workouts() {
                 <ScrollArea viewportRef={containerRef} type="never" h={500}>
                     {workouts.pages.map((page, i) => (
                         <div key={i}>
-                            {page.itemsToReturn.map((workout: Workout) => (
+                            {page.itemsToReturn.map((workout: WorkoutProps) => (
                                 <WorkoutCard
                                     key={workout.id}
                                     {...workout}

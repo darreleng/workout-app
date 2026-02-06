@@ -63,10 +63,10 @@ export default function ExerciseCard(props: ExerciseCardProps) {
                 </Group>
                 {props.sets.map(set => (
                     <Group key={set.id}>
-                        <NumberInput label='SET' readOnly hideControls={true} defaultValue={set.set_number} onClick={open}/>
-                        <NumberInput label='KG' defaultValue={set.weight_kg || ''} hideControls={true} min={0} onBlur={e => updateMutation.mutate({ setId: set.id!, field: 'weight_kg', value: Number(e.target.value) })} />
+                        <NumberInput label='SET' readOnly hideControls={true} defaultValue={set.setNumber} onClick={open}/>
+                        <NumberInput label='KG' defaultValue={set.weightKg || ''} hideControls={true} min={0} onBlur={e => updateMutation.mutate({ setId: set.id!, field: 'weight_kg', value: Number(e.target.value) })} />
                         <NumberInput label='REPS' defaultValue={set.reps || ''} hideControls={true} min={1} onBlur={e => updateMutation.mutate({ setId: set.id!, field: 'reps', value: Number(e.target.value) })} />
-                        <NumberInput label='REST' defaultValue={set.rest_seconds || ''} hideControls={true}  min={10} onBlur={e => updateMutation.mutate({ setId: set.id!, field: 'rest_seconds', value: Number(e.target.value) })} />
+                        <NumberInput label='REST' defaultValue={set.restSeconds || ''} hideControls={true}  min={10} onBlur={e => updateMutation.mutate({ setId: set.id!, field: 'rest_seconds', value: Number(e.target.value) })} />
                         <Drawer opened={opened} onClose={close} position="bottom" size='10%'>
                             <Button color="red" onClick={() => {deleteMutation.mutate(set.id!); close()}} fullWidth>Remove set</Button>
                         </Drawer>

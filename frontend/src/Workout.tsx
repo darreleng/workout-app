@@ -1,23 +1,17 @@
 import { Center, Box, Button, Loader, TextInput, Group, Stack } from "@mantine/core";
-import { IconStopwatch, IconPlus } from '@tabler/icons-react';
+import { IconStopwatch } from '@tabler/icons-react';
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { WorkoutSchema } from "../../shared/schemas";
-import type { ExerciseCardProps } from "../../shared/schemas";
+import { WorkoutNameSchema } from "../../shared/schemas";
+import type { ExerciseCardProps, WorkoutWithExercisesAndSets } from "../../shared/schemas";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import ExerciseCard from "./ExerciseCard";
 import AddExerciseButton from "./AddExerciseButton";
 
 export default function Workout(){
-    const form = useForm({
-        initialValues: { workoutName: '' },
-        validateInputOnBlur: true,
-        validate: zod4Resolver(WorkoutSchema)
-    });
-
     const { id } = useParams();
-    const { data: workout, error, isLoading } = useQuery({
+    const { data: workout, error, isLoading } = useQuery<WorkoutWithExercisesAndSets>({
         queryKey: ['workout', id],
         queryFn: async () => {
             const res = await fetch(`http://localhost:3000/api/workouts/${id}`, {credentials: 'include'});
@@ -26,8 +20,12 @@ export default function Workout(){
             return data;
         },
     });
-
-console.log("Workout Data:", workout);
+    
+    const form = useForm({
+        initialValues: { workoutName: 'asd'},
+        validateInputOnBlur: true,
+        validate: zod4Resolver(WorkoutNameSchema)
+    });
 
     // TODO: SKELETON
     if (isLoading) {
@@ -37,6 +35,9 @@ console.log("Workout Data:", workout);
     if (error || !workout) {
         return error?.message;
     }
+
+    // console.log(workout.name)
+    console.log(workout)
 
     return (
         <Center>
@@ -48,7 +49,7 @@ console.log("Workout Data:", workout);
                 </Group>
 
             {workout.exercises.map((exercise: ExerciseCardProps) => (
-                <ExerciseCard key={exercise.id} {...exercise} workoutId={id} />
+                <ExerciseCard key={exercise.id} {...exercise} workoutId={id!} />
             )
             
             )} 
