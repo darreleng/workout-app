@@ -22,7 +22,7 @@ export default function Workout(){
     });
     
     const form = useForm({
-        initialValues: { workoutName: 'asd'},
+        initialValues: { workoutName: ''},
         validateInputOnBlur: true,
         validate: zod4Resolver(WorkoutNameSchema)
     });
@@ -42,14 +42,13 @@ export default function Workout(){
     return (
         <Center>
             <Box p={24} bg={'#dee2e6'} miw={700}>
-                <Group>
-                    <TextInput placeholder="Workout name" />
-                    <TextInput {...form.getInputProps('workoutName')} />
+                <Group justify="space-between">
+                    <TextInput variant="unstyled"  defaultValue={workout.name}/>
                     <IconStopwatch stroke={2} />
                 </Group>
 
             {workout.exercises.map((exercise: ExerciseCardProps) => (
-                <ExerciseCard key={exercise.id} {...exercise} workoutId={id!} />
+                <ExerciseCard key={exercise.id} {...exercise} />
             )
             
             )} 

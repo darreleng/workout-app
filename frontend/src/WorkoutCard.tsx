@@ -3,13 +3,13 @@ import { IconEdit } from '@tabler/icons-react';
 import { Link } from "react-router";
 import type { WorkoutProps } from "../../shared/schemas";
 
-export default function WorkoutCard({id, name, createdAt}: WorkoutProps) {
+export default function WorkoutCard({id, name, created_at}: WorkoutProps) {
     return (
         <Paper shadow="xs" mih={100} mt={4} mb={4} p={16}>
             <Group justify="space-between">
                 <Stack gap="xs" justify="center">
                     <Text size="xs" mb={-8}>
-                        {new Date(createdAt).toLocaleDateString()}
+                        {new Date(created_at).toLocaleDateString()}
                     </Text>
                     <Title order={2} lineClamp={1}>
                         {name}

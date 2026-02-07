@@ -14,22 +14,28 @@ export const WorkoutNameSchema = z.object({
 
 export const ExerciseNameSchema = z.coerce.string().trim().min(3, "Exercise name must at least be 1 character").transform(val => capitalizeFirstLetter(val))
 
+export const UpdateSetSchema = z.object({
+    weight_kg: z.coerce.number().nonnegative().optional(),
+    reps: z.coerce.number().nonnegative().optional(),
+    rest_seconds: z.coerce.number().nonnegative().optional(),
+})
+
 export type WorkoutProps = z.infer<typeof WorkoutNameSchema> & {
     id: string;
-    createdAt: string;
+    created_at: string;
 };
 
 export type ExerciseCardProps = {
     id: string;
     name: string;
-    workoutId: string;
+    workout_id: string;
     sets: {
         id: string,
-        exerciseId: string,
-        setNumber: number,
-        weightKg: number,
+        exercise_id: string,
+        set_number: number,
+        weight_kg: number,
         reps: number,
-        restSeconds: number
+        rest_seconds: number
     }[]
 };
 

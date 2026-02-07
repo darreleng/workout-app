@@ -1,18 +1,16 @@
-import { ActionIcon, Group, Paper, Stack, Title, NumberInput, Drawer, Button } from "@mantine/core";
+import { ActionIcon, Group, Paper, Stack, Title, NumberInput, Button, Popover } from "@mantine/core";
 import type { ExerciseCardProps } from "../../shared/schemas";
 import AddSetButton from "./AddSetButton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
-import { useDisclosure } from '@mantine/hooks';
 
 export default function ExerciseCard(props: ExerciseCardProps) {
     const queryClient = useQueryClient();
-    const [opened, { open, close }] = useDisclosure(false);
 
     const updateMutation = useMutation({
         mutationFn: async ({ setId, field, value }: { setId: string, field: string, value: number }) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${props.workoutId}/exercises/${props.id}/sets/${setId}`, {
+            const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.id}/sets/${setId}`, {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json'},
@@ -22,6 +20,7 @@ export default function ExerciseCard(props: ExerciseCardProps) {
             if (!res.ok) throw data;
             return data;
         },
+        // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
         onError: (error) => {
             notifications.show({
                 title: 'Failed to modify set',
@@ -32,10 +31,12 @@ export default function ExerciseCard(props: ExerciseCardProps) {
             });
         }
     });
+    
+    console.log(props)
 
     const deleteMutation = useMutation({
         mutationFn: async (setId: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${props.workoutId}/exercises/${props.id}/sets/${setId}`, {
+            const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.id}/sets/${setId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -43,7 +44,7 @@ export default function ExerciseCard(props: ExerciseCardProps) {
             return res.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workout', props.workoutId] });
+            queryClient.invalidateQueries({ queryKey: ['workout', props.workout_id] });
         },
         onError: (error) => {
             notifications.show({ 
@@ -63,17 +64,49 @@ export default function ExerciseCard(props: ExerciseCardProps) {
                 </Group>
                 {props.sets.map(set => (
                     <Group key={set.id}>
-                        <NumberInput label='SET' readOnly hideControls={true} defaultValue={set.setNumber} onClick={open}/>
-                        <NumberInput label='KG' defaultValue={set.weightKg || ''} hideControls={true} min={0} onBlur={e => updateMutation.mutate({ setId: set.id!, field: 'weight_kg', value: Number(e.target.value) })} />
-                        <NumberInput label='REPS' defaultValue={set.reps || ''} hideControls={true} min={1} onBlur={e => updateMutation.mutate({ setId: set.id!, field: 'reps', value: Number(e.target.value) })} />
-                        <NumberInput label='REST' defaultValue={set.restSeconds || ''} hideControls={true}  min={10} onBlur={e => updateMutation.mutate({ setId: set.id!, field: 'rest_seconds', value: Number(e.target.value) })} />
-                        <Drawer opened={opened} onClose={close} position="bottom" size='10%'>
-                            <Button color="red" onClick={() => {deleteMutation.mutate(set.id!); close()}} fullWidth>Remove set</Button>
-                        </Drawer>
+                        <Popover position="bottom" withArrow shadow="md" offset={0}>
+                            <Popover.Target>
+                                <NumberInput 
+                                    label='SET' 
+                                    readOnly 
+                                    hideControls={true} 
+                                    value={set.set_number} 
+                                    />
+                            </Popover.Target>
+                            <Popover.Dropdown>
+                                <Button color="red" onClick={() => deleteMutation.mutate(set.id)} fullWidth>Remove set</Button>
+                            </Popover.Dropdown>
+                        </Popover>
+                        <NumberInput 
+                            label='WEIGHT (KG)' 
+                            defaultValue={set.weight_kg !== null ? Number(set.weight_kg) : ''} 
+                            min={0} 
+                            clampBehavior="blur" 
+                            hideControls={true} 
+                            onBlur={e => updateMutation.mutate({ setId: set.id, field: 'weight_kg', value: Number(e.target.value) })} 
+                            />
+                        <NumberInput 
+                            label='REPS' 
+                            defaultValue={set.reps || ''} 
+                            hideControls={true} 
+                            min={0} 
+                            clampBehavior="blur" 
+                            allowDecimal={false} 
+                            onBlur={e => updateMutation.mutate({ setId: set.id, field: 'reps', value: Number(e.target.value) })} 
+                            />
+                        <NumberInput 
+                            label='REST (S)' 
+                            defaultValue={set.rest_seconds || ''} 
+                            hideControls={true} 
+                            min={0} 
+                            clampBehavior="blur" 
+                            allowDecimal={false} 
+                            onBlur={e => updateMutation.mutate({ setId: set.id, field: 'rest_seconds', value: Number(e.target.value) })} 
+                            />
                     </Group>
                 ))}
             </Stack>
-            <AddSetButton exerciseId={props.id!} workoutId={props.workoutId!}/>
+            <AddSetButton exerciseId={props.id} workoutId={props.workout_id}/>
         </Paper>
 
     )
