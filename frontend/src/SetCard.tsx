@@ -9,7 +9,7 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 export default function SetCard(props: SetCardProps) {
     const form = useForm({
         initialValues: {
-            weight_kg: props.weight_kg !== null ? Number(props.weight_kg) : 0,
+            weight_kg: Number(props.weight_kg) || 0,
             reps: props.reps || 0,
             rest_seconds: props.rest_seconds || 0
         },
@@ -22,9 +22,6 @@ export default function SetCard(props: SetCardProps) {
 
     const updateMutation = useMutation({
         mutationFn: async ({ setId, field, value }: { setId: string, field: string, value: number }) => {
-            const url = `http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.id}/sets/${setId}`;
-    console.log("URL:", url);
-    console.log("Body:", JSON.stringify({ [field]: value }));
             const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.exercise_id}/sets/${setId}`, {
                 method: 'PATCH',
                 credentials: 'include',
@@ -67,8 +64,6 @@ export default function SetCard(props: SetCardProps) {
             });
         }
     });
-
-    // error={!!form.errors.weight_kg}
 
     return(
         <Group key={props.id}>
