@@ -3,11 +3,11 @@ import { Button } from '@mantine/core';
 import { IconPlus, IconX } from '@tabler/icons-react';
 import { notifications } from "@mantine/notifications";
 
-export default function AddSetButton({ exerciseId, workoutId }: { exerciseId: string, workoutId: string }) {
+export default function AddSetButton({ exercise_id, workout_id }: { exercise_id: string, workout_id: string }) {
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}/exercises/${exerciseId}/sets`, {
+            const res = await fetch(`http://localhost:3000/api/workouts/${workout_id}/exercises/${exercise_id}/sets`, {
                 method: 'POST',
                 credentials: 'include'
             });
@@ -16,7 +16,7 @@ export default function AddSetButton({ exerciseId, workoutId }: { exerciseId: st
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workout', workoutId] })
+            queryClient.invalidateQueries({ queryKey: ['workout', workout_id] })
         },
         onError: (error) => {
             notifications.show({

@@ -22,7 +22,7 @@ export async function updateSet(req: Request, res: Response) {
         const field = req.body;
         const result = UpdateSetSchema.safeParse(field);
         if (!result.success) return res.status(400).json({ message: result.error.issues[0].message });
-        const updatedSet = await SetModel.updateSet(userId, setId as string, field); 
+        const updatedSet = await SetModel.updateSet(userId, setId as string, result.data); 
         if (!updatedSet) return res.status(403).json({ message: "You don't own this set."}); 
         res.status(201).json({ message: 'Set updated' });
     } catch (error) {
