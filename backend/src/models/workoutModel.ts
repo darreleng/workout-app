@@ -45,8 +45,8 @@ export async function getWorkoutWithExercisesAndSets(userId: string, workoutId: 
 }
 
 export async function deleteWorkout(userId: string, workoutId: string) {
-    const query = 'DELETE FROM workouts WHERE id = $1 AND user_id = $2';
-    const { rows } = await db.query(query, [workoutId, userId]);
+    const query = 'DELETE FROM workouts WHERE id = $2 AND user_id = $1 RETURNING *';
+    const { rows } = await db.query(query, [userId, workoutId]);
     return rows[0];
 };
 

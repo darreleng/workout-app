@@ -9,7 +9,7 @@ export default function ExerciseCard(props: ExerciseCardProps) {
     return (
         <Paper>
             <Stack>
-                <Group>
+                <Group justify="space-between">
                     <Title>{props.name}</Title>
                     <DeleteExerciseButton workoutId={props.workout_id} exerciseId={props.id} />
                 </Group>

@@ -2,12 +2,12 @@ import { ActionIcon } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export default function DeleteExerciseButton({ workoutId, exerciseId }: { workoutId: string, exerciseId: string}) {
+export default function DeleteWorkoutButton({ workoutId }: { workoutId: string}) {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-        mutationFn: async ({ workoutId, exerciseId }: { workoutId: string, exerciseId: string }) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}/exercises/${exerciseId}`, {
+        mutationFn: async (workoutId: string) => {
+            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -25,7 +25,7 @@ export default function DeleteExerciseButton({ workoutId, exerciseId }: { workou
     })
 
     return (
-        <ActionIcon color="red" aria-label="Delete exercise" onClick={() => mutation.mutate({workoutId, exerciseId})}>
+        <ActionIcon color="red" aria-label="Delete workout" onClick={() => mutation.mutate(workoutId)}>
             <IconTrash stroke={2} />
         </ActionIcon>
     )
