@@ -51,7 +51,7 @@ export async function deleteWorkout(userId: string, workoutId: string) {
 };
 
 export async function updateWorkoutName(userId: string, workoutId: string, name: string) {
-    const query = 'UPDATE workouts SET name = $1 WHERE id = $2 AND user_id = $3 RETURNING *';
-    const { rows } = await db.query(query, [name, workoutId, userId]);
+    const query = 'UPDATE workouts SET name = $3 WHERE id = $2 AND user_id = $1 RETURNING *';
+    const { rows } = await db.query(query, [userId, workoutId, name]);
     return rows[0];
 }

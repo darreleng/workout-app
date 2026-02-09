@@ -5,12 +5,10 @@ import * as z from "zod";
 // };
 
 function capitalizeFirstLetter(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
-export const WorkoutNameSchema = z.object({
-    name: z.coerce.string().trim().min(1, "Workout name must be at least 1 character").transform(capitalizeFirstLetter)
-});
+export const WorkoutNameSchema = z.coerce.string().trim().min(1, "Workout name must be at least 1 character").transform(capitalizeFirstLetter);
 
 export const ExerciseNameSchema = z.coerce.string().trim().min(1, "Exercise name must at least be 1 character").transform(val => capitalizeFirstLetter(val))
 
@@ -20,12 +18,11 @@ export const UpdateSetSchema = z.object({
     rest_seconds: z.coerce.number().nonnegative(),
 }).partial()
 
-export type WorkoutProps = z.infer<typeof WorkoutNameSchema> & {
+export type WorkoutProps = {
+    name: string;
     id: string;
     created_at: string;
 };
-
-export type UpdateSetType = z.infer<typeof UpdateSetSchema>;
 
 export type ExerciseCardProps = {
     id: string;

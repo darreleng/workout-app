@@ -48,12 +48,12 @@ export async function deleteWorkout(req: Request, res: Response) {
 
 export async function updateWorkoutName(req: Request, res: Response) {
     try {
-        const result = WorkoutNameSchema.safeParse(req.body);
+        const { updatedName } = req.body;
+        const result = WorkoutNameSchema.safeParse(updatedName);
         if (!result.success) return res.status(400).json({ message: result.error.issues[0].message });
         const { workoutId } = req.params;
-        const { name } = result.data;
         const userId = req.user!.id;
-        const updatedWorkout = await WorkoutModel.updateWorkoutName(userId, workoutId as string, name);
+        const updatedWorkout = await WorkoutModel.updateWorkoutName(userId, workoutId as string, result.data);
         if (!updatedWorkout) return res.status(404).json({ message: "Workout not found or unauthorised" });
         res.status(200).json(updatedWorkout);
     } catch (error) {

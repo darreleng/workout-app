@@ -1,13 +1,12 @@
 import { Center, Box, Button, Loader, TextInput, Group, Stack } from "@mantine/core";
 import { IconStopwatch } from '@tabler/icons-react';
-import { useForm } from "@mantine/form";
-import { zod4Resolver } from "mantine-form-zod-resolver";
-import { WorkoutNameSchema } from "../../shared/schemas";
 import type { ExerciseCardProps, WorkoutWithExercisesAndSets } from "../../shared/schemas";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import ExerciseCard from "./ExerciseCard";
 import AddExerciseButton from "./AddExerciseButton";
+import WorkoutNameInput from "./WorkoutNameInput";
+
 
 export default function Workout(){
     const { id } = useParams();
@@ -19,12 +18,6 @@ export default function Workout(){
             if (!res.ok) throw data;
             return data;
         },
-    });
-    
-    const form = useForm({
-        initialValues: { workoutName: ''},
-        validateInputOnBlur: true,
-        validate: zod4Resolver(WorkoutNameSchema)
     });
 
     // TODO: SKELETON
@@ -40,7 +33,7 @@ export default function Workout(){
         <Center>
             <Box p={24} bg={'#dee2e6'} miw={700}>
                 <Group justify="space-between">
-                    <TextInput variant="unstyled"  defaultValue={workout.name}/>
+                    <WorkoutNameInput workoutName={workout.name} id={workout.id} />
                     <IconStopwatch stroke={2} />
                 </Group>
 

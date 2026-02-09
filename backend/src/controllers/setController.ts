@@ -32,13 +32,13 @@ export async function updateSet(req: Request, res: Response) {
 }
 
 export async function deleteSet(req: Request, res: Response) {
-  try {
-    const userId = req.user!.id;
-    const { setId } = req.params;
-    await SetModel.deleteSet(userId, setId as string);
-    res.status(200).json({ message: "Set deleted" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
+    try {
+        const userId = req.user!.id;
+        const { setId } = req.params;
+        await SetModel.deleteSet(userId, setId as string);
+        res.status(200).json({ message: "Set deleted" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 }

@@ -1,4 +1,4 @@
-import { Group, Paper, Stack, Title, TextInput } from "@mantine/core";
+import { Group, Paper, Stack, TextInput } from "@mantine/core";
 import { ExerciseNameSchema, type ExerciseCardProps } from "../../shared/schemas";
 import AddSetButton from "./AddSetButton";
 import SetCard from "./SetCard";
@@ -26,7 +26,7 @@ export default function ExerciseCard(props: ExerciseCardProps) {
         // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
         onError: (error) => {
             notifications.show({
-                title: 'Failed to modify exercise',
+                title: 'Failed to modify exercise name',
                 message: error.message,
                 color: 'red',
                 autoClose: 2000,
