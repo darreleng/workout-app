@@ -25,6 +25,8 @@ export type WorkoutProps = z.infer<typeof WorkoutNameSchema> & {
     created_at: string;
 };
 
+export type UpdateSetType = z.infer<typeof UpdateSetSchema>;
+
 export type ExerciseCardProps = {
     id: string;
     name: string;
@@ -51,3 +53,4 @@ export type WorkoutWithExercisesAndSets = {
     // notes: string;
     exercises: ExerciseCardProps[];
 };
+

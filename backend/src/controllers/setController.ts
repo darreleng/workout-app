@@ -7,7 +7,7 @@ export async function createSet(req: Request, res: Response) {
         const { exerciseId } = req.params;
         const userId = req.user!.id;
         const newSet = await SetModel.createSet(userId, exerciseId as string);
-        if (!newSet) return res.status(403).json({ message: "You don't own this exercise."});
+        if (!newSet) return res.status(403).json({ message: "You don't own this set"});
         res.status(201).json(newSet);
     } catch (error) {
         console.error(error);
@@ -19,12 +19,12 @@ export async function updateSet(req: Request, res: Response) {
     try {
         const userId = req.user!.id;
         const { setId } = req.params;
-        const field = req.body;
-        const result = UpdateSetSchema.safeParse(field);
+        const updatedField = req.body;
+        const result = UpdateSetSchema.safeParse(updatedField);
         if (!result.success) return res.status(400).json({ message: result.error.issues[0].message });
         const updatedSet = await SetModel.updateSet(userId, setId as string, result.data); 
-        if (!updatedSet) return res.status(403).json({ message: "You don't own this set."}); 
-        res.status(201).json({ message: 'Set updated' });
+        if (!updatedSet) return res.status(403).json({ message: "You don't own this set" }); 
+        res.status(200).json({ message: 'Set updated' });
     } catch (error) {
         console.error(error);
         res.status(500).json( { message: "Internal server error" });

@@ -30,7 +30,7 @@ export async function updateSet(userId: string, setId: string, field: { weight_k
     AND EXISTS (
         SELECT 1 FROM exercises e
         JOIN workouts w ON e.workout_id = w.id
-        WHERE e.id = sets.exercise_id -- Link the set to the exercise
+        WHERE e.id = sets.exercise_id
         AND w.user_id = $1
     )
     RETURNING *`;

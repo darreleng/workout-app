@@ -1,8 +1,8 @@
-import { Button, Group, NumberInput, Popover, Menu } from "@mantine/core";
+import { Group, NumberInput, Menu } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash, IconX } from "@tabler/icons-react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { UpdateSetSchema, type SetCardProps } from "../../shared/schemas";
+import { UpdateSetSchema, type SetCardProps, type UpdateSetType } from "../../shared/schemas";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 
@@ -21,12 +21,12 @@ export default function SetCard(props: SetCardProps) {
     const queryClient = useQueryClient();
 
     const updateMutation = useMutation({
-        mutationFn: async ({ setId, field, value }: { setId: string, field: string, value: number }) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.exercise_id}/sets/${setId}`, {
+        mutationFn: async ({ updatedField, value }: { updatedField: string; value: number })=> {
+            const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.exercise_id}/sets/${props.id}`, {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json'},
-                body: JSON.stringify({ [field]: value })
+                body: JSON.stringify({ [updatedField]: value })
             });
             const data = await res.json();
             if (!res.ok) throw data;
@@ -89,7 +89,7 @@ export default function SetCard(props: SetCardProps) {
                 error={!!form.errors.weight_kg}
                 onBlur={() => {
                     const validation = form.validateField('weight_kg');
-                    if (!validation.hasError) updateMutation.mutate({ setId: props.id, field: 'weight_kg', value: form.getValues().weight_kg })
+                    if (!validation.hasError) updateMutation.mutate({ updatedField: 'weight_kg', value: form.getValues().weight_kg })
                 }}
             />
             <NumberInput 
@@ -100,7 +100,7 @@ export default function SetCard(props: SetCardProps) {
                 error={!!form.errors.reps}
                 onBlur={() => {
                     const validation = form.validateField('reps');
-                    if (!validation.hasError) updateMutation.mutate({ setId: props.id, field: 'reps', value: form.getValues().reps })
+                    if (!validation.hasError) updateMutation.mutate({ updatedField: 'reps', value: form.getValues().reps })
                 }}
             />
             <NumberInput 
@@ -111,7 +111,7 @@ export default function SetCard(props: SetCardProps) {
                 error={!!form.errors.rest_seconds}
                 onBlur={() => {
                     const validation = form.validateField('rest_seconds');
-                    if (!validation.hasError) updateMutation.mutate({ setId: props.id, field: 'rest_seconds', value: form.getValues().rest_seconds })
+                    if (!validation.hasError) updateMutation.mutate({ updatedField: 'rest_seconds', value: form.getValues().rest_seconds })
                 }}
             />
         </Group>
