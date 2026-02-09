@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createExercise, deleteExercise, getExercises } from "src/controllers/exerciseController";
+import { createExercise, deleteExercise, getExercises, updateName } from "src/controllers/exerciseController";
 import authMiddleware from "src/middleware/authMiddleware";
 import setRouter from './setRoutes';
 
@@ -9,7 +9,7 @@ router.use(authMiddleware);
 
 router.get('/', getExercises);
 router.post('/', createExercise);
-// router.patch('/:exerciseId', updateExercise);
+router.patch('/:exerciseId', updateName);
 router.delete('/:exerciseId', deleteExercise);
 router.use('/:exerciseId/sets', setRouter);
 

@@ -12,7 +12,7 @@ export const WorkoutNameSchema = z.object({
     name: z.coerce.string().trim().min(1, "Workout name must be at least 1 character").transform(capitalizeFirstLetter)
 });
 
-export const ExerciseNameSchema = z.coerce.string().trim().min(3, "Exercise name must at least be 1 character").transform(val => capitalizeFirstLetter(val))
+export const ExerciseNameSchema = z.coerce.string().trim().min(1, "Exercise name must at least be 1 character").transform(val => capitalizeFirstLetter(val))
 
 export const UpdateSetSchema = z.object({
     weight_kg: z.coerce.number().max(9999.999).nonnegative(),
