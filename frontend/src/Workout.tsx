@@ -12,7 +12,7 @@ import AddExerciseButton from "./AddExerciseButton";
 export default function Workout(){
     const { id } = useParams();
     const { data: workout, error, isLoading } = useQuery<WorkoutWithExercisesAndSets>({
-        queryKey: ['workout', id],
+        queryKey: ['workouts', id],
         queryFn: async () => {
             const res = await fetch(`http://localhost:3000/api/workouts/${id}`, {credentials: 'include'});
             const data = await res.json();
@@ -35,9 +35,6 @@ export default function Workout(){
     if (error || !workout) {
         return error?.message;
     }
-
-    // console.log(workout.name)
-    console.log(workout)
 
     return (
         <Center>

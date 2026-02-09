@@ -1,6 +1,6 @@
-import { Button, Group, NumberInput, Popover } from "@mantine/core";
+import { Button, Group, NumberInput, Popover, Menu } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconX } from "@tabler/icons-react";
+import { IconTrash, IconX } from "@tabler/icons-react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { UpdateSetSchema, type SetCardProps } from "../../shared/schemas";
 import { useForm } from "@mantine/form";
@@ -54,7 +54,7 @@ export default function SetCard(props: SetCardProps) {
             return res.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workout', props.workout_id] });
+            queryClient.invalidateQueries({ queryKey: ['workouts', props.workout_id] });
         },
         onError: (error) => {
             notifications.show({ 
@@ -67,19 +67,21 @@ export default function SetCard(props: SetCardProps) {
 
     return(
         <Group key={props.id}>
-            <Popover position="bottom" withArrow shadow="md" offset={0}>
-                <Popover.Target>
+            <Menu shadow="md">
+                <Menu.Target>
                     <NumberInput 
                         label='SET' 
                         readOnly 
                         hideControls={true} 
                         value={props.set_number} 
                         />
-                </Popover.Target>
-                <Popover.Dropdown>
-                    <Button color="red" onClick={() => deleteMutation.mutate(props.id)} fullWidth>Remove set</Button>
-                </Popover.Dropdown>
-            </Popover>
+                </Menu.Target>
+                <Menu.Dropdown>
+                    <Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={() => deleteMutation.mutate(props.id)}>
+                        Delete workout
+                    </Menu.Item>
+                </Menu.Dropdown>
+            </Menu>
             <NumberInput 
                 label='WEIGHT (KG)' 
                 hideControls={true} 

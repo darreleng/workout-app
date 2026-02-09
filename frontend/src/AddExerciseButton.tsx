@@ -23,7 +23,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
             if (!res.ok) throw data;
             return data;
         },
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['workout', workoutId] }),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] }),
     });
 
     function handleSubmit(e: React.FormEvent) {

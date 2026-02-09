@@ -16,7 +16,7 @@ export default function AddSetButton({ exercise_id, workout_id }: { exercise_id:
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workout', workout_id] })
+            queryClient.invalidateQueries({ queryKey: ['workouts', workout_id] })
         },
         onError: (error) => {
             notifications.show({
