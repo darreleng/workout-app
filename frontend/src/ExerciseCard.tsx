@@ -1,7 +1,8 @@
-import { ActionIcon, Group, Paper, Stack, Title } from "@mantine/core";
+import { Group, Paper, Stack, Title } from "@mantine/core";
 import type { ExerciseCardProps } from "../../shared/schemas";
 import AddSetButton from "./AddSetButton";
 import SetCard from "./SetCard";
+import DeleteExerciseButton from "./DeleteExerciseButton";
 
 export default function ExerciseCard(props: ExerciseCardProps) {
 
@@ -10,7 +11,7 @@ export default function ExerciseCard(props: ExerciseCardProps) {
             <Stack>
                 <Group>
                     <Title>{props.name}</Title>
-                    <ActionIcon aria-label="Discard exercise"></ActionIcon>
+                    <DeleteExerciseButton workoutId={props.workout_id} exerciseId={props.id} />
                 </Group>
                 {props.sets.map(set => (
                     <SetCard {...set} exercise_id={props.id} workout_id={props.workout_id} />

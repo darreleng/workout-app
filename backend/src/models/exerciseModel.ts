@@ -6,9 +6,9 @@ export async function createExercise(userId: string, workoutId: string, exercise
     return rows[0];
 }
 
-export async function deleteExercise(userId: string, exerciseId: string) {
-    const query = 'DELETE FROM exercises e WHERE id = $1 AND EXISTS (SELECT 1 FROM workouts w WHERE w.id = e.workout_id AND w.user_id = $2) RETURNING *';
-    const { rows } = await db.query(query, [exerciseId, userId]);
+export async function deleteExercise(userId: string, exerciseId: string, workoutId: string) {
+    const query = 'DELETE FROM exercises e WHERE id = $2 AND workout_id = $3 AND EXISTS (SELECT 1 FROM workouts w WHERE w.id = e.workout_id AND w.user_id = $1) RETURNING *';
+    const { rows } = await db.query(query, [userId, exerciseId, workoutId]);
     return rows[0];
 }
 

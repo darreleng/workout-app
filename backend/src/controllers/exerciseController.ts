@@ -16,9 +16,9 @@ export async function getExercises(req: Request, res: Response) {
 
 export async function deleteExercise(req: Request, res: Response) {
     try {
-        const { exerciseId } = req.params;
+        const { exerciseId, workoutId } = req.params;
         const userId = req.user!.id;
-        const deletedExercise = await ExerciseModel.deleteExercise(userId, exerciseId as string);
+        const deletedExercise = await ExerciseModel.deleteExercise(userId, exerciseId as string, workoutId as string);
         if (!deletedExercise) return res.status(404).json({ message: "Exercise not found or unauthorised." });
         res.status(200).json({ message: "Exercise deleted successfully." });
     } catch (error) {
