@@ -43,7 +43,7 @@ export default function Workout(){
             
             )} 
                 <Stack>
-                    <AddExerciseButton workoutId={id!} />
+                    <AddExerciseButton workoutId={id!} exerciseName={workout.name} />
                     <Group grow={true} >
                         <Button color="red">Discard workout</Button>
                         <Button color="green">Save workout</Button>

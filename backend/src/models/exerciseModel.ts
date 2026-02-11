@@ -18,35 +18,9 @@ export async function getExercises(userId: string, workoutId: string) {
     return rows;
 }
 
-export async function updateName(userId: string, exerciseId: string, name: string) {
-    const query = 
-        `UPDATE exercises e
-        SET name = $3
-        FROM workouts w
-        WHERE e.id = $2 
-            AND e.workout_id = w.id 
-            AND w.user_id = $1
-        RETURNING e.*
-        `;
-    const { rows } = await db.query(query, [userId, exerciseId, name]);
+export async function updateName(userId: string, exerciseId: string, exerciseName: string) {
+    const query = `UPDATE exercises e SET name = $3 FROM workouts w WHERE e.id = $2 AND e.workout_id = w.id AND w.user_id = $1 RETURNING e.*`;
+    const { rows } = await db.query(query, [userId, exerciseId, exerciseName]);
     return rows[0];
 }
 
-// export async function updateSet(userId: string, setId: string, field: { weight_kg?: number, reps?: number, rest_seconds?: number }) {
-//     const query = 
-//     `UPDATE sets SET 
-//         weight_kg = COALESCE($3, weight_kg), 
-//         reps = COALESCE($4, reps), 
-//         rest_seconds = COALESCE($5, rest_seconds)
-//     WHERE id = $2 
-//     AND EXISTS (
-//         SELECT 1 FROM exercises e
-//         JOIN workouts w ON e.workout_id = w.id
-//         WHERE e.id = sets.exercise_id -- Link the set to the exercise
-//         AND w.user_id = $1
-//     )
-//     RETURNING *`;
-//     const values = [userId, setId, field.weight_kg ?? null, field.reps ?? null, field.rest_seconds ?? null];
-//     const { rows } = await db.query(query, values);
-//     return rows[0]; 
-// }

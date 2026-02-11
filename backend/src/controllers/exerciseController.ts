@@ -29,7 +29,7 @@ export async function deleteExercise(req: Request, res: Response) {
 
 export async function createExercise(req: Request, res: Response) {
     try {
-        const result = ExerciseNameSchema.safeParse(req.body.name);
+        const result = ExerciseNameSchema.safeParse(req.body.exerciseName);
         if (!result.success) return res.status(400).json({ message: result.error.issues[0].message });
         const { workoutId } = req.params;
         const userId = req.user!.id;
