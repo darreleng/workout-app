@@ -29,7 +29,6 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
             if (!res.ok) throw data;
             return data;
         },
-        // enabled: opened
     });
 
     const mutation = useMutation({
@@ -44,10 +43,14 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
             if (!res.ok) throw data;
             return data;
         },
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] });
+            queryClient.invalidateQueries({ queryKey: ['exerciseHistory'] });
+        }
     });
 
-    function handleCreate(name?: string) {
+    function handleCreate(e: React.FormEvent, name?: string) {
+        e.preventDefault();
         const valueToValidate = name || search;
         const result = ExerciseNameSchema.safeParse(valueToValidate);
         if (!result.success) return setNameError(result.error.issues[0].message);
@@ -87,65 +90,75 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                         flex: 1,
                         display: 'flex', 
                         flexDirection: 'column', 
-                        overflow: 'hidden',
+                        overflowY: 'hidden',
+                        paddingInline: 0,
+                        paddingBottom: 0,
                     },
                 }}
-                >
-                <TextInput
-                    placeholder="Search or type new exercise..."
-                    leftSection={<IconSearch stroke={2} />}
-                    value={search}
-                    error={!!nameError && nameError}
-                    onChange={(e) => setSearch(e.currentTarget.value)}
-                    mb="md"
-                    data-autofocus 
-                />
-                {nameError}
-                
-                <ScrollArea
-                    type="always"
-                    scrollbars="y"
-                    scrollbarSize={6}
-                    styles={{
-                        root: {
-                            flexGrow: 1
-                        }
+            >
+                <form 
+                    onSubmit={(e) => handleCreate(e)}
+                    style={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        overflowY: 'hidden' 
                     }}
                 >
-                    <Text size="xs" fw={700} c="dimmed" mb="xs" >
+                    <TextInput
+                        placeholder="Search or type new exercise..."
+                        leftSection={<IconSearch stroke={2} />}
+                        value={search}
+                        error={!!nameError && nameError}
+                        onChange={(e) => setSearch(e.currentTarget.value)}
+                        mb="md"
+                        px='md'
+                        data-autofocus
+                    />
+                    <Text size="xs" fw={700} c="dimmed" px='md'>
                         {search ? 'Search Results' : 'Past Exercises'}
                     </Text>
+                    
+                    <ScrollArea
+                        type="always"
+                        scrollbars="y"
+                        scrollbarSize={6}
+                        style={{ flex: 1 }}                      
+                    >
 
-                    <Stack gap={0} >
-                        {filteredHistory.map((ex: exerciseHistory) => (
-                            <>
-                            <Button
-                                key={ex.name} 
-                                variant='default'
-                                justify='left'
-                                bd='none'
-                                pl='0'
-                                fullWidth
-                                h={'fit-content'}
-                                onClick={() => handleCreate(ex.name)}
-                            >
-                                <Stack align='flex-start' gap='0'>
-                                    <Text size='xl' fw={700}>{ex.name}</Text>
-                                    <Text size='xs' >IN {ex.workout_count} WORKOUTS</Text>
-                                    {/* <Badge variant="light" color="orange" radius="xs">IN {ex.workout_count} WORKOUTS</Badge> */}
-                                </Stack>
-                            </Button>
-                            <Divider />
-                            </>
-                            
-                        ))}
-                        
-                    </Stack>
-                    {search && filteredHistory.length === 0 && "No exercise with this name"}
+                        <Stack gap={0}>
+                            {filteredHistory.map((ex: exerciseHistory) => (
+                                <>
+                                    <Button
+                                        variant='default'
+                                        justify='left'
+                                        bd='none'
+                                        fullWidth
+                                        h={'fit-content'}
+                                        onClick={(e) => handleCreate(e, ex.name)}
+                                    >
+                                        <Stack align='flex-start' gap='0' py="xs">
+                                            <Text size='xl' fw={700}>{ex.name}</Text>
+                                            <Text size='xs' c="dimmed">IN {ex.workout_count} WORKOUTS</Text>
+                                        </Stack>
+                                    </Button>
+                                    <Divider />
+                                </>
+                            ))}
+                        </Stack>
+                        {search && filteredHistory.length === 0 && (
+                            <Text mt="xl" c="dimmed">No exercise with this name</Text>
+                        )}
+                    </ScrollArea>
 
-                </ScrollArea>
-
-                <Button fullWidth mih='2rem' mt='md' onClick={() => handleCreate()}>Create exercise</Button>
+                    <Button 
+                        mih='3rem'
+                        m='md'
+                        onClick={(e) => handleCreate(e)}
+                    >
+                        Create exercise
+                    </Button>
+                </form>
             </Modal>
 
             <Button leftSection={<IconPlus stroke={2} size={20} />} fullWidth onClick={open}>
