@@ -17,6 +17,7 @@ export default function DeleteExerciseButton({ workoutId, exerciseId }: { workou
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] });
+            queryClient.invalidateQueries({ queryKey: ['exerciseHistory'] });
         },
         // TODO: Think of error notifcation
         onError: (error) => {
