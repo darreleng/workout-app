@@ -1,16 +1,16 @@
 import * as z from "zod";
 
-// function titleCase(str: string) {
-//   return str.replace(/\b\w/g, (char) => char.toUpperCase());
-// };
-
-function capitalizeFirstLetter(str: string) {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+function titleCase(str: string) {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-export const WorkoutNameSchema = z.coerce.string().trim().min(1, "Workout name must be at least 1 character").transform(capitalizeFirstLetter);
+// function capitalizeFirstLetter(str: string) {
+//     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+// };
 
-export const ExerciseNameSchema = z.coerce.string().trim().min(1, "Exercise name must at least be 1 character").transform(val => capitalizeFirstLetter(val))
+export const WorkoutNameSchema = z.coerce.string().trim().min(1, "Workout name must be at least 1 character").transform(titleCase);
+
+export const ExerciseNameSchema = z.coerce.string().trim().min(1, "Exercise name must at least be 1 character").transform(titleCase)
 
 export const UpdateSetSchema = z.object({
     weight_kg: z.coerce.number().max(9999.999).nonnegative(),
