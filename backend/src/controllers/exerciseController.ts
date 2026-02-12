@@ -33,8 +33,10 @@ export async function createExercise(req: Request, res: Response) {
         if (!result.success) return res.status(400).json({ message: result.error.issues[0].message });
         const { workoutId } = req.params;
         const userId = req.user!.id;
+        const existingExercise = await ExerciseModel.getExercise(userId, workoutId as string, result.data);
+        if (existingExercise) return res.status(400).json({ message: 'This exercise already exists in your workout' });
         const newExercise = await ExerciseModel.createExercise(userId, workoutId as string, result.data);
-        if (!newExercise) return res.status(403).json({ message: "You don't own this workout"});
+        if (!newExercise) return res.status(403).json({ message: "You don't own this workout" });
         res.status(201).json(newExercise);
     } catch (error) {
         console.error(error);

@@ -18,6 +18,12 @@ export async function getExercises(userId: string, workoutId: string) {
     return rows;
 }
 
+export async function getExercise(userId: string, workoutId: string, exerciseName: string) {
+    const query = 'SELECT e.* FROM exercises e JOIN workouts w on e.workout_id = w.id WHERE w.user_id = $1 AND w.id = $2 AND e.name = $3';
+    const { rows } = await db.query(query, [userId, workoutId, exerciseName]);
+    return rows[0];
+}
+
 export async function updateName(userId: string, exerciseId: string, exerciseName: string) {
     const query = `UPDATE exercises e SET name = $3 FROM workouts w WHERE e.id = $2 AND e.workout_id = w.id AND w.user_id = $1 RETURNING e.*`;
     const { rows } = await db.query(query, [userId, exerciseId, exerciseName]);

@@ -49,11 +49,13 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         }
     });
 
-    function handleCreate(e: React.FormEvent, name?: string) {
+    function handleAdd(e: React.FormEvent, name?: string) {
         e.preventDefault();
         const valueToValidate = name || search;
         const result = ExerciseNameSchema.safeParse(valueToValidate);
         if (!result.success) return setNameError(result.error.issues[0].message);
+        const isDuplicate = filteredHistory.some(exercise => exercise.name.toLowerCase() === valueToValidate.toLocaleLowerCase());
+        if (isDuplicate) return alert('This exercise already exists in your workout'); // TODO: proper error notification
         mutation.mutate(result.data);
         close();
         setNameError('');
@@ -63,12 +65,13 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
     function handleClose() {
         close();
         setSearch('');
+        setNameError('');
     };
 
     if (isPending) return <div><Loader size='sm' /></div>; 
     if (error) return <div>Error: {error.message}</div>;
 
-    const filteredHistory: [] = history.filter((item: any) =>
+    const filteredHistory: exerciseHistory[] = history.filter((item: exerciseHistory) =>
         item.name.toLowerCase().includes(search.toLowerCase())
     );
 
@@ -97,7 +100,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                 }}
             >
                 <form 
-                    onSubmit={(e) => handleCreate(e)}
+                    onSubmit={(e) => handleAdd(e)}
                     style={{
                         flex: 1,
                         display: 'flex',
@@ -109,7 +112,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                         placeholder="Search or type new exercise..."
                         leftSection={<IconSearch stroke={2} />}
                         value={search}
-                        error={!!nameError && nameError}
+                        error={!!nameError}
                         onChange={(e) => setSearch(e.currentTarget.value)}
                         mb="md"
                         px='md'
@@ -135,7 +138,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                                         bd='none'
                                         fullWidth
                                         h={'fit-content'}
-                                        onClick={(e) => handleCreate(e, ex.name)}
+                                        onClick={(e) => handleAdd(e, ex.name)}
                                     >
                                         <Stack align='flex-start' gap='0' py="xs">
                                             <Text size='xl' fw={700}>{ex.name}</Text>
@@ -154,9 +157,9 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                     <Button 
                         mih='3rem'
                         m='md'
-                        onClick={(e) => handleCreate(e)}
+                        onClick={(e) => handleAdd(e)}
                     >
-                        Create exercise
+                        Add
                     </Button>
                 </form>
             </Modal>
