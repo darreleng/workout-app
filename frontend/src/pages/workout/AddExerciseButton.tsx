@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button, TextInput, Modal, ScrollArea, Stack, Text, Badge, Loader, Divider } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'react';
-import { ExerciseNameSchema } from '../../shared/schemas';
+import { ExerciseNameSchema } from '../../../../shared/schemas';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
 
 interface exerciseHistory {

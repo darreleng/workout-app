@@ -1,5 +1,5 @@
 import { Group, Paper, Stack, TextInput } from "@mantine/core";
-import { ExerciseNameSchema, type ExerciseCardProps } from "../../shared/schemas";
+import { ExerciseNameSchema, type ExerciseCardProps } from "../../../../shared/schemas";
 import AddSetButton from "./AddSetButton";
 import SetCard from "./SetCard";
 import DeleteExerciseButton from "./DeleteExerciseButton";

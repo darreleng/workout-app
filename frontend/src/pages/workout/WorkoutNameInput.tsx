@@ -2,7 +2,7 @@ import { TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { WorkoutNameSchema } from "../../shared/schemas";
+import { WorkoutNameSchema } from "../../../../shared/schemas";
 
 export default function WorkoutNameInput({ workoutName, id }: { workoutName: string, id: string}) {
     const [localName, setLocalName] = useState(workoutName);

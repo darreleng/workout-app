@@ -1,7 +1,7 @@
 import { ActionIcon, Group, Paper, Stack, Text, Title, Menu } from "@mantine/core";
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
 import { Link } from "react-router";
-import type { WorkoutProps } from "../../shared/schemas";
+import type { WorkoutProps } from "../../../../shared/schemas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function WorkoutCard({id, name, created_at}: WorkoutProps) {

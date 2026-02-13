@@ -25,5 +25,5 @@
     "noUncheckedSideEffectImports": true,
 
   },
-  "include": ["src", "../shared/**/*"]
+  "include": ["src", "../shared/**/*", "postcss.config.cjs"]
 }

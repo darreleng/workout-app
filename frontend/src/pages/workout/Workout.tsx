@@ -1,6 +1,6 @@
 import { Center, Box, Button, Loader, TextInput, Group, Stack } from "@mantine/core";
 import { IconStopwatch } from '@tabler/icons-react';
-import type { ExerciseCardProps, WorkoutWithExercisesAndSets } from "../../shared/schemas";
+import type { ExerciseCardProps, WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import ExerciseCard from "./ExerciseCard";
@@ -43,7 +43,7 @@ export default function Workout(){
             
             )} 
                 <Stack>
-                    <AddExerciseButton workoutId={id!} exerciseName={workout.name} />
+                    <AddExerciseButton workoutId={id!} />
                     <Group grow={true} >
                         <Button color="red">Discard workout</Button>
                         <Button color="green">Save workout</Button>

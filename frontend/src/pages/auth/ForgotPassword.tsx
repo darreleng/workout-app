@@ -4,8 +4,8 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 import * as z from 'zod';
 import { useState } from "react";
 import { Link } from "react-router";
-import { authClient } from "./auth-client";
-import getErrorMessage from "./auth-errors";
+import { authClient } from "../../auth-client";
+import getErrorMessage from "../../auth-errors";
 
 const schema = z.object({
     email: z.email("Invalid email"),

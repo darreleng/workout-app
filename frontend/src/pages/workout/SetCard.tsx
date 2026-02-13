@@ -2,7 +2,7 @@ import { Group, NumberInput, Menu } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash, IconX } from "@tabler/icons-react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { UpdateSetSchema, type SetCardProps } from "../../shared/schemas";
+import { UpdateSetSchema, type SetCardProps } from "../../../../shared/schemas";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 

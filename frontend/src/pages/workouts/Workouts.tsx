@@ -6,7 +6,7 @@ import { IconPlus, IconX } from '@tabler/icons-react'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WorkoutCard from "./WorkoutCard";
 import { useNavigate } from "react-router";
-import type { WorkoutProps } from "../../shared/schemas";
+import type { WorkoutProps } from "../../../../shared/schemas";
 
 export default function Workouts() {
     const containerRef = useRef<HTMLDivElement>(null);

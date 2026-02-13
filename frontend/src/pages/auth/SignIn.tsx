@@ -1,21 +1,24 @@
 import { Text, Group, Divider, PasswordInput, Stack, TextInput, Anchor, Button } from "@mantine/core";
+import { GoogleButton } from "./GoogleButton";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import * as z from 'zod';
 import { useState } from "react";
 import { useNavigate, Link } from "react-router";
-import { authClient } from "./auth-client";
+import { authClient } from "../../auth-client";
+import { useLocation } from "react-router";
 
 const schema = z.object({
     email: z.email("Invalid email"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    name: z.string().trim().min(1, "Name must be at least 1 character")
 })
 
-export default function SignUp() {
+export default function SignIn() {
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
     const [serverError, setServerError] = useState<string | undefined>(undefined);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const origin = location.state?.from || "/workouts";
 
     const form = useForm({
         mode: 'uncontrolled',
@@ -29,37 +32,45 @@ export default function SignUp() {
 
     async function handleSubmit(values: typeof form.values) {
         setLoading(true);
-        const { error } = await authClient.signUp.email({
+        const { error } = await authClient.signIn.email({
             email: values.email,
             password: values.password,
-            name: values.name,
             fetchOptions: {
-                onSuccess: () => navigate('/workouts'),
+                onSuccess: () => navigate(origin)
             }
         });
-        if (error?.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") form.setFieldError('email', 'Email already exists');
+
+        if (error?.code === "INVALID_EMAIL_OR_PASSWORD") form.setErrors({email: 'Invalid email or password', password: 'Invalid email or password'});
         if (error?.status === 500) setServerError('Our database is having trouble. Please try again later');
+
+        setLoading(false);
+    }
+
+    async function handleGoogleSignIn() {
+        setLoading(true);
+        const { error } = await authClient.signIn.social({
+            provider: "google",
+            callbackURL: `${window.location.origin}/workouts`
+        });
+
+        if (error) setServerError(error.message || "Could not connect to Google");
         setLoading(false);
     }
 
     return (
         <>
             <Text size="lg" fw={500}>
-                Sign up for WorkoutLogger
+                Sign in to WorkoutLogger with
             </Text>
 
-            <Divider my="lg" />
+            <Group grow mb="md" mt="md">
+                <GoogleButton radius="xl" onClick={handleGoogleSignIn}>Google</GoogleButton>
+            </Group>
+
+            <Divider label="Or email" labelPosition="center" my="lg" />
 
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <Stack>
-                    <TextInput
-                        withAsterisk
-                        label="Name"
-                        placeholder="John"
-                        {...form.getInputProps('name')}
-                        radius="md"
-                    />
-
+                <Stack>             
                     <TextInput
                         withAsterisk
                         label="Email"
@@ -81,8 +92,8 @@ export default function SignUp() {
 
                 <Group justify="space-between" mt="xl">
                     <Stack align='flex-start' gap='xs'>
-                        <Anchor component={Link} to="/signin" c="dimmed" size="xs">
-                            Back to sign in
+                        <Anchor component={Link} to="/signup" c="dimmed" size="xs">
+                            Don't have an account? Sign up
                         </Anchor>
 
                         <Anchor component={Link} to="/forgot-password" size="xs">
@@ -91,7 +102,7 @@ export default function SignUp() {
                         
                     </Stack>
 
-                    <Button type="submit" radius="xl" loading={loading}>Sign up</Button>
+                    <Button type="submit" radius="xl" loading={loading}>Sign in</Button>
                 </Group>
 
             </form>

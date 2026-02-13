@@ -4,8 +4,8 @@ import { zod4Resolver } from "mantine-form-zod-resolver";
 import * as z from 'zod';
 import { useState } from "react";
 import { Link } from "react-router";
-import { authClient } from "./auth-client";
-import getErrorMessage from "./auth-errors";
+import { authClient } from "../../auth-client";
+import getErrorMessage from "../../auth-errors";
 
 const schema = z.object({
     password: z.string().min(6, "Password must be at least 6 characters"),
