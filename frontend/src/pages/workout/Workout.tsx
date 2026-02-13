@@ -2,7 +2,7 @@ import { Center, Box, Button, Loader, TextInput, Group, Stack } from "@mantine/c
 import { IconStopwatch } from '@tabler/icons-react';
 import type { ExerciseCardProps, WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, Link } from "react-router";
 import ExerciseCard from "./ExerciseCard";
 import AddExerciseButton from "./AddExerciseButton";
 import WorkoutNameInput from "./WorkoutNameInput";
@@ -69,7 +69,7 @@ export default function Workout(){
                     <AddExerciseButton workoutId={id!} />
                     <Group grow={true} >
                         <Button color="red" onClick={() => mutation.mutate(id!)}>Discard workout</Button>
-                        <Button color="green">Save workout</Button>
+                        <Button color="green" component={Link} to='/workouts' >Save workout</Button>
                     </Group>
                 </Stack>
                 <TextInput label='NOTES'></TextInput>
