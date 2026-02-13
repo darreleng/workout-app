@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button, TextInput, Modal, ScrollArea, Stack, Text, Badge, Loader, Divider } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { ExerciseNameSchema } from '../../../../shared/schemas';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { type WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
@@ -135,7 +135,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
 
                         <Stack gap={0}>
                             {filteredHistory.map((ex: exerciseHistory) => (
-                                <>
+                                <Fragment key={ex.name}>
                                     <Button
                                         variant='default'
                                         justify='left'
@@ -150,7 +150,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                                         </Stack>
                                     </Button>
                                     <Divider />
-                                </>
+                                </Fragment>
                             ))}
                         </Stack>
                         {search && filteredHistory.length === 0 && (
