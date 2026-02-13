@@ -28,6 +28,7 @@ export async function getWorkoutWithExercisesAndSets(req: Request, res: Response
         const { workoutId } = req.params;
         const userId = req.user!.id;
         const workout = await WorkoutModel.getWorkoutWithExercisesAndSets(userId, workoutId as string);
+        if (!workout) return res.status(404).json({ message: "Workout not found or unauthorised" });
         res.status(200).json(workout);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });

@@ -1,11 +1,15 @@
 import { ExerciseNameSchema } from "@shared/schemas";
 import * as ExerciseModel from "src/models/exerciseModel";
+import * as WorkoutModel from "src/models/workoutModel";
 import { Request, Response } from "express";
 
 export async function getExercises(req: Request, res: Response) {
     try {
         const { workoutId } = req.params;
         const userId = req.user!.id;
+        const workout = await WorkoutModel.getWorkoutWithExercisesAndSets(userId, workoutId as string);
+        if (!workout) return res.status(404).json({ message: "Workout not found or unauthorised" });
+
         const exercises = await ExerciseModel.getExercises(userId, workoutId as string);
         res.status(200).json(exercises);
     } catch (error) {

@@ -28,7 +28,9 @@ export async function getWorkout(userId: string, workoutId: string) {
 };
 
 export async function getWorkoutWithExercisesAndSets(userId: string, workoutId: string) {
+    // TODO: refactor 3 queries into 1 join mega query
     const workout = await getWorkout(userId, workoutId);
+    if (!workout) return null;
     const allExercises = await getExercises(userId, workoutId);
     const allSets = await getSets(userId, workoutId);
 

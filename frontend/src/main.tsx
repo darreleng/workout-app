@@ -9,7 +9,7 @@ import '@mantine/notifications/styles.css';
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications';
 import MainLayout from './MainLayout'
-import Home from './Home'
+import Home from './pages/home/Home'
 import ProtectedRoute from './ProtectedRoute'
 import Workouts from './pages/workouts/Workouts'
 import SignIn from './pages/auth/SignIn'
@@ -17,7 +17,7 @@ import SignUp from './pages/auth/SignUp'
 import AuthLayout from './pages/auth/AuthLayout'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
-import Profile from './Profile'
+import Profile from './pages/profile/Profile'
 import PublicRoute from './PublicRoute'
 import Workout from './pages/workout/Workout';
 

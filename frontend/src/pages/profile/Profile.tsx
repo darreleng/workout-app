@@ -1,5 +1,5 @@
 import { Avatar, Button, Group, Text } from '@mantine/core';
-import { authClient } from './auth-client';
+import { authClient } from '../../auth-client';
 
 export default function Profile() {
 
