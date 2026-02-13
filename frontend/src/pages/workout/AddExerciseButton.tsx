@@ -4,6 +4,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'react';
 import { ExerciseNameSchema } from '../../../../shared/schemas';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
+import { type WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 
 interface exerciseHistory {
     name: string,
@@ -49,12 +50,15 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         }
     });
 
+    const currentWorkout = queryClient.getQueryData<WorkoutWithExercisesAndSets>(['workouts', workoutId]);
+    const exerciseNames = currentWorkout!.exercises?.map(exercise => exercise.name);
+
     function handleAdd(e: React.FormEvent, name?: string) {
         e.preventDefault();
         const valueToValidate = name || search;
         const result = ExerciseNameSchema.safeParse(valueToValidate);
         if (!result.success) return setNameError(result.error.issues[0].message);
-        const isDuplicate = filteredHistory.some(exercise => exercise.name.toLowerCase() === valueToValidate.toLocaleLowerCase());
+        const isDuplicate = exerciseNames.some(name => name.toLowerCase() === valueToValidate.toLocaleLowerCase());
         if (isDuplicate) return alert('This exercise already exists in your workout'); // TODO: proper error notification
         mutation.mutate(result.data);
         close();
