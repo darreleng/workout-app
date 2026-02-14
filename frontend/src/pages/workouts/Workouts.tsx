@@ -70,40 +70,38 @@ export default function Workouts() {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <Center>
-            <Box p={24} bg={'#dee2e6'} miw={700}>
-                <Title order={1}>Workouts</Title>
-                <Button 
-                    leftSection={<IconPlus stroke={2} size={20}/>} 
-                    loading={mutation.isPending} 
-                    onClick={() => mutation.mutate()}
-                    fullWidth
-                >
-                    Start a new workout
-                </Button>
-                {/* TODO: adjust the height and sizes of cards */}
-                <ScrollArea viewportRef={containerRef} type="never" h={500}>
-                    {workouts.pages.map((page, i) => (
-                        <div key={i}>
-                            {page.itemsToReturn.map((workout: WorkoutProps) => (
-                                <WorkoutCard
-                                    key={workout.id}
-                                    {...workout}
-                                />
-                            ))}
-                        </div>
-                    ))}
-                    <div ref={ref} style={{ height: 20 }}>
-                        {isFetchingNextPage ? (
-                            <Center p="xs"><Loader size="sm" /></Center>
-                        ) : hasNextPage ? (
-                            <Text ta="center" size="sm" c="dimmed">Scroll for more</Text>
-                        ) : (
-                            <Text ta="center" size="sm" c="dimmed">Nothing more to load</Text>
-                        )}
+        <Box p={24} bg={'#dee2e6'} miw={700}>
+            <Title order={1}>Workouts</Title>
+            <Button 
+                leftSection={<IconPlus stroke={2} size={20}/>} 
+                loading={mutation.isPending} 
+                onClick={() => mutation.mutate()}
+                fullWidth
+            >
+                Start a new workout
+            </Button>
+            {/* TODO: adjust the height and sizes of cards */}
+            <ScrollArea viewportRef={containerRef} type="never" h={500}>
+                {workouts.pages.map((page, i) => (
+                    <div key={i}>
+                        {page.itemsToReturn.map((workout: WorkoutProps) => (
+                            <WorkoutCard
+                                key={workout.id}
+                                {...workout}
+                            />
+                        ))}
                     </div>
-                </ScrollArea>
-            </Box>
-        </Center>
+                ))}
+                <div ref={ref} style={{ height: 20 }}>
+                    {isFetchingNextPage ? (
+                        <Center p="xs"><Loader size="sm" /></Center>
+                    ) : hasNextPage ? (
+                        <Text ta="center" size="sm" c="dimmed">Scroll for more</Text>
+                    ) : (
+                        <Text ta="center" size="sm" c="dimmed">Nothing more to load</Text>
+                    )}
+                </div>
+            </ScrollArea>
+        </Box>
     )
 }
