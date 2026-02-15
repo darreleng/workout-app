@@ -1,5 +1,5 @@
 import { Outlet, useNavigate, useLocation } from "react-router"
-import { SegmentedControl, Text, UnstyledButton, Box, Center } from '@mantine/core';
+import { SegmentedControl, Text, Box, Center } from '@mantine/core';
 import { IconUser, IconBarbell, IconChartBar } from '@tabler/icons-react';
 import classes from './MainLayout.module.css';
 
@@ -43,11 +43,11 @@ export default function MainLayout() {
                             ) 
                         },
                         { 
-                            value: 'stats', 
+                            value: 'progress', 
                             label: (
                                 <Center style={{ gap: 10 }}>
                                     <IconChartBar size={16} />
-                                    <Text size="sm">Stats</Text>
+                                    <Text size="sm">Progress</Text>
                                 </Center>
                             ) 
                         },

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css';
+import '@mantine/charts/styles.css';
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications';
 import MainLayout from './MainLayout'
@@ -20,6 +21,7 @@ import ResetPassword from './pages/auth/ResetPassword'
 import Profile from './pages/profile/Profile'
 import PublicRoute from './PublicRoute'
 import Workout from './pages/workout/Workout';
+import Progress from './pages/progress/Progress'
 
 const queryClient = new QueryClient();
 
@@ -42,7 +44,7 @@ const router = createBrowserRouter([
       { Component: MainLayout, 
         children: [
           { path: "/workouts", Component: Workouts },
-          // { path: "/stats", Component: Stats },
+          { path: "/progress", Component: Progress },
           { path: "/profile", Component: Profile },
         ]
       },
