@@ -1,5 +1,5 @@
 import { LineChart } from '@mantine/charts';
-import { ScrollArea, Box, Paper, Title, Loader, Combobox, useCombobox, TextInput } from '@mantine/core';
+import { ScrollArea, Box, Paper, Title, Loader, Combobox, useCombobox, TextInput, Text, Center } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -13,6 +13,32 @@ interface Exercise {
         reps: number;
         weight: number;
     }[]
+}
+
+interface ChartTooltipProps {
+    label: React.ReactNode;
+    payload: readonly Record<string, any>[] | undefined;
+    chartType: 'volume' | 'weight';
+}
+
+function ChartTooltip({ label, payload, chartType }: ChartTooltipProps) {
+    if (!payload) return null;
+   
+    const dateDisplay = label ? new Date(label as string).toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+
+    return (
+        <Paper px="md" py="sm" withBorder shadow="md" radius="md">
+            <Text fw={500} mb={5}>
+                {dateDisplay}
+            </Text>
+            {payload.map((item: any) => (
+                <Text key={item.name} c={item.color} fz="sm">
+                    {/* {chartType === 'volume' ? `Total Volume: ${item.value} kg` : `Estimated 1RM: ${item.value} kg`} */}
+                    {chartType === 'volume' ? `Total Volume: ` : `Estimated 1RM: `} {item.value} kg
+                </Text>
+            ))}
+        </Paper>
+    );
 }
 
 export default function Progress(){
@@ -51,7 +77,7 @@ export default function Progress(){
 
         return {
             name: ex.name,
-            date: new Date(ex.created_at),
+            date: ex.created_at,
             oneRepMax: Math.round(topIntensity)
         };
     });
@@ -67,42 +93,78 @@ export default function Progress(){
         }
     })
 
-    console.log(exTotalVolume)
-
     return (    
         
-        <Paper withBorder p="md" radius="md" w={600}>
-            <Title order={4}>{search}</Title>
+        <Paper withBorder p="md" radius="md" w={1000}>
+            <Center>
+                <Title order={1}>{search}</Title>
+            </Center>
+
             <Title order={4} mb="lg">Total Volume Over Time</Title> 
         
-        <ScrollArea offsetScrollbars="x">
-            
-            {/* Adjust box size */}
-            <Box>
-            <LineChart
-                h={300}
-                data={exTotalVolume}
-                dataKey="date"
-                series={[
-                    { name: 'totalVolume', color: 'indigo.6' },
-                ]}
-                curveType="monotone"
-                tickLine="xy"
-                withXAxis
-                withYAxis
-                gridAxis="xy"
-                xAxisProps={{
-                    tickFormatter: (value) => {
-                        const date = new Date(value);
-                            return new Intl.DateTimeFormat('en-US', { 
-                            month: 'short', 
-                            day: 'numeric' 
-                        }).format(date);
-                    },
-                }}
-            />
-            </Box>
-        </ScrollArea>
+            <ScrollArea offsetScrollbars="x">
+                
+                {/* Adjust box size */}
+                <Box>
+                <LineChart
+                    h={300}
+                    data={exTotalVolume}
+                    dataKey="date"
+                    series={[
+                        { name: 'totalVolume', color: 'blue' },
+                    ]}
+                    curveType="monotone"
+                    tickLine="x"
+                    unit=' kg'
+                    gridAxis="xy"
+                    withXAxis={false}
+                    // xAxisProps={{ tick: false }}
+                    xAxisProps={{
+                        tickFormatter: (value) => 
+                            new Date(value).toLocaleDateString('en-GB', { 
+                                month: 'short', 
+                                day: 'numeric' 
+                            }),
+                    }}
+                    lineChartProps={{ syncId: 'chart' }}
+                    tooltipProps={{
+                        content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='volume'/>,
+                    }}
+                />
+                </Box>
+            </ScrollArea>
+
+            <Title order={4} mb="lg">Estimated 1RM Over Time</Title> 
+        
+            <ScrollArea offsetScrollbars="x">
+                
+                {/* Adjust box size */}
+                <Box>
+                <LineChart
+                    h={300}
+                    data={exOneRepMax}
+                    dataKey="date"
+                    series={[
+                        { name: 'oneRepMax', color: 'grape' },
+                    ]}
+                    curveType="monotone"
+                    tickLine="x"
+                    unit=' kg'
+                    gridAxis="xy"
+                    xAxisProps={{
+                        tickFormatter: (value) => 
+                            new Date(value).toLocaleDateString('en-GB', { 
+                                month: 'short', 
+                                day: 'numeric' 
+                            }),
+                    }}
+                    lineChartProps={{ syncId: 'chart' }}
+                    tooltipProps={{
+                        content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='weight' />,
+                    }}
+                />
+                </Box>
+            </ScrollArea>
         </Paper>
         
     );
