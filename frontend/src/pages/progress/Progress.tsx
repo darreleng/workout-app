@@ -1,5 +1,5 @@
 import { LineChart } from '@mantine/charts';
-import { ScrollArea, Box, Paper, Title, Loader, Combobox, useCombobox, TextInput, Text, Center, Select } from '@mantine/core';
+import { ScrollArea, Box, Paper, Title, Loader, TextInput, Text, Center, Select } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -41,11 +41,9 @@ function ChartTooltip({ label, payload, chartType }: ChartTooltipProps) {
 }
 
 export default function Progress(){
-    const combobox = useCombobox({
-        onDropdownClose: () => combobox.resetSelectedOption(),
-    });
     const [loading, setLoading] = useState(false);
     const [value, setValue] = useState('');
+
     const { 
         data: exercises,
         isPending,
@@ -113,8 +111,8 @@ export default function Progress(){
             <Title order={4} mb="lg">Total Volume Over Time</Title> 
         
             <ScrollArea offsetScrollbars="x">
-                
-                <Box>
+
+                <Box >
                 <LineChart
                     h={300}
                     data={exTotalVolume}
@@ -124,10 +122,13 @@ export default function Progress(){
                     ]}
                     curveType="monotone"
                     unit=' kg'
-                    gridAxis="xy"
+                    tickLine='none'
                     withXAxis={false}
+                    gridProps={{
+                        yAxisId: "left"
+                    }}
                     yAxisProps={{ domain: [Math.round(lowestVolume * .9), Math.round(highestVolume * 1.1)]}}
-                    xAxisProps={{ interval: 0 }}
+                    xAxisProps={{ interval: 0, tick: true }} // no use
                     lineChartProps={{ syncId: 'chart' }}
                     tooltipProps={{
                         content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='volume'/>,
@@ -145,14 +146,15 @@ export default function Progress(){
                     h={300}
                     data={exOneRepMax}
                     dataKey="date"
-                    fillOpacity={1}
                     series={[
                         { name: 'oneRepMax', color: 'grape' },
                     ]}
                     curveType="monotone"
-                    tickLine="x"
                     unit=' kg'
-                    gridAxis="xy"
+                    tickLine='none'
+                    gridProps={{
+                        yAxisId: "left"
+                    }}
                     yAxisProps={{ domain: [Math.round(lowestOneRepMax * .9), Math.round(highestOneRepMax * 1.1)]}}
                     xAxisProps={{
                         tickFormatter: (value) => 
