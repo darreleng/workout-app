@@ -41,12 +41,12 @@ function ChartTooltip({ label, payload, chartType }: ChartTooltipProps) {
 }
 
 export default function Progress(){
-    const [loading, setLoading] = useState(false);
     const [value, setValue] = useState('');
 
     const { 
         data: exercises,
         isPending,
+        isLoading,
         error
     } = useQuery<Exercise[]>({
         queryKey: ['exercises'],
@@ -62,6 +62,18 @@ export default function Progress(){
     if (error) return <div>Error: {error.message}</div>;
 
     const uniqueExerciseNames = [... new Set(exercises.map(ex => ex.name))];
+
+    // const exerciseHistory = Object.values(exercises.reduce((acc, { name }) => {
+    //     if (!acc[name]) {
+    //         acc[name] = { name, count: 0 };
+    //     }
+    //     acc[name].count++;
+    //     return acc;
+    // }, {} as Record<string, { name: string, count: number}>));
+
+    // const formattedExerciseHistory = exerciseHistory.map(ex => `${ex.name} (IN ${ex.count} WORKOUTS)`);
+    // console.log(formattedExerciseHistory)
+
     const selectedExercise = exercises.filter(ex => ex.name.toLowerCase() === value.toLowerCase()); 
 
     const exOneRepMax = selectedExercise.map(ex => {
@@ -93,7 +105,6 @@ export default function Progress(){
     const lowestVolume = exTotalVolume.reduce((min, cur) => Math.min(min, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
     const highestVolume = exTotalVolume.reduce((max, cur) => Math.max(max, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
    
-
     return (    
         
         <Paper withBorder p="md" radius="md" w={1000}>
@@ -101,7 +112,11 @@ export default function Progress(){
                     label="Select an exercise"
                     data={uniqueExerciseNames}
                     onChange={(value) => setValue(value || '')}
+                    nothingFoundMessage="Nothing found..."
+                    disabled={isLoading}
+                    rightSection={isLoading && <Loader size="xs" />}
                     searchable
+                    clearable
                 />
             <Center>
                 {/* TODO: fix layout shift when empty*/}

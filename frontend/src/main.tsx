@@ -23,7 +23,13 @@ import PublicRoute from './PublicRoute'
 import Workout from './pages/workout/Workout';
 import Progress from './pages/progress/Progress'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity
+    }
+  }
+});
 
 const router = createBrowserRouter([
   { Component: PublicRoute,
