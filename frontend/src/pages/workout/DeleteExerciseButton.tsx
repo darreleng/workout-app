@@ -1,4 +1,4 @@
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, Menu } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -26,8 +26,18 @@ export default function DeleteExerciseButton({ workoutId, exerciseId }: { workou
     })
 
     return (
-        <ActionIcon color="red" aria-label="Delete exercise" onClick={() => mutation.mutate({workoutId, exerciseId})}>
-            <IconTrash stroke={2} />
-        </ActionIcon>
+        <Menu shadow="md" width={150}>
+            <Menu.Target>
+                <ActionIcon color="red" aria-label="Delete exercise">
+                    <IconTrash stroke={2} />
+                </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+                <Menu.Item color="red" onClick={() => mutation.mutate({workoutId, exerciseId})}>
+                    Confirm deletion
+                </Menu.Item>
+            </Menu.Dropdown>
+        </Menu> 
+
     )
 }
