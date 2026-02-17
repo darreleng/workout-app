@@ -1,12 +1,13 @@
 import { TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { WorkoutNameSchema } from "../../../../shared/schemas";
 
 export default function WorkoutNameInput({ workoutName, id }: { workoutName: string, id: string}) {
     const [localName, setLocalName] = useState(workoutName);
     const [nameError, setNameError] = useState(false);
+    const queryClient = useQueryClient();
     
     const mutation = useMutation({
         mutationFn: async (updatedName: string) => {
@@ -19,6 +20,9 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['workouts'] });
         },
         // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
         onError: (error) => {

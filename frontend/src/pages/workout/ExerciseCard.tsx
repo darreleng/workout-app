@@ -4,10 +4,11 @@ import AddSetButton from "./AddSetButton";
 import SetCard from "./SetCard";
 import DeleteExerciseButton from "./DeleteExerciseButton";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 
 export default function ExerciseCard(props: ExerciseCardProps) {
+    const queryClient = useQueryClient();
     const [localName, setLocalName] = useState(props.name);
     const [error, setError] = useState(false);
 
@@ -22,6 +23,9 @@ export default function ExerciseCard(props: ExerciseCardProps) {
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['exerciseHistory'] });
         },
         // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
         onError: (error) => {
