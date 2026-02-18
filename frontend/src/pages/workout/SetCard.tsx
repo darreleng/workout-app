@@ -1,4 +1,4 @@
-import { Group, NumberInput, Menu } from "@mantine/core";
+import { Group, NumberInput, Menu, Stack, Text, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash, IconX } from "@tabler/icons-react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -82,15 +82,10 @@ export default function SetCard(props: SetCardProps) {
                     </Menu.Item>
                 </Menu.Dropdown>
             </Menu>
-            <NumberInput 
-                label='WEIGHT (KG)' 
-                hideControls={true} 
-                {...form.getInputProps('weight_kg')}
-                error={!!form.errors.weight_kg}
-                onBlur={() => {
-                    const validation = form.validateField('weight_kg');
-                    if (!validation.hasError) updateMutation.mutate({ updatedField: 'weight_kg', value: form.getValues().weight_kg })
-                }}
+            <TextInput 
+                label='PREVIOUS' 
+                readOnly 
+                value={`${props.reps} x ${Number(props.weight_kg)} kg`} 
             />
             <NumberInput 
                 label='REPS' 
@@ -104,14 +99,13 @@ export default function SetCard(props: SetCardProps) {
                 }}
             />
             <NumberInput 
-                label='REST (S)' 
+                label='WEIGHT (KG)' 
                 hideControls={true} 
-                allowDecimal={false}
-                {...form.getInputProps('rest_seconds')} 
-                error={!!form.errors.rest_seconds}
+                {...form.getInputProps('weight_kg')}
+                error={!!form.errors.weight_kg}
                 onBlur={() => {
-                    const validation = form.validateField('rest_seconds');
-                    if (!validation.hasError) updateMutation.mutate({ updatedField: 'rest_seconds', value: form.getValues().rest_seconds })
+                    const validation = form.validateField('weight_kg');
+                    if (!validation.hasError) updateMutation.mutate({ updatedField: 'weight_kg', value: form.getValues().weight_kg })
                 }}
             />
         </Group>

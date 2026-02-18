@@ -63,17 +63,6 @@ export default function Progress(){
 
     const uniqueExerciseNames = [... new Set(exercises.map(ex => ex.name))];
 
-    // const exerciseHistory = Object.values(exercises.reduce((acc, { name }) => {
-    //     if (!acc[name]) {
-    //         acc[name] = { name, count: 0 };
-    //     }
-    //     acc[name].count++;
-    //     return acc;
-    // }, {} as Record<string, { name: string, count: number}>));
-
-    // const formattedExerciseHistory = exerciseHistory.map(ex => `${ex.name} (IN ${ex.count} WORKOUTS)`);
-    // console.log(formattedExerciseHistory)
-
     const selectedExercise = exercises.filter(ex => ex.name.toLowerCase() === value.toLowerCase()); 
 
     const exOneRepMax = selectedExercise.map(ex => {

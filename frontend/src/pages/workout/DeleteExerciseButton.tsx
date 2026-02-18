@@ -34,7 +34,7 @@ export default function DeleteExerciseButton({ workoutId, exerciseId }: { workou
             </Menu.Target>
             <Menu.Dropdown>
                 <Menu.Item color="red" onClick={() => mutation.mutate({workoutId, exerciseId})}>
-                    Confirm deletion
+                    Delete exercise
                 </Menu.Item>
             </Menu.Dropdown>
         </Menu> 
