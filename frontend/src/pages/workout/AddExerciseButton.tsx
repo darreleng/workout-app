@@ -6,10 +6,16 @@ import { ExerciseNameSchema } from '../../../../shared/schemas';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { type WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 
-interface exerciseHistory {
-    name: string,
-    workout_count: number,
-    last_done_at: string
+interface Exercise {
+    id: string;
+    name: string;
+    created_at: string;
+    sets: {
+        id: string;
+        set_number: number;
+        reps: number;
+        weight: number;
+    }[]
 }
 
 export default function AddExerciseButton({ workoutId }: { workoutId: string }) {
@@ -23,15 +29,24 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         isPending,
         error
     } = useQuery({
-        queryKey: ['exerciseHistory'],
-        queryFn: async () => {
-            const res = await fetch(`http://localhost:3000/api/exercises/history`, {credentials: 'include'});
+        queryKey: ['exercises'],
+        queryFn: async (): Promise<Exercise[]> => {
+            const res = await fetch(`http://localhost:3000/api/exercises`, {credentials: 'include'});
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
         },
-    });
+        select: (exercises) => {
+            const counts = exercises.reduce((acc, { name }) => {
+                if (!acc[name]) acc[name] = { name, workoutCount: 0 };
+                acc[name].workoutCount++;
+                return acc;
+            }, {} as Record<string, { name: string, workoutCount: number }>);
 
+            return Object.values(counts);
+        }
+    });
+    
     const mutation = useMutation({
         mutationFn: async (exerciseName: string) => {
             const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}/exercises`, {
@@ -46,12 +61,18 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] });
-            queryClient.invalidateQueries({ queryKey: ['exerciseHistory'] });
+            queryClient.invalidateQueries({ queryKey: ['exercises'] });
         }
     });
 
+    if (isPending) return <div><Loader size='sm' /></div>; 
+    if (error) return <div>Error: {error.message}</div>;
+
     const currentWorkout = queryClient.getQueryData<WorkoutWithExercisesAndSets>(['workouts', workoutId]);
     const exerciseNames = currentWorkout!.exercises?.map(exercise => exercise.name);
+    const filteredHistory = history.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase())
+    );
 
     function handleAdd(e: React.FormEvent, name?: string) {
         e.preventDefault();
@@ -71,13 +92,6 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         setSearch('');
         setNameError('');
     };
-
-    if (isPending) return <div><Loader size='sm' /></div>; 
-    if (error) return <div>Error: {error.message}</div>;
-
-    const filteredHistory: exerciseHistory[] = history.filter((item: exerciseHistory) =>
-        item.name.toLowerCase().includes(search.toLowerCase())
-    );
 
     return (
         <>
@@ -132,9 +146,8 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                         scrollbarSize={6}
                         style={{ flex: 1 }}                      
                     >
-
                         <Stack gap={0}>
-                            {filteredHistory.map((ex: exerciseHistory) => (
+                            {filteredHistory.map((ex) => (
                                 <Fragment key={ex.name}>
                                     <Button
                                         variant='default'
@@ -146,7 +159,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                                     >
                                         <Stack align='flex-start' gap='0' py="xs">
                                             <Text size='xl' fw={700}>{ex.name}</Text>
-                                            <Text size='xs' c="dimmed">IN {ex.workout_count} WORKOUTS</Text>
+                                            <Text size='xs' c="dimmed">IN {ex.workoutCount} WORKOUTS</Text>
                                         </Stack>
                                     </Button>
                                     <Divider />
