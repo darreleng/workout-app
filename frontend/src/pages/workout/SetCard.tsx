@@ -74,6 +74,9 @@ export default function SetCard(props: SetCardProps) {
                         readOnly 
                         hideControls={true} 
                         value={props.set_number} 
+                        styles={{
+                            input: { cursor: 'pointer' }
+                        }}
                         />
                 </Menu.Target>
                 <Menu.Dropdown>
@@ -86,6 +89,9 @@ export default function SetCard(props: SetCardProps) {
                 label='PREVIOUS' 
                 readOnly 
                 value={`${props.reps} x ${Number(props.weight_kg)} kg`} 
+                styles={{
+                    input: { pointerEvents: 'none'}
+                }}
             />
             <NumberInput 
                 label='REPS' 
