@@ -14,7 +14,7 @@ export const ExerciseNameSchema = z.coerce.string().trim().min(1, "Exercise name
 
 export const UpdateSetSchema = z.object({
     weight_kg: z.coerce.number().max(9999.999).nonnegative(),
-    reps: z.coerce.number().nonnegative(),
+    reps: z.coerce.number().min(1),
     rest_seconds: z.coerce.number().nonnegative(),
 }).partial()
 
