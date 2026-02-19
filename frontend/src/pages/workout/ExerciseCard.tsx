@@ -1,4 +1,4 @@
-import { Group, Paper, Stack, TextInput } from "@mantine/core";
+import { Box, Group, Paper, Stack, TextInput, Text } from "@mantine/core";
 import { ExerciseNameSchema, type ExerciseCardProps } from "../../../../shared/schemas";
 import AddSetButton from "./AddSetButton";
 import SetCard from "./SetCard";
@@ -39,30 +39,44 @@ export default function ExerciseCard(props: ExerciseCardProps) {
     });
     
     return (
-        <Paper>
-            <Stack>
+        <Paper withBorder radius="md" shadow="sm">
+            <Box p="md" style={{ borderBottom: '1px solid var(--mantine-color-gray-2)' }} bg="var(--mantine-color-gray-0)">
                 <Group justify="space-between">
-                    <TextInput 
-                        aria-label="Exercise name"
-                        value={localName} 
-                        error={error}
-                        onChange={(e) => setLocalName(e.currentTarget.value)}
-                        onBlur={(e) => {
-                            const val = e.currentTarget.value;
-                            const result = ExerciseNameSchema.safeParse(val);
-                            if (!result.success) return setError(true);
-                            setError(false);
-                            mutation.mutate(val);
-                        }}
-                    />
-                    <DeleteExerciseButton workoutId={props.workout_id} exerciseId={props.id} />
+                <TextInput 
+                    variant="unstyled"
+                    styles={{ input: { fontWeight: 600, fontSize: '1.1rem' }}}
+                    value={localName}
+                    onChange={(e) => setLocalName(e.currentTarget.value)}
+                    onBlur={(e) => {
+                        const val = e.currentTarget.value;
+                        const result = ExerciseNameSchema.safeParse(val);
+                        if (!result.success) return setError(true);
+                        setError(false);
+                        mutation.mutate(val);
+                    }}
+                />
+                <DeleteExerciseButton workoutId={props.workout_id} exerciseId={props.id} />
+                </Group>
+            </Box>
+
+            <Stack p="md" gap="xs">
+                <Group gap="xs" mb={4} px={4} wrap="nowrap">
+                    <Text size="xs" fw={700} c="dimmed" style={{ flex: '0 0 45px', textAlign: 'center' }}>SET</Text>
+                    <Text size="xs" fw={700} c="dimmed" style={{ flex: 1, textAlign: 'center' }}>PREVIOUS</Text>
+                    <Text size="xs" fw={700} c="dimmed" style={{ flex: 1, textAlign: 'center' }}>REPS</Text>
+                    <Text size="xs" fw={700} c="dimmed" style={{ flex: 1, textAlign: 'center' }}>KG</Text>
                 </Group>
                 {props.sets.map(set => (
                     <SetCard key={set.id} {...set} exercise_id={props.id} workout_id={props.workout_id} />
                 ))}
+                
+                <Box mt="sm">
+                    <AddSetButton exercise_id={props.id} workout_id={props.workout_id} />
+                </Box>
             </Stack>
-            <AddSetButton exercise_id={props.id} workout_id={props.workout_id}/>
         </Paper>
 
     )
 }
+
+

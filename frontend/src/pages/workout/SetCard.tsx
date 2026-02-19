@@ -1,4 +1,4 @@
-import { Group, NumberInput, Menu, TextInput } from "@mantine/core";
+import { Group, NumberInput, Menu, TextInput, Box } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash, IconX } from "@tabler/icons-react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -31,6 +31,9 @@ export default function SetCard(props: SetCardProps) {
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['workouts', props.workout_id], exact: true });
         },
         // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
         onError: (error) => {
@@ -66,55 +69,65 @@ export default function SetCard(props: SetCardProps) {
     });
 
     return(
-        <Group key={props.id}>
+        <Group gap="xs" wrap="nowrap" align="flex-start">
             <Menu shadow="md">
                 <Menu.Target>
-                    <NumberInput 
-                        label='SET' 
+                    <Box style={{ flex: '0 0 45px' }}>
+                        <NumberInput 
                         readOnly 
-                        hideControls={true} 
+                        hideControls 
                         value={props.set_number} 
-                        styles={{
-                            input: { cursor: 'pointer' }
-                        }}
+                        variant="filled"
+                        styles={{ input: { cursor: 'pointer', textAlign: 'center', fontWeight: 700 } }}
                         />
+                    </Box>
                 </Menu.Target>
                 <Menu.Dropdown>
                     <Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={() => deleteMutation.mutate(props.id)}>
-                        Delete workout
+                        Delete Set
                     </Menu.Item>
                 </Menu.Dropdown>
             </Menu>
-            <TextInput 
-                label='PREVIOUS' 
-                readOnly 
-                value={`${props.reps} x ${Number(props.weight_kg)} kg`} 
-                styles={{
-                    input: { pointerEvents: 'none'}
-                }}
-            />
-            <NumberInput 
-                label='REPS' 
-                hideControls={true} 
-                allowDecimal={false} 
-                {...form.getInputProps('reps')}
-                error={!!form.errors.reps}
-                onBlur={() => {
-                    const validation = form.validateField('reps');
-                    if (!validation.hasError) updateMutation.mutate({ updatedField: 'reps', value: form.getValues().reps })
-                }}
-            />
-            <NumberInput 
-                label='WEIGHT (KG)' 
-                hideControls={true} 
-                {...form.getInputProps('weight_kg')}
-                error={!!form.errors.weight_kg}
-                onBlur={() => {
-                    const validation = form.validateField('weight_kg');
-                    if (!validation.hasError) updateMutation.mutate({ updatedField: 'weight_kg', value: form.getValues().weight_kg })
-                }}
-            />
+
+        {/* PREVIOUS */}
+        <TextInput 
+            readOnly 
+            value={props.reps ? `${props.reps} x ${Number(props.weight_kg)} kg`: '-'}
+            placeholder="--"
+            variant="unstyled"
+            style={{ flex: 1 }}
+            styles={{ input: { pointerEvents: 'none', color: 'var(--mantine-color-dimmed)', textAlign: 'center', fontSize: 'var(--mantine-font-size-xs)' } }}
+        />
+
+        {/* REPS */}
+        <NumberInput 
+            hideControls 
+            allowDecimal={false} 
+            placeholder="0"
+            {...form.getInputProps('reps')}
+            error={!!form.errors.reps}
+            style={{ flex: 1 }}
+            styles={{ input: { textAlign: 'center' } }}
+            onBlur={() => {
+                const validation = form.validateField('reps');
+                if (!validation.hasError) updateMutation.mutate({ updatedField: 'reps', value: form.getValues().reps })
+            }}
+        />
+
+        {/* WEIGHT */}
+        <NumberInput 
+            hideControls 
+            placeholder="0"
+            {...form.getInputProps('weight_kg')}
+            error={!!form.errors.weight_kg}
+            style={{ flex: 1 }}
+            styles={{ input: { textAlign: 'center' } }}
+            onBlur={() => {
+                const validation = form.validateField('weight_kg');
+                if (!validation.hasError) updateMutation.mutate({ updatedField: 'weight_kg', value: form.getValues().weight_kg })
+            }}
+        />
         </Group>
     )
-
 }
+

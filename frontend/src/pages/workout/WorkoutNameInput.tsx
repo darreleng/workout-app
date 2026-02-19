@@ -22,7 +22,7 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts'] });
+            queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
         },
         // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
         onError: (error) => {
@@ -38,6 +38,14 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
     return (
         <TextInput 
             variant="unstyled"
+            styles={{
+                input: { 
+                fontSize: 'var(--mantine-font-size-xl)', 
+                fontWeight: 700,
+                padding: 0,
+                height: 'auto'
+                }
+            }}
             aria-label="Workout name"
             value={localName} 
             error={nameError}
@@ -49,6 +57,7 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
                 setNameError(false);
                 mutation.mutate(val);
             }}
+
         />
     )
 }

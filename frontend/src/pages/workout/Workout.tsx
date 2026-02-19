@@ -1,4 +1,4 @@
-import { Center, Box, Button, Loader, TextInput, Group, Stack } from "@mantine/core";
+import { Text, Box, Button, Loader, TextInput, Group, Stack, Container, Paper, Divider } from "@mantine/core";
 import { IconStopwatch } from '@tabler/icons-react';
 import type { ExerciseCardProps, WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -34,7 +34,7 @@ export default function Workout(){
             return data;
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true, refetchType: 'all' });
+            await queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
             navigate(`/workouts`, { replace: true });
         },
         // TODO: Think of error notifcation
@@ -53,28 +53,49 @@ export default function Workout(){
     }
 
     return (
-        <Center>
-            <Box p={24} bg={'#dee2e6'} miw={700}>
-                <Group justify="space-between">
+        <Box bg="var(--mantine-color-gray-0)" mih="100vh" pb={100}>
+            <Container size="sm" py="md">
+                <Stack gap="lg">
+                
+                {/* Header Area */}
+                <Paper p="md" radius="md" withBorder shadow="xs">
+                    <Group justify="space-between" align="center">
                     <WorkoutNameInput workoutName={workout.name} id={workout.id} />
-                    <IconStopwatch stroke={2} />
-                </Group>
-
-            {workout.exercises.map((exercise: ExerciseCardProps) => (
-                <ExerciseCard key={exercise.id} {...exercise} />
-            )
-            
-            )} 
-                <Stack>
-                    <AddExerciseButton workoutId={id!} />
-                    <Group grow={true} >
-                        <Button color="red" onClick={() => mutation.mutate(id!)}>Discard workout</Button>
-                        <Button color="green" component={Link} to='/workouts' >Save workout</Button>
+                    <Group gap="xs" c="blue.6">
+                        <IconStopwatch size={20} />
+                        <Text fw={700}>45:02</Text> {/* TODO: Fix */}
                     </Group>
-                </Stack>
-                <TextInput label='NOTES'></TextInput>
-            </Box>
+                    </Group>
+                </Paper>
 
-        </Center>
+                <Stack gap="md">
+                    {workout.exercises.map((exercise) => (
+                    <ExerciseCard key={exercise.id} {...exercise} />
+                    ))}
+                </Stack>
+
+                <Paper p="md" radius="md" withBorder>
+                    <Stack gap="md">
+                    <AddExerciseButton workoutId={id!} />
+                    <TextInput 
+                        label="Workout Notes" 
+                        placeholder="How did it feel?" 
+                        variant="filled"
+                    />
+                    <Divider my="sm" label="Finish Session" labelPosition="center" />
+                    <Group grow>
+                        <Button variant="light" color="red" onClick={() => mutation.mutate(id!)}>
+                        Discard
+                        </Button>
+                        <Button color="green" component={Link} to='/workouts' size="md">
+                        Save Workout
+                        </Button>
+                    </Group>
+                    </Stack>
+                </Paper>
+                
+                </Stack>
+            </Container>
+        </Box>
     )
 }

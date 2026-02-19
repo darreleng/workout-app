@@ -60,7 +60,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] });
+            queryClient.invalidateQueries({ queryKey: ['workouts', workoutId], exact: true });
             queryClient.invalidateQueries({ queryKey: ['exercises'] });
         }
     });
