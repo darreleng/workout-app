@@ -1,4 +1,4 @@
-import { Group, NumberInput, Menu, Stack, Text, TextInput } from "@mantine/core";
+import { Group, NumberInput, Menu, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash, IconX } from "@tabler/icons-react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";

@@ -1,4 +1,4 @@
-import { Box, Button, Center, Title, ScrollArea, Text, Loader } from "@mantine/core";
+import { Box, Button, Center, Title, ScrollArea, Text, Loader, Container, Stack, Group } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useIntersection } from "@mantine/hooks";
 import { useEffect, useRef } from "react";
@@ -70,38 +70,52 @@ export default function Workouts() {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <Box p={24} bg={'#dee2e6'} miw={700}>
-            <Title order={1}>Workouts</Title>
-            <Button 
-                leftSection={<IconPlus stroke={2} size={20}/>} 
-                loading={mutation.isPending} 
-                onClick={() => mutation.mutate()}
-                fullWidth
-            >
-                Start a new workout
-            </Button>
-            {/* TODO: adjust the height and sizes of cards */}
-            <ScrollArea viewportRef={containerRef} type="never" h={500}>
-                {workouts.pages.map((page, i) => (
-                    <div key={i}>
-                        {page.itemsToReturn.map((workout: WorkoutProps) => (
-                            <WorkoutCard
-                                key={workout.id}
-                                {...workout}
-                            />
+        <Box bg="var(--mantine-color-gray-0)" mih="100vh">
+            <Container size="sm" py="xl">
+                <Stack gap="md" mb="xl">
+                    <Group justify="space-between" align="flex-end">
+                        <Title order={1} fw={900} lts="-0.5px">Workouts</Title>
+                        
+                        <Button 
+                            leftSection={<IconPlus stroke={2} size={20}/>} 
+                            loading={mutation.isPending} 
+                            onClick={() => mutation.mutate()}
+                            radius="md"
+                            size="md"
+                            variant="filled"
+                        >
+                            New Workout
+                        </Button>
+                    </Group>
+                </Stack>
+
+                <ScrollArea 
+                    viewportRef={containerRef} 
+                    type="hover" 
+                    h="calc(100vh - 250px)"
+                    offsetScrollbars
+                >
+                    <Stack gap="lg">
+                        {workouts.pages.map((page, i) => (
+                        <Stack key={i} gap="lg">
+                            {page.itemsToReturn.map((workout: WorkoutProps) => (
+                            <WorkoutCard key={workout.id} {...workout} />
+                            ))}
+                        </Stack>
                         ))}
-                    </div>
-                ))}
-                <div ref={ref} style={{ height: 20 }}>
-                    {isFetchingNextPage ? (
-                        <Center p="xs"><Loader size="sm" /></Center>
-                    ) : hasNextPage ? (
-                        <Text ta="center" size="sm" c="dimmed">Scroll for more</Text>
-                    ) : (
-                        <Text ta="center" size="sm" c="dimmed">Nothing more to load</Text>
-                    )}
-                </div>
-            </ScrollArea>
+                        
+                        <Box ref={ref} py="xl">
+                            {isFetchingNextPage ? (
+                                <Center><Loader size="sm" variant="dots" /></Center>
+                            ) : (
+                                <Text ta="center" size="xs" c="dimmed" tt="uppercase" lts="1px">
+                                {hasNextPage ? 'Loading more...' : 'End of your journey'}
+                                </Text>
+                            )}
+                        </Box>
+                    </Stack>
+                </ScrollArea>
+            </Container>
         </Box>
     )
 }
