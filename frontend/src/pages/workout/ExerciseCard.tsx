@@ -118,9 +118,7 @@ export default function ExerciseCard(props: ExerciseCardProps) {
                 {props.sets.map(set => (
                     <SetCard key={set.id} {...set} exercise_id={props.id} workout_id={props.workout_id} 
                         updateSetField={(updatedField, value) => updateSetField.mutate({ updatedField, value, setId: set.id})}
-                        deleteSet={() => {
-                            console.log("Parent: onDelete triggered for ID", set.id)
-                            deleteSet.mutate(set.id)}} 
+                        deleteSet={() => deleteSet.mutate(set.id)}
                     />
                 ))}
                 

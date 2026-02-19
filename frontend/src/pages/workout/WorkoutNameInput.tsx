@@ -22,7 +22,7 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
+            queryClient.invalidateQueries({ queryKey: ['workouts'] });
         },
         // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
         onError: (error) => {
