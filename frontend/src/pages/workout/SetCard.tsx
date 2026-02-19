@@ -1,7 +1,5 @@
 import { Group, NumberInput, Menu, TextInput, Box } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { IconTrash, IconX } from "@tabler/icons-react";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { IconTrash } from "@tabler/icons-react";
 import { UpdateSetSchema, type SetCardProps } from "../../../../shared/schemas";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
@@ -18,56 +16,6 @@ export default function SetCard(props: SetCardProps) {
         validateInputOnBlur: true
     })
 
-    const queryClient = useQueryClient();
-
-    const updateMutation = useMutation({
-        mutationFn: async ({ updatedField, value }: { updatedField: string; value: number })=> {
-            const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.exercise_id}/sets/${props.id}`, {
-                method: 'PATCH',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json'},
-                body: JSON.stringify({ [updatedField]: value })
-            });
-            const data = await res.json();
-            if (!res.ok) throw data;
-            return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts', props.workout_id], exact: true });
-        },
-        // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
-        onError: (error) => {
-            notifications.show({
-                title: 'Failed to modify set',
-                message: error.message,
-                color: 'red',
-                autoClose: 2000,
-                icon: <IconX stroke={2} size={20} />,            
-            });
-        }
-    });
-    
-    const deleteMutation = useMutation({
-        mutationFn: async (setId: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.exercise_id}/sets/${setId}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            });
-            if (!res.ok) throw new Error('Failed to delete set');
-            return res.json();
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts', props.workout_id] });
-        },
-        onError: (error) => {
-            notifications.show({ 
-                title: 'Error', 
-                message: error.message, 
-                color: 'red' 
-            });
-        }
-    });
-
     return(
         <Group gap="xs" wrap="nowrap" align="flex-start">
             <Menu shadow="md">
@@ -83,7 +31,7 @@ export default function SetCard(props: SetCardProps) {
                     </Box>
                 </Menu.Target>
                 <Menu.Dropdown>
-                    <Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={() => deleteMutation.mutate(props.id)}>
+                    <Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={() => props.deleteSet()}>
                         Delete Set
                     </Menu.Item>
                 </Menu.Dropdown>
@@ -110,7 +58,7 @@ export default function SetCard(props: SetCardProps) {
             styles={{ input: { textAlign: 'center' } }}
             onBlur={() => {
                 const validation = form.validateField('reps');
-                if (!validation.hasError) updateMutation.mutate({ updatedField: 'reps', value: form.getValues().reps })
+                if (!validation.hasError) props.updateSetField('reps', form.getValues().reps)
             }}
         />
 
@@ -124,7 +72,7 @@ export default function SetCard(props: SetCardProps) {
             styles={{ input: { textAlign: 'center' } }}
             onBlur={() => {
                 const validation = form.validateField('weight_kg');
-                if (!validation.hasError) updateMutation.mutate({ updatedField: 'weight_kg', value: form.getValues().weight_kg })
+                if (!validation.hasError) props.updateSetField('weight_kg', form.getValues().weight_kg)
             }}
         />
         </Group>

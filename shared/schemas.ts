@@ -40,6 +40,8 @@ export type ExerciseCardProps = {
 
 export type SetCardProps = ExerciseCardProps['sets'][0] & {
     workout_id: string;
+    updateSetField: (updatedField: string, value: number) => void;
+    deleteSet: () => void;
 };
 
 export type WorkoutWithExercisesAndSets = {
