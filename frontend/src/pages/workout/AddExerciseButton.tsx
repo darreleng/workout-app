@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, TextInput, Modal, ScrollArea, Stack, Text, Loader, Divider } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { Fragment, useState } from 'react';
+import { Button, TextInput, Modal, ScrollArea, Stack, Text, Loader, Box, Center, NavLink } from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useState } from 'react';
 import { ExerciseNameSchema } from '../../../../shared/schemas';
-import { IconPlus, IconSearch } from '@tabler/icons-react';
+import { IconChevronRight, IconPlus, IconSearch } from '@tabler/icons-react';
 import type { WorkoutWithExercisesAndSets, Exercise } from "../../../../shared/schemas";
 
 export default function AddExerciseButton({ workoutId }: { workoutId: string }) {
@@ -11,6 +11,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
     const [opened, { open, close }] = useDisclosure(false);
     const queryClient = useQueryClient();
     const [search, setSearch] = useState('');
+    const isMobile = useMediaQuery('(max-width: 40em)');
 
     const { 
         data: history,
@@ -48,16 +49,22 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts', workoutId], exact: true });
+            close();
+            setNameError('');
+            setSearch('');
+            queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] });
             queryClient.invalidateQueries({ queryKey: ['exercises'] });
         }
+    });
+
+    const { data: currentWorkout } = useQuery<WorkoutWithExercisesAndSets>({
+        queryKey: ['workouts', workoutId],
     });
 
     if (isPending) return <div><Loader size='sm' /></div>; 
     if (error) return <div>Error: {error.message}</div>;
 
-    const currentWorkout = queryClient.getQueryData<WorkoutWithExercisesAndSets>(['workouts', workoutId]);
-    const exerciseNames = currentWorkout!.exercises?.map(exercise => exercise.name);
+    const exerciseNames = currentWorkout?.exercises?.map(exercise => exercise.name);
     const filteredHistory = history.filter((item) =>
         item.name.toLowerCase().includes(search.toLowerCase())
     );
@@ -67,12 +74,9 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         const valueToValidate = name || search;
         const result = ExerciseNameSchema.safeParse(valueToValidate);
         if (!result.success) return setNameError(result.error.issues[0].message);
-        const isDuplicate = exerciseNames.some(name => name.toLowerCase() === valueToValidate.toLocaleLowerCase());
+        const isDuplicate = exerciseNames?.some(name => name.toLowerCase() === valueToValidate.toLocaleLowerCase());
         if (isDuplicate) return alert('This exercise already exists in your workout'); // TODO: proper error notification
         mutation.mutate(result.data);
-        close();
-        setNameError('');
-        setSearch('');
     };
 
     function handleClose() {
@@ -86,86 +90,78 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
             <Modal 
                 opened={opened} 
                 onClose={handleClose} 
-                title="Add Exercise" 
+                title={<Text fw={700}>Add Exercise</Text>} 
+                yOffset={isMobile ? 0 : '5dvh'}
+                fullScreen={isMobile}
                 size="md"
-                yOffset={0}
+                padding="0"
+                radius="md"
                 styles={{
-                    content: {
-                        height: '100dvh',
-                        display: 'flex',
-                        flexDirection: 'column',
-                    },
-                    body: {
-                        flex: 1,
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        overflowY: 'hidden',
-                        paddingInline: 0,
-                        paddingBottom: 0,
-                    },
+                    content: { height: '100dvh', display: 'flex', flexDirection: 'column' },
+                    body: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' },
+                    header: { padding: '1rem 1rem 0 1rem', minHeight: 'auto'}
                 }}
             >
-                <form 
-                    onSubmit={(e) => handleAdd(e)}
-                    style={{
-                        flex: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        overflowY: 'hidden' 
-                    }}
-                >
-                    <TextInput
-                        placeholder="Search or type new exercise..."
-                        leftSection={<IconSearch stroke={2} />}
-                        value={search}
-                        error={!!nameError}
-                        onChange={(e) => setSearch(e.currentTarget.value)}
-                        mb="md"
-                        px='md'
-                        data-autofocus
-                    />
-                    <Text size="xs" fw={700} c="dimmed" px='md'>
-                        {search ? 'Search Results' : 'Past Exercises'}
+                <form onSubmit={(e) => handleAdd(e)} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    
+                    <Box p="md" pb="xs">
+                        <TextInput
+                            placeholder="Search exercises..."
+                            leftSection={<IconSearch size={18} stroke={1.5} />}
+                            value={search}
+                            onChange={(e) => setSearch(e.currentTarget.value)}
+                            variant="filled"
+                            size="md"
+                            radius="md"
+                            data-autofocus
+                        />
+                    </Box>
+
+                    <Text size="xs" fw={700} c="dimmed" px="md" mb="xs" tt="uppercase" lts="0.5px">
+                        {search ? 'Search Results' : 'Recent Exercises'}
                     </Text>
                     
-                    <ScrollArea
-                        type="always"
-                        scrollbars="y"
-                        scrollbarSize={6}
-                        style={{ flex: 1 }}                      
-                    >
+                    <ScrollArea style={{ flex: 1 }} scrollbars="y">
                         <Stack gap={0}>
                             {filteredHistory.map((ex) => (
-                                <Fragment key={ex.name}>
-                                    <Button
-                                        variant='default'
-                                        justify='left'
-                                        bd='none'
-                                        fullWidth
-                                        h={'fit-content'}
-                                        onClick={(e) => handleAdd(e, ex.name)}
-                                    >
-                                        <Stack align='flex-start' gap='0' py="xs">
-                                            <Text size='xl' fw={700}>{ex.name}</Text>
-                                            <Text size='xs' c="dimmed">IN {ex.workoutCount} WORKOUTS</Text>
-                                        </Stack>
-                                    </Button>
-                                    <Divider />
-                                </Fragment>
+                                <NavLink
+                                    key={ex.name}
+                                    p='md'
+                                    styles={{
+                                        root: { border: 0, borderBottom: '1px solid var(--mantine-color-gray-2)' }
+                                    }}
+                                    component='button'
+                                    onClick={(e) => handleAdd(e, ex.name)}
+                                    label={<Text fw={600} size="md" ta="left">{ex.name}</Text>}
+                                    description={<Text size="xs" c="dimmed" ta="left">Used in {ex.workoutCount} workouts</Text>}
+                                    rightSection={<IconChevronRight size={16} />}
+                                />
                             ))}
                         </Stack>
+
                         {search && filteredHistory.length === 0 && (
-                            <Text mt="xl" c="dimmed">No exercise with this name</Text>
+                            <Center py="xl" px="md">
+                                <Stack align="center" gap="xs">
+                                    <Text c="dimmed" size="sm">No results for "{search}"</Text>
+                                        <Button variant="light" size="xs" onClick={(e) => handleAdd(e)}>
+                                        Add "{search}"
+                                        </Button>
+                                </Stack>
+                            </Center>
                         )}
                     </ScrollArea>
 
-                    <Button 
-                        mih='3rem'
-                        m='md'
-                        onClick={(e) => handleAdd(e)}
-                    >
-                        Add
-                    </Button>
+                    <Box p="md" bg="var(--mantine-color-gray-0)" style={{ borderTop: '1px solid var(--mantine-color-gray-2)' }}>
+                        <Button 
+                            fullWidth 
+                            size="md" 
+                            radius="md"
+                            onClick={(e) => handleAdd(e)}
+                            disabled={!search}
+                        >
+                            {search ? `Add "${search}"` : 'Select an exercise'}
+                        </Button>
+                    </Box>
                 </form>
             </Modal>
 
