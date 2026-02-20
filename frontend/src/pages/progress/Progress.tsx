@@ -1,8 +1,9 @@
 import { LineChart } from '@mantine/charts';
-import { ScrollArea, Box, Paper, Title, Loader, TextInput, Text, Center, Select } from '@mantine/core';
+import { Box, Paper, Title, Loader, Text, Select, Tooltip, ActionIcon, Group, Container, Divider, Stack } from '@mantine/core';
 import { type Exercise } from "../../../../shared/schemas";
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { IconInfoCircle, IconSearch } from '@tabler/icons-react';
 
 interface ChartTooltipProps {
     label: React.ReactNode;
@@ -12,19 +13,42 @@ interface ChartTooltipProps {
 
 function ChartTooltip({ label, payload, chartType }: ChartTooltipProps) {
     if (!payload) return null;
-   
     const dateDisplay = label ? new Date(label as string).toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
     return (
-        <Paper px="md" py="sm" withBorder shadow="md" radius="md">
-            <Text fw={500} mb={5}>
+        <Paper px="md" py="xs" withBorder shadow="xl" radius="md" style={{ pointerEvents: 'none' }}>
+            <Stack gap={2}>
+                <Text size="xs" c="dimmed" fw={700} tt="uppercase" lts="0.5px">
                 {dateDisplay}
-            </Text>
-            {payload.map((item: any) => (
-                <Text key={item.name} c={item.color} fz="sm">
-                    {chartType === 'volume' ? `Total Volume: ` : `Estimated 1RM: `} {item.value} kg
                 </Text>
-            ))}
+
+                {payload.map((item: any) => (
+                    <Group key={item.name} gap="xs" wrap="nowrap" mt={4}>
+                        <Box 
+                        w={10} 
+                        h={10} 
+                        style={{ 
+                            borderRadius: '50%', 
+                            backgroundColor: item.color || 'blue' 
+                        }} 
+                        />
+                        
+                        <Stack gap={0}>
+                            <Text size="xs" fw={500} c="dimmed" style={{ lineHeight: 1 }}>
+                                {chartType === 'volume' ? 'Total Volume' : 'Est. 1RM'}
+                            </Text>
+                            <Group gap={4} align="baseline">
+                                <Text fz="lg" fw={800} style={{ lineHeight: 1.2 }}>
+                                {item.value?.toLocaleString()}
+                                </Text>
+                                <Text fz="xs" fw={700} c="dimmed">
+                                KG
+                                </Text>
+                            </Group>
+                        </Stack>
+                    </Group>
+                ))}
+            </Stack>
         </Paper>
     );
 }
@@ -84,87 +108,107 @@ export default function Progress(){
     const highestVolume = exTotalVolume.reduce((max, cur) => Math.max(max, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
    
     return (    
-        
-        <Paper withBorder p="md" radius="md" w={1000}>
-                <Select
-                    label="Select an exercise"
-                    data={uniqueExerciseNames}
-                    onChange={(value) => setValue(value || '')}
-                    nothingFoundMessage="Nothing found..."
-                    disabled={isLoading}
-                    rightSection={isLoading && <Loader size="xs" />}
-                    searchable
-                    clearable
-                />
-            <Center>
-                {/* TODO: fix layout shift when empty*/}
-                <Title order={1}>{value}</Title> 
-            </Center>
+        <Container size="md" py="xl">
+            <Paper withBorder p={{ base: 'sm', sm: 'xl' }} radius="md" shadow="sm">
+                <Stack gap="xl">
+                    <Group justify="space-between" align="flex-start">
+                        <Title order={1} fw={900} lts="-0.5px">Progress</Title>
+                        
+                        <Select
+                            placeholder="Search exercise..."
+                            data={uniqueExerciseNames}
+                            value={value}
+                            onChange={(val) => setValue(val || '')}
+                            disabled={isLoading}
+                            rightSection={isLoading ? <Loader size="xs" /> : <IconSearch size={16} />}
+                            searchable
+                            clearable
+                            w={{ base: '100%', sm: 250 }}
+                        />
+                    </Group>
 
-            <Title order={4} mb="lg">Total Volume Over Time</Title> 
-        
-            <ScrollArea offsetScrollbars="x">
+                    <Divider />
 
-                <Box >
-                <LineChart
-                    h={300}
-                    data={exTotalVolume}
-                    dataKey="date"
-                    series={[
-                        { name: 'totalVolume', color: 'blue' },
-                    ]}
-                    curveType="monotone"
-                    unit=' kg'
-                    tickLine='none'
-                    withXAxis={false}
-                    gridProps={{
-                        yAxisId: "left"
-                    }}
-                    yAxisProps={{ domain: [Math.round(lowestVolume * .9), Math.round(highestVolume * 1.1)]}}
-                    xAxisProps={{ interval: 0, tick: true }} // no use
-                    lineChartProps={{ syncId: 'chart' }}
-                    tooltipProps={{
-                        content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='volume'/>,
-                    }}
-                />
-                </Box>
-            </ScrollArea>
+                    <Box h={40} display="flex" style={{ alignItems: 'center', justifyContent: 'center' }}>
+                        {value ? (
+                            <Title order={2} c="blue.7" ta="center">{value}</Title>
+                            ) : (
+                            <Text c="dimmed" fs="italic">Select an exercise to view charts</Text>
+                        )}
+                    </Box>
 
-            <Title order={4} mb="lg">Estimated 1RM Over Time</Title> 
-        
-            <ScrollArea w={'clamp(90vw, 600, 1200)'} offsetScrollbars="x">
-                
-                {/* <Box w={400} style={{overflowX: 'auto'}}> */}
-                <LineChart
-                    h={300}
-                    data={exOneRepMax}
-                    dataKey="date"
-                    series={[
-                        { name: 'oneRepMax', color: 'grape' },
-                    ]}
-                    curveType="monotone"
-                    unit=' kg'
-                    tickLine='none'
-                    gridProps={{
-                        yAxisId: "left"
-                    }}
-                    yAxisProps={{ domain: [Math.round(lowestOneRepMax * .9), Math.round(highestOneRepMax * 1.1)]}}
-                    xAxisProps={{
-                        tickFormatter: (value) => 
-                            new Date(value).toLocaleDateString('en-GB', { 
-                                month: 'short', 
-                                day: 'numeric' 
-                            }),
-                    }}
-                    lineChartProps={{ syncId: 'chart' }}
-                    tooltipProps={{
-                        content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='weight' />,
-                    }}
-                />
-                {/* </Box> */}
-            </ScrollArea>
-            <Text fz={'sm'}>*Estimated 1RM is calculated using your top set (the set with the most volume under 13 sets) and the Brzycki formula: weight / ( 1.0278 – 0.0278 × reps ).</Text>
-        </Paper>
-        
+                    <Stack gap="xs">
+                        <Group gap={4}>
+                            <Title order={4}>Total Volume</Title>
+                            <Text size="xs" c="dimmed">(kg)</Text>
+                        </Group>
+                        
+                        <Paper withBorder p="md" radius="md" bg="var(--mantine-color-gray-0)">
+                            <LineChart
+                                h={300}
+                                data={exTotalVolume}
+                                dataKey="date"
+                                series={[{ name: 'totalVolume', color: 'blue.6' }]}
+                                curveType="monotone"
+                                tickLine='none'
+                                withXAxis={false}
+                                gridProps={{ yAxisId: "left" }}
+                                yAxisProps={{ 
+                                    domain: [Math.round(lowestVolume * .85), Math.round(highestVolume * 1.1)],
+                                    width: 42
+                                }}
+                                lineChartProps={{ syncId: 'chart' }}
+                                tooltipProps={{
+                                    content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='volume'/>,
+                                }}
+                            />
+                        </Paper>
+                    </Stack>
+
+                    <Stack gap="xs">
+                        <Group justify="space-between">
+                            <Group gap={4}>
+                                <Title order={4}>Est. 1RM</Title>
+                                <Tooltip 
+                                    label="Brzycki formula: weight / ( 1.0278 – 0.0278 × reps )" 
+                                    withArrow 
+                                    multiline 
+                                    w={180}
+                                >
+                                <ActionIcon variant="subtle" color="gray" radius="xl" size="sm">
+                                    <IconInfoCircle size={16} />
+                                </ActionIcon>
+                                </Tooltip>
+                            </Group>
+                            <Text size="xs" c="dimmed">Based on top sets</Text>
+                        </Group>
+
+                        <Paper withBorder p="md" radius="md" bg="var(--mantine-color-gray-0)">
+                            <LineChart
+                                h={300}
+                                data={exOneRepMax}
+                                dataKey="date"
+                                series={[{ name: 'oneRepMax', color: 'grape.6' }]}
+                                curveType="monotone"
+                                tickLine='none'
+                                gridProps={{ yAxisId: "left" }}
+                                yAxisProps={{ 
+                                    domain: [Math.round(lowestOneRepMax * .9), Math.round(highestOneRepMax * 1.1)],
+                                    width: 42 
+                                }}
+                                xAxisProps={{
+                                    tickFormatter: (val) => new Date(val).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
+                                    fontSize: 10,
+                                }}
+                                lineChartProps={{ syncId: 'chart' }}
+                                tooltipProps={{
+                                    content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='weight' />,
+                                }}
+                            />
+                        </Paper>
+                    </Stack>
+                </Stack>
+            </Paper>
+        </Container>
     );
 }
