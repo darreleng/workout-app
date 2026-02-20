@@ -59,6 +59,12 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
 
     const { data: currentWorkout } = useQuery<WorkoutWithExercisesAndSets>({
         queryKey: ['workouts', workoutId],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {credentials: 'include'});
+            const data = await res.json();
+            if (!res.ok) throw data;
+            return data;
+        }
     });
 
     if (isPending) return <div><Loader size='sm' /></div>; 

@@ -24,7 +24,7 @@ export async function updateSet(userId: string, setId: string, field: { weight_k
     const query = 
     `UPDATE sets SET 
         weight_kg = COALESCE($3, weight_kg), 
-        reps = COALESCE($4, reps), 
+        reps = COALESCE($4, reps) 
     WHERE id = $2 
     AND EXISTS (
         SELECT 1 FROM exercises e
