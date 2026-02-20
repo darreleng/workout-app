@@ -55,6 +55,7 @@ export type SetCardProps = {
 export type WorkoutWithExercisesAndSets = {
     id: string;
     name: string;
+    notes: string;
     // createdAt: string;
     // completedAt: string;
     // notes: string;

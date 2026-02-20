@@ -10,12 +10,12 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
     const queryClient = useQueryClient();
     
     const mutation = useMutation({
-        mutationFn: async (updatedName: string) => {
+        mutationFn: async (name: string) => {
             const res = await fetch(`http://localhost:3000/api/workouts/${id}`, {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json'},
-                body: JSON.stringify({ updatedName })
+                body: JSON.stringify({ name })
             });
             const data = await res.json();
             if (!res.ok) throw data;

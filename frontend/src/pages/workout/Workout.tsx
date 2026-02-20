@@ -23,7 +23,7 @@ export default function Workout(){
         },
     });
 
-    const mutation = useMutation({
+    const discardWorkout = useMutation({
         mutationFn: async (workoutId: string) => {
             const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {
                 method: 'DELETE',
@@ -42,6 +42,23 @@ export default function Workout(){
             console.log(error);
         }
     })
+
+    const updateNotes = useMutation({
+        mutationFn: async (notes: string) => {
+            const res = await fetch(`http://localhost:3000/api/workouts/${id}`, {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({ notes })
+            });
+            const data = await res.json();
+            if (!res.ok) throw data;
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['workouts', id] });
+        }
+    });
 
     // TODO: SKELETON
     if (isLoading) {
@@ -76,21 +93,26 @@ export default function Workout(){
 
                 <Paper p="md" radius="md" withBorder>
                     <Stack gap="md">
-                    <AddExerciseButton workoutId={id!} />
-                    <TextInput 
-                        label="Workout Notes" 
-                        placeholder="How was the workout?" 
-                        variant="filled"
-                    />
-                    <Divider my="sm" label="Finish Session" labelPosition="center" />
-                    <Group grow>
-                        <Button variant="light" color="red" onClick={() => mutation.mutate(id!)}>
-                        Discard
-                        </Button>
-                        <Button color="green" component={Link} to='/workouts' size="md">
-                        Save Workout
-                        </Button>
-                    </Group>
+                        <AddExerciseButton workoutId={id!} />
+                        <TextInput 
+                            label="Workout Notes" 
+                            placeholder="How was the workout?" 
+                            variant="filled"
+                            defaultValue={workout.notes}
+                            onBlur={(e) => {
+                                const newValue = e.target.value.trim();
+                                if (newValue !== workout.notes) updateNotes.mutate(newValue );
+                            }}
+                        />
+                        <Divider my="sm" label="Finish Session" labelPosition="center" />
+                        <Group grow>
+                            <Button variant="light" color="red" onClick={() => discardWorkout.mutate(id!)}>
+                                Discard
+                            </Button>
+                            <Button color="green" component={Link} to='/workouts' size="md">
+                                Save Workout
+                            </Button>
+                        </Group>
                     </Stack>
                 </Paper>
                 

@@ -52,8 +52,14 @@ export async function deleteWorkout(userId: string, workoutId: string) {
     return rows[0];
 };
 
-export async function updateWorkoutName(userId: string, workoutId: string, name: string) {
-    const query = 'UPDATE workouts SET name = $3 WHERE id = $2 AND user_id = $1 RETURNING *';
-    const { rows } = await db.query(query, [userId, workoutId, name]);
-    return rows[0];
+export async function updateWorkout(userId: string, workoutId: string, field: { name?: string, notes?: string }) {
+    const query = 
+        `UPDATE workouts SET 
+            name = COALESCE($3, name), 
+            notes = COALESCE($4, notes) 
+        WHERE id = $2 AND user_id = $1
+        RETURNING *`;
+    const values = [userId, workoutId, field.name ?? null, field.notes ?? null];
+    const { rows } = await db.query(query, values);
+    return rows[0]; 
 }
