@@ -17,7 +17,7 @@ export default function DeleteExerciseButton({ workoutId, exerciseId }: { workou
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['workouts', workoutId] });
-            queryClient.invalidateQueries({ queryKey: ['exerciseHistory'] });
+            queryClient.invalidateQueries({ queryKey: ['exercises'] });
         },
         // TODO: Think of error notifcation
         onError: (error) => {
@@ -28,13 +28,13 @@ export default function DeleteExerciseButton({ workoutId, exerciseId }: { workou
     return (
         <Menu shadow="md" width={150}>
             <Menu.Target>
-                <ActionIcon color="red" aria-label="Delete exercise">
+                <ActionIcon color="red" aria-label="Delete Exercise">
                     <IconTrash stroke={2} />
                 </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
                 <Menu.Item color="red" onClick={() => mutation.mutate({workoutId, exerciseId})}>
-                    Delete exercise
+                    Delete Exercise
                 </Menu.Item>
             </Menu.Dropdown>
         </Menu> 
