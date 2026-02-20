@@ -20,12 +20,11 @@ export async function createSet(userId: string, exerciseId: string) {
     return rows[0];
 }
 
-export async function updateSet(userId: string, setId: string, field: { weight_kg?: number, reps?: number, rest_seconds?: number }) {
+export async function updateSet(userId: string, setId: string, field: { weight_kg?: number, reps?: number }) {
     const query = 
     `UPDATE sets SET 
         weight_kg = COALESCE($3, weight_kg), 
         reps = COALESCE($4, reps), 
-        rest_seconds = COALESCE($5, rest_seconds)
     WHERE id = $2 
     AND EXISTS (
         SELECT 1 FROM exercises e
@@ -34,7 +33,7 @@ export async function updateSet(userId: string, setId: string, field: { weight_k
         AND w.user_id = $1
     )
     RETURNING *`;
-    const values = [userId, setId, field.weight_kg ?? null, field.reps ?? null, field.rest_seconds ?? null];
+    const values = [userId, setId, field.weight_kg ?? null, field.reps ?? null];
     const { rows } = await db.query(query, values);
     return rows[0]; 
 }
