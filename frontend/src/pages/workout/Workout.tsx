@@ -79,7 +79,7 @@ export default function Workout(){
                     <AddExerciseButton workoutId={id!} />
                     <TextInput 
                         label="Workout Notes" 
-                        placeholder="How did it feel?" 
+                        placeholder="How was the workout?" 
                         variant="filled"
                     />
                     <Divider my="sm" label="Finish Session" labelPosition="center" />

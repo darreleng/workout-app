@@ -18,6 +18,7 @@ export default function SetCard(props: SetCardProps) {
                         <NumberInput 
                         readOnly 
                         hideControls 
+                        aria-label="Set Number"
                         value={props.set_number} 
                         variant="filled"
                         styles={{ input: { cursor: 'pointer', textAlign: 'center', fontWeight: 700 } }}
@@ -34,6 +35,7 @@ export default function SetCard(props: SetCardProps) {
         {/* PREVIOUS */}
         <TextInput 
             readOnly 
+            aria-label="Previous Exercise Set Benchmark"
             value={props.prevExerciseSet.reps ? `${props.prevExerciseSet.reps} x ${Number(props.prevExerciseSet.weight_kg)} kg`: '-'}
             variant="unstyled"
             style={{ flex: 1 }}
@@ -44,6 +46,7 @@ export default function SetCard(props: SetCardProps) {
         <NumberInput 
             hideControls 
             allowDecimal={false} 
+            aria-label="Reps"
             defaultValue={props.reps || undefined}
             error={repsError}
             onBlur={(e) => {
@@ -61,6 +64,7 @@ export default function SetCard(props: SetCardProps) {
         <NumberInput 
             hideControls 
             allowDecimal={false} 
+            aria-label="Weight (kg)"
             defaultValue={props.weight_kg || undefined}
             error={weightError}
             onBlur={(e) => {
