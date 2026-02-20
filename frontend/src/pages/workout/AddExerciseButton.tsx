@@ -1,22 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, TextInput, Modal, ScrollArea, Stack, Text, Badge, Loader, Divider } from '@mantine/core';
+import { Button, TextInput, Modal, ScrollArea, Stack, Text, Loader, Divider } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Fragment, useState } from 'react';
 import { ExerciseNameSchema } from '../../../../shared/schemas';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
-import { type WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
-
-interface Exercise {
-    id: string;
-    name: string;
-    created_at: string;
-    sets: {
-        id: string;
-        set_number: number;
-        reps: number;
-        weight: number;
-    }[]
-}
+import type { WorkoutWithExercisesAndSets, Exercise } from "../../../../shared/schemas";
 
 export default function AddExerciseButton({ workoutId }: { workoutId: string }) {
     const [nameError, setNameError] = useState('');
@@ -24,7 +12,6 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
     const queryClient = useQueryClient();
     const [search, setSearch] = useState('');
 
-    //TODO: REFACTOR, probably remove this and just queryClient.getdata
     const { 
         data: history,
         isPending,
