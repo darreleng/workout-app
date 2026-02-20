@@ -101,7 +101,9 @@ export default function ExerciseCard(props: Exercise) {
             if (!res.ok) throw data;
             return data;
         },
-        select: (exercises) => exercises.filter(ex => ex.name === props.name)
+        select: (exercises) => [...exercises]
+                                .filter(ex => ex.name === props.name)
+                                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     });
 
     if (isPending) return <div><Loader size='sm' /></div>; 
@@ -137,8 +139,6 @@ export default function ExerciseCard(props: Exercise) {
                 </Group>
                 {props.sets.map(set => {
                     const prevExerciseSet = filteredExercises[1].sets.filter(s => s.set_number === set.set_number)[0];
-                    console.log(prevExerciseSet)
-
                     return <SetCard key={set.id} {...set} id={props.id} prevExerciseSet={prevExerciseSet} workout_id={props.workout_id} 
                                 updateSetField={(updatedField, value) => updateSetField.mutate({ updatedField, value, setId: set.id})}
                                 deleteSet={() => deleteSet.mutate(set.id)}

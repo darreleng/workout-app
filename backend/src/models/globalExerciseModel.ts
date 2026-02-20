@@ -1,7 +1,7 @@
 import { pool as db } from "src/db/db";
 
 export async function getExercises(userId: string) {
-    const query = `SELECT e.id, e.name, e.created_at, s.set_number, s.reps, s.weight_kg FROM exercises e JOIN workouts w ON w.id = e.workout_id JOIN sets s ON e.id = s.exercise_id WHERE w.user_id = $1 ORDER BY e.created_at DESC`;
+    const query = `SELECT e.id, e.name, e.created_at, s.set_number, s.reps, s.weight_kg FROM exercises e JOIN workouts w ON w.id = e.workout_id JOIN sets s ON e.id = s.exercise_id WHERE w.user_id = $1`;
     const { rows } = await db.query(query, [userId]);
 
     const groupedExercises = rows.reduce((acc: any[], row) => {
