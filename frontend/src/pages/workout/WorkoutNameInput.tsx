@@ -5,7 +5,6 @@ import { useState } from "react";
 import { WorkoutNameSchema } from "../../../../shared/schemas";
 
 export default function WorkoutNameInput({ workoutName, id }: { workoutName: string, id: string}) {
-    const [localName, setLocalName] = useState(workoutName);
     const [nameError, setNameError] = useState(false);
     const queryClient = useQueryClient();
     
@@ -47,17 +46,15 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
                 }
             }}
             aria-label="Workout name"
-            value={localName} 
+            defaultValue={workoutName} 
             error={nameError}
-            onChange={(e) => setLocalName(e.currentTarget.value)}
             onBlur={(e) => {
                 const val = e.currentTarget.value;
                 const result = WorkoutNameSchema.safeParse(val);
                 if (!result.success) return setNameError(true);
+                if (result.data !== workoutName) mutation.mutate(val);
                 setNameError(false);
-                mutation.mutate(val);
             }}
-
         />
     )
 }
