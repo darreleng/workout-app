@@ -1,6 +1,6 @@
 import { Text, Box, Button, Loader, TextInput, Group, Stack, Container, Paper, Divider } from "@mantine/core";
 import { IconStopwatch } from '@tabler/icons-react';
-import type { ExerciseCardProps, WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
+import type { WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, Link } from "react-router";
 import ExerciseCard from "./ExerciseCard";

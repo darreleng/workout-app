@@ -24,6 +24,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
     const queryClient = useQueryClient();
     const [search, setSearch] = useState('');
 
+    //TODO: REFACTOR, probably remove this and just queryClient.getdata
     const { 
         data: history,
         isPending,

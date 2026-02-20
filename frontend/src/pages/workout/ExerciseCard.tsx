@@ -1,17 +1,17 @@
-import { Box, Group, Paper, Stack, TextInput, Text } from "@mantine/core";
-import { ExerciseNameSchema, type ExerciseCardProps } from "../../../../shared/schemas";
+import { Box, Group, Paper, Stack, TextInput, Text, Loader } from "@mantine/core";
+import { ExerciseNameSchema, type Exercise } from "../../../../shared/schemas";
 import AddSetButton from "./AddSetButton";
 import SetCard from "./SetCard";
 import DeleteExerciseButton from "./DeleteExerciseButton";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
 
-export default function ExerciseCard(props: ExerciseCardProps) {
+export default function ExerciseCard(props: Exercise) {
     const queryClient = useQueryClient();
     const [localName, setLocalName] = useState(props.name);
-    const [error, setError] = useState(false);
+    const [nameError, setNameError] = useState(false);
 
     const updateExerciseName = useMutation({
         mutationFn: async (name: string) => {
@@ -52,7 +52,8 @@ export default function ExerciseCard(props: ExerciseCardProps) {
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts', props.workout_id], exact: true });
+            queryClient.invalidateQueries({ queryKey: ['workouts', props.workout_id] });
+            queryClient.invalidateQueries({ queryKey: ['exercises'] });
         },
         // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
         onError: (error) => {
@@ -77,6 +78,7 @@ export default function ExerciseCard(props: ExerciseCardProps) {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['workouts', props.workout_id] });
+            queryClient.invalidateQueries({ queryKey: ['exercises'] });
         },
         onError: (error) => {
             notifications.show({ 
@@ -86,6 +88,24 @@ export default function ExerciseCard(props: ExerciseCardProps) {
             });
         }
     });
+
+    const { 
+        data: filteredExercises,
+        isPending,
+        error
+    } = useQuery({
+        queryKey: ['exercises'],
+        queryFn: async (): Promise<Exercise[]> => {
+            const res = await fetch(`http://localhost:3000/api/exercises`, {credentials: 'include'});
+            const data = await res.json();
+            if (!res.ok) throw data;
+            return data;
+        },
+        select: (exercises) => exercises.filter(ex => ex.name === props.name)
+    });
+
+    if (isPending) return <div><Loader size='sm' /></div>; 
+    if (error) return <div>Error: {error.message}</div>;
     
     return (
         <Paper withBorder radius="md" shadow="sm">
@@ -99,8 +119,8 @@ export default function ExerciseCard(props: ExerciseCardProps) {
                     onBlur={(e) => {
                         const val = e.currentTarget.value;
                         const result = ExerciseNameSchema.safeParse(val);
-                        if (!result.success) return setError(true);
-                        setError(false);
+                        if (!result.success) return setNameError(true);
+                        setNameError(false);
                         updateExerciseName.mutate(val);
                     }}
                 />
@@ -115,12 +135,15 @@ export default function ExerciseCard(props: ExerciseCardProps) {
                     <Text size="xs" fw={700} c="dimmed" style={{ flex: 1, textAlign: 'center' }}>REPS</Text>
                     <Text size="xs" fw={700} c="dimmed" style={{ flex: 1, textAlign: 'center' }}>KG</Text>
                 </Group>
-                {props.sets.map(set => (
-                    <SetCard key={set.id} {...set} exercise_id={props.id} workout_id={props.workout_id} 
-                        updateSetField={(updatedField, value) => updateSetField.mutate({ updatedField, value, setId: set.id})}
-                        deleteSet={() => deleteSet.mutate(set.id)}
+                {props.sets.map(set => {
+                    const prevExerciseSet = filteredExercises[1].sets.filter(s => s.set_number === set.set_number)[0];
+                    console.log(prevExerciseSet)
+
+                    return <SetCard key={set.id} {...set} id={props.id} prevExerciseSet={prevExerciseSet} workout_id={props.workout_id} 
+                                updateSetField={(updatedField, value) => updateSetField.mutate({ updatedField, value, setId: set.id})}
+                                deleteSet={() => deleteSet.mutate(set.id)}
                     />
-                ))}
+                })}
                 
                 <Box mt="sm">
                     <AddSetButton exercise_id={props.id} workout_id={props.workout_id} />

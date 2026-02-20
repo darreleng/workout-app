@@ -36,8 +36,18 @@ export interface Exercise {
     }[]
 };
 
-export type SetCardProps = Exercise['sets'][0] & {
+export type SetCardProps = {
+    id: string;
+    set_number: number;
+    reps: number;
+    weight_kg: number;
     workout_id: string;
+    prevExerciseSet: {
+        id: string;
+        set_number: number;
+        reps: number;
+        weight_kg: number;
+    }
     updateSetField: (updatedField: string, value: number) => void;
     deleteSet: () => void;
 };
