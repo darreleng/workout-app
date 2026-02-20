@@ -1,19 +1,8 @@
 import { LineChart } from '@mantine/charts';
 import { ScrollArea, Box, Paper, Title, Loader, TextInput, Text, Center, Select } from '@mantine/core';
+import { type Exercise } from "../../../../shared/schemas";
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-
-interface Exercise {
-    id: string;
-    name: string;
-    created_at: string;
-    sets: {
-        id: string;
-        set_number: number;
-        reps: number;
-        weight: number;
-    }[]
-}
 
 interface ChartTooltipProps {
     label: React.ReactNode;
@@ -68,7 +57,7 @@ export default function Progress(){
     const exOneRepMax = selectedExercise.map(ex => {
         const intensities = ex.sets
             .filter(set => set.reps > 0 && set.reps <= 12) 
-            .map(set => set.weight / (1.0278 - (0.0278 * set.reps)));
+            .map(set => set.weight_kg / (1.0278 - (0.0278 * set.reps)));
 
         const topIntensity = intensities.length > 0 ? Math.max(...intensities) : 0;
 
@@ -80,7 +69,7 @@ export default function Progress(){
     });
 
     const exTotalVolume = selectedExercise.map(ex => {
-        const volume = ex.sets.reduce((acc, cur) => cur.weight * cur.reps + acc, 0);
+        const volume = ex.sets.reduce((acc, cur) => cur.weight_kg * cur.reps + acc, 0);
 
         return {
             name: ex.name,

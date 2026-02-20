@@ -23,21 +23,20 @@ export type WorkoutProps = {
     created_at: string;
 };
 
-export type ExerciseCardProps = {
+export interface Exercise {
     id: string;
     name: string;
+    created_at: string;
     workout_id: string;
     sets: {
-        id: string,
-        exercise_id: string,
-        set_number: number,
-        weight_kg: number,
-        reps: number,
-        rest_seconds: number
+        id: string;
+        set_number: number;
+        reps: number;
+        weight_kg: number;
     }[]
 };
 
-export type SetCardProps = ExerciseCardProps['sets'][0] & {
+export type SetCardProps = Exercise['sets'][0] & {
     workout_id: string;
     updateSetField: (updatedField: string, value: number) => void;
     deleteSet: () => void;
@@ -49,6 +48,6 @@ export type WorkoutWithExercisesAndSets = {
     // createdAt: string;
     // completedAt: string;
     // notes: string;
-    exercises: ExerciseCardProps[];
+    exercises: Exercise[];
 };
 
