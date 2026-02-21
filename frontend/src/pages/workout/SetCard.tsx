@@ -36,7 +36,7 @@ export default function SetCard(props: SetCardProps) {
         <TextInput 
             readOnly 
             aria-label="Previous Exercise Set Benchmark"
-            value={props.prevExerciseSet.reps ? `${props.prevExerciseSet.reps} x ${Number(props.prevExerciseSet.weight_kg)} kg`: '-'}
+            value={props.prevExerciseSet?.reps ? `${props.prevExerciseSet.reps} x ${Number(props.prevExerciseSet.weight_kg)} kg` : '-'}
             variant="unstyled"
             style={{ flex: 1 }}
             styles={{ input: { pointerEvents: 'none', color: 'var(--mantine-color-dimmed)', textAlign: 'center', fontSize: 'var(--mantine-font-size-xs)' } }}
