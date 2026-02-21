@@ -5,7 +5,17 @@ import { getSets } from "./setModel";
 export async function getAllWorkouts(userId: string, cursor: string | null) {
     const limit = 10;
     const startingId = (cursor) ? cursor : 'ffffffff-ffff-ffff-ffff-ffffffffffff';
-    const query = 'SELECT * FROM workouts WHERE user_id = $1 AND id < $2 ORDER BY id DESC LIMIT $3';
+    const query = 
+        `SELECT 
+            w.*, 
+            COALESCE(SUM(s.weight_kg * s.reps), 0) AS workout_total_volume 
+        FROM workouts w 
+        LEFT JOIN exercises e ON w.id = e.workout_id
+        LEFT JOIN sets s ON e.id = s.exercise_id
+        WHERE w.user_id = $1 AND w.id < $2 
+        GROUP BY w.id 
+        ORDER BY w.id DESC 
+        LIMIT $3;`;
     const { rows } = await db.query(query, [userId, startingId, limit + 1]);
 
     const hasNextPage = rows.length > limit;
@@ -15,9 +25,9 @@ export async function getAllWorkouts(userId: string, cursor: string | null) {
     return { itemsToReturn, nextCursor };
 }
 
-export async function createWorkout(userId: string) {
-    const query = 'INSERT INTO workouts (user_id) VALUES ($1) RETURNING *';
-    const { rows } = await db.query(query, [userId]);
+export async function createWorkout(userId: string, workoutName: string) {
+    const query = 'INSERT INTO workouts (user_id, name) VALUES ($1, $2) RETURNING *';
+    const { rows } = await db.query(query, [userId, workoutName]);
     return rows[0];
 }
 

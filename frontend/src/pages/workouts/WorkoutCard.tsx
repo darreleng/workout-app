@@ -3,8 +3,9 @@ import { IconBarbell, IconCalendar, IconClock, IconDotsVertical, IconEdit, IconT
 import { Link } from "react-router";
 import type { WorkoutProps } from "../../../../shared/schemas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import classes from './WorkoutCard.module.css';
 
-export default function WorkoutCard({id, name, created_at}: WorkoutProps) {
+export default function WorkoutCard({ id, name, created_at, workout_total_volume }: WorkoutProps) {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
@@ -18,7 +19,6 @@ export default function WorkoutCard({id, name, created_at}: WorkoutProps) {
             return data;
         },
         onSuccess: () => {
-            console.log("Success!")
             queryClient.invalidateQueries({ queryKey: ['workouts'] });
         },
         // TODO: Think of error notifcation
@@ -29,84 +29,69 @@ export default function WorkoutCard({id, name, created_at}: WorkoutProps) {
 
     return (
         <Paper 
-        withBorder 
-        radius="md" 
-        p="md" 
-        shadow="sm"
-        style={{ 
-            cursor: 'pointer',
-            transition: 'transform 200ms ease, box-shadow 200ms ease',
-        }}
-        // Adds a subtle lift effect on hover
-        styles={{
-            root: {
-            '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: 'var(--mantine-shadow-md)',
-            }
-            }
-        }}
+            withBorder 
+            radius="md" 
+            p="md" 
+            shadow="sm"
+            className={classes.myPaper}
         >
-        <Group justify="space-between" align="flex-start" wrap="nowrap">
-            <Stack gap="xs" style={{ flex: 1 }}>
-            {/* Top Row: Date Badge */}
-            <Group gap={6}>
-                <IconCalendar size={14} color="var(--mantine-color-dimmed)" />
-                <Text size="xs" c="dimmed" fw={500}>
-                {new Date(created_at).toLocaleDateString(undefined, { 
-                    weekday: 'short', 
-                    day: 'numeric', 
-                    month: 'short' 
-                })}
-                </Text>
+            <Group justify="space-between" align="flex-start" wrap="nowrap">
+                <Stack gap="xs" style={{ flex: 1 }}>
+                    <Group gap={6}>
+                        <IconCalendar size={14} color="var(--mantine-color-dimmed)" />
+                        <Text size="xs" c="dimmed" fw={500}>
+                            {new Date(created_at).toLocaleDateString(undefined, { 
+                                weekday: 'short', 
+                                day: 'numeric', 
+                                month: 'short',
+                                year: "numeric"
+                            })}
+                        </Text>
+                    </Group>
+
+                    <Title order={3} lineClamp={1} style={{ letterSpacing: '-0.3px' }}>
+                        {name || "Untitled Workout"}
+                    </Title>
+
+                    <Group gap="sm" mt="xs">
+                        <Badge variant="light" color="blue" leftSection={<IconBarbell size={12} />}>
+                            {Number(workout_total_volume) || 0} kg
+                        </Badge>
+                        <Badge variant="light" color="gray" leftSection={<IconClock size={12} />}>
+                            {/* {duration || '--'} min */}
+                        </Badge>
+                    </Group>
+                </Stack>
+
+                <Menu shadow="md" width={200} position="bottom-end">
+                    <Menu.Target>
+                        <ActionIcon variant="subtle" color="gray" size="lg" radius="xl">
+                        <IconDotsVertical size={20} stroke={1.5} />
+                        </ActionIcon>
+                    </Menu.Target>
+
+                    <Menu.Dropdown>
+                        <Menu.Label>Workout Options</Menu.Label>
+                        <Menu.Item 
+                            component={Link} 
+                            to={`/workouts/${id}`} 
+                            leftSection={<IconEdit size={16} />}
+                        >
+                        View/Edit Workout
+                        </Menu.Item>
+                        <Menu.Item 
+                            color="red" 
+                            leftSection={<IconTrash size={16} />} 
+                            onClick={(e) => {
+                                e.stopPropagation(); 
+                                mutation.mutate(id);
+                            }}
+                        >
+                        Delete Workout
+                        </Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
             </Group>
-
-            {/* Title: Big and bold */}
-            <Title order={3} lineClamp={1} style={{ letterSpacing: '-0.3px' }}>
-                {name || "Untitled Workout"}
-            </Title>
-
-            {/* Stats Row: Using subtle background boxes */}
-            <Group gap="sm" mt="xs">
-                <Badge variant="light" color="blue" leftSection={<IconBarbell size={12} />}>
-                {/* {total_volume?.toLocaleString() || 0} kg */}
-                </Badge>
-                <Badge variant="light" color="gray" leftSection={<IconClock size={12} />}>
-                {/* {duration || '--'} min */}
-                </Badge>
-            </Group>
-            </Stack>
-
-            {/* Menu: Keeps it clean and tucked away */}
-            <Menu shadow="md" width={200} position="bottom-end">
-            <Menu.Target>
-                <ActionIcon variant="subtle" color="gray" size="lg" radius="xl">
-                <IconDotsVertical size={20} stroke={1.5} />
-                </ActionIcon>
-            </Menu.Target>
-
-            <Menu.Dropdown>
-                <Menu.Label>Workout Options</Menu.Label>
-                <Menu.Item 
-                component={Link} 
-                to={`/workouts/${id}`} 
-                leftSection={<IconEdit size={16} />}
-                >
-                View/Edit Workout
-                </Menu.Item>
-                <Menu.Item 
-                color="red" 
-                leftSection={<IconTrash size={16} />} 
-                onClick={(e) => {
-                    e.stopPropagation(); // Prevents navigating to workout when deleting
-                    mutation.mutate(id);
-                }}
-                >
-                Delete Workout
-                </Menu.Item>
-            </Menu.Dropdown>
-            </Menu>
-        </Group>
         </Paper>
     );
 }

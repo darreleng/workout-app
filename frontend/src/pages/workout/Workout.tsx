@@ -74,7 +74,6 @@ export default function Workout(){
             <Container size="sm" py="md">
                 <Stack gap="lg">
                 
-                {/* Header Area */}
                 <Paper p="md" radius="md" withBorder shadow="xs">
                     <Group justify="space-between" align="center">
                     <WorkoutNameInput workoutName={workout.name} id={workout.id} />

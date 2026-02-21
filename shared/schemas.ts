@@ -8,7 +8,7 @@ function titleCase(str: string) {
 //     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 // };
 
-export const WorkoutNameSchema = z.coerce.string().trim().min(1, "Workout name must be at least 1 character").transform(titleCase);
+export const WorkoutNameSchema = z.object({ name: z.coerce.string().trim().min(1, "Workout name must be at least 1 character").transform(titleCase) });
 
 export const ExerciseNameSchema = z.coerce.string().trim().min(1, "Exercise name must at least be 1 character").transform(titleCase)
 
@@ -21,6 +21,7 @@ export type WorkoutProps = {
     name: string;
     id: string;
     created_at: string;
+    workout_total_volume: number
 };
 
 export interface Exercise {

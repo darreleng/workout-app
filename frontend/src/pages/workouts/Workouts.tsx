@@ -1,18 +1,27 @@
-import { Box, Button, Center, Title, ScrollArea, Text, Loader, Container, Stack, Group } from "@mantine/core";
+import { Box, Button, Center, Title, ScrollArea, Text, Loader, Container, Stack, Group, Modal, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { useIntersection } from "@mantine/hooks";
+import { useDisclosure, useIntersection } from "@mantine/hooks";
 import { useEffect, useRef } from "react";
 import { IconPlus, IconX } from '@tabler/icons-react'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WorkoutCard from "./WorkoutCard";
 import { useNavigate } from "react-router";
-import type { WorkoutProps } from "../../../../shared/schemas";
+import { WorkoutNameSchema, type WorkoutProps } from "../../../../shared/schemas";
+import { useForm } from "@mantine/form";
+import { zod4Resolver } from "mantine-form-zod-resolver";
 
 export default function Workouts() {
     const containerRef = useRef<HTMLDivElement>(null);
-    const { ref, entry } = useIntersection({
-        root: containerRef.current
-    })
+    const { ref, entry } = useIntersection({ root: containerRef.current });
+    const [opened, { open, close }] = useDisclosure(false);
+    const form = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            name: '',
+        },
+        validate: zod4Resolver(WorkoutNameSchema)
+    });
+    
 
     const {
         data: workouts,
@@ -42,10 +51,12 @@ export default function Workouts() {
     const navigate = useNavigate();
 
     const mutation = useMutation({
-        mutationFn: async () => {
+        mutationFn: async (workoutName: string) => {
             const res = await fetch('http://localhost:3000/api/workouts', { 
                 method: 'POST', 
                 credentials: 'include',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({ workoutName })
             });
 
             if (!res.ok) throw await res.json();
@@ -69,53 +80,74 @@ export default function Workouts() {
     if (isPending) return <div><Loader size='sm' /></div>; 
     if (error) return <div>Error: {error.message}</div>;
 
-    return (
-        <Box bg="var(--mantine-color-gray-0)" mih="100vh">
-            <Container size="sm" py="xl">
-                <Stack gap="md" mb="xl">
-                    <Group justify="space-between" align="flex-end">
-                        <Title order={1} fw={900} lts="-0.5px">Workouts</Title>
-                        
-                        <Button 
-                            leftSection={<IconPlus stroke={2} size={20}/>} 
-                            loading={mutation.isPending} 
-                            onClick={() => mutation.mutate()}
-                            radius="md"
-                            size="md"
-                            variant="filled"
-                        >
-                            New Workout
-                        </Button>
-                    </Group>
-                </Stack>
+    function handleClose() {
+        close()
+        form.reset();
+    }
 
-                <ScrollArea 
-                    viewportRef={containerRef} 
-                    type="hover" 
-                    h="calc(100vh - 250px)"
-                    offsetScrollbars
-                >
-                    <Stack gap="lg">
-                        {workouts.pages.map((page, i) => (
-                        <Stack key={i} gap="lg">
-                            {page.itemsToReturn.map((workout: WorkoutProps) => (
-                            <WorkoutCard key={workout.id} {...workout} />
-                            ))}
-                        </Stack>
-                        ))}
-                        
-                        <Box ref={ref} py="xl">
-                            {isFetchingNextPage ? (
-                                <Center><Loader size="sm" variant="dots" /></Center>
-                            ) : (
-                                <Text ta="center" size="xs" c="dimmed" tt="uppercase" lts="1px">
-                                {hasNextPage ? 'Loading more...' : 'End of your journey'}
-                                </Text>
-                            )}
-                        </Box>
+    return (
+        <>
+            <Modal opened={opened} onClose={handleClose} withCloseButton={false} radius="md" centered>
+                <form onSubmit={form.onSubmit(values => mutation.mutate(values.name))}>
+                    <TextInput
+                        withAsterisk
+                        label="New workout name"
+                        {...form.getInputProps('name')}
+                    />
+                    <Group justify="flex-end" mt="md">
+                        <Button variant="subtle" onClick={handleClose}>Cancel</Button>
+                        <Button type="submit" loading={mutation.isPending}>Create</Button>
+                    </Group>
+                </form>
+            </Modal>
+            
+            <Box bg="var(--mantine-color-gray-0)" mih="100vh">
+                <Container size="sm" py="xl">
+                    <Stack gap="md" mb="xl">
+                        <Group justify="space-between" align="flex-end">
+                            <Title order={1} fw={900} lts="-0.5px">Workouts</Title>
+                            
+                            <Button 
+                                leftSection={<IconPlus stroke={2} size={20}/>} 
+                                loading={mutation.isPending} 
+                                onClick={open}
+                                radius="md"
+                                size="md"
+                                variant="filled"
+                            >
+                                New Workout
+                            </Button>
+                        </Group>
                     </Stack>
-                </ScrollArea>
-            </Container>
-        </Box>
+
+                    <ScrollArea 
+                        viewportRef={containerRef} 
+                        type="hover" 
+                        h="calc(100vh - 250px)"
+                        offsetScrollbars
+                    >
+                        <Stack gap="lg">
+                            {workouts.pages.map((page, i) => (
+                            <Stack key={i} gap="lg">
+                                {page.itemsToReturn.map((workout: WorkoutProps) => (
+                                    <WorkoutCard key={workout.id} {...workout} />
+                                ))}
+                            </Stack>
+                            ))}
+                            
+                            <Box ref={ref} py="xl">
+                                {isFetchingNextPage ? (
+                                    <Center><Loader size="sm" variant="dots" /></Center>
+                                ) : (
+                                    <Text ta="center" size="xs" c="dimmed" tt="uppercase" lts="1px">
+                                    {hasNextPage ? 'Loading more...' : 'End of your journey'}
+                                    </Text>
+                                )}
+                            </Box>
+                        </Stack>
+                    </ScrollArea>
+                </Container>
+            </Box>
+        </>
     )
 }

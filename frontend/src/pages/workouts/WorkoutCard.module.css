@@ -1,0 +1,7 @@
+.myPaper {
+  transition: all 0.2s ease;
+}
+
+.myPaper:hover {
+  border-color: var(--mantine-color-blue-filled);
+}

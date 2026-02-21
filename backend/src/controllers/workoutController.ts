@@ -5,7 +5,8 @@ import { WorkoutNameSchema } from "@shared/schemas.js";
 export async function createWorkout(req: Request, res: Response) {
     try {
         const { id } = req.user!;
-        const newWorkout = await WorkoutModel.createWorkout(id);
+        const { workoutName } = req.body;
+        const newWorkout = await WorkoutModel.createWorkout(id, workoutName);
         res.status(201).json(newWorkout)
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
@@ -56,9 +57,9 @@ export async function updateWorkout(req: Request, res: Response) {
         updateData.notes = notes;
 
         if (name !== undefined) {
-            const result = WorkoutNameSchema.safeParse(name);
+            const result = WorkoutNameSchema.safeParse(req.body);
             if (!result.success) return res.status(400).json({ message: result.error.issues[0].message });
-            updateData.name = result.data;
+            updateData.name = result.data.name;
         }
 
         const updatedWorkout = await WorkoutModel.updateWorkout(userId, workoutId as string, updateData);

@@ -50,9 +50,9 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
             error={nameError}
             onBlur={(e) => {
                 const val = e.currentTarget.value;
-                const result = WorkoutNameSchema.safeParse(val);
+                const result = WorkoutNameSchema.safeParse({ name: val });
                 if (!result.success) return setNameError(true);
-                if (result.data !== workoutName) mutation.mutate(val);
+                if (result.data.name !== workoutName) mutation.mutate(val);
                 setNameError(false);
             }}
         />
