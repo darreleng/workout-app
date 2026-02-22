@@ -26,7 +26,7 @@ export default function ExerciseCard(props: Exercise) {
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['exerciseHistory'] });
+            queryClient.invalidateQueries({ queryKey: ['exercises'] });
         },
         // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
         onError: (error) => {
@@ -102,7 +102,7 @@ export default function ExerciseCard(props: Exercise) {
             return data;
         },
         select: (exercises) => [...exercises]
-                                .filter(ex => ex.name === props.name)
+                                .filter(ex => ex.name === localName)
                                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     });
 
@@ -113,20 +113,20 @@ export default function ExerciseCard(props: Exercise) {
         <Paper withBorder radius="md" shadow="sm">
             <Box p="md" style={{ borderBottom: '1px solid var(--mantine-color-gray-2)' }} bg="var(--mantine-color-gray-0)">
                 <Group justify="space-between">
-                <TextInput 
-                    variant="unstyled"
-                    styles={{ input: { fontWeight: 600, fontSize: '1.1rem' }}}
-                    value={localName}
-                    onChange={(e) => setLocalName(e.currentTarget.value)}
-                    onBlur={(e) => {
-                        const val = e.currentTarget.value;
-                        const result = ExerciseNameSchema.safeParse(val);
-                        if (!result.success) return setNameError(true);
-                        setNameError(false);
-                        updateExerciseName.mutate(val);
-                    }}
-                />
-                <DeleteExerciseButton workoutId={props.workout_id} exerciseId={props.id} />
+                    <TextInput 
+                        variant="unstyled"
+                        styles={{ input: { fontWeight: 600, fontSize: '1.1rem' }}}
+                        value={localName}
+                        onChange={(e) => setLocalName(e.currentTarget.value)}
+                        onBlur={(e) => {
+                            const val = e.currentTarget.value;
+                            const result = ExerciseNameSchema.safeParse(val);
+                            if (!result.success) return setNameError(true);
+                            setNameError(false);
+                            updateExerciseName.mutate(val);
+                        }}
+                    />
+                    <DeleteExerciseButton workoutId={props.workout_id} exerciseId={props.id} />
                 </Group>
             </Box>
 
@@ -138,7 +138,7 @@ export default function ExerciseCard(props: Exercise) {
                     <Text size="xs" fw={700} c="dimmed" style={{ flex: 1, textAlign: 'center' }}>KG</Text>
                 </Group>
                 {props.sets.map(set => {
-                    const prevExerciseSet = filteredExercises[1].sets.filter(s => s.set_number === set.set_number)[0];
+                    const prevExerciseSet = filteredExercises[1]?.sets.filter(s => s.set_number === set.set_number)[0];
                     return <SetCard key={set.id} {...set} id={props.id} prevExerciseSet={prevExerciseSet} workout_id={props.workout_id} 
                                 updateSetField={(updatedField, value) => updateSetField.mutate({ updatedField, value, setId: set.id})}
                                 deleteSet={() => deleteSet.mutate(set.id)}
