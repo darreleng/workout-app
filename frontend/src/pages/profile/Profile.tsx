@@ -1,5 +1,13 @@
-import { Avatar, Button, Group, Text } from '@mantine/core';
+import { Avatar, Box, Button, Container, Group, Loader, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import { authClient } from '../../auth-client';
+import { IconMail, IconBarbell, IconCalendar, IconLogout, IconClock, IconWeight } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+
+interface Stats {
+    total_workouts: number;
+    total_volume: number;
+    total_time: number;
+}
 
 export default function Profile() {
 
@@ -9,39 +17,103 @@ export default function Profile() {
 
     const { data } = authClient.useSession();
 
+    const {
+        data: stats,
+        error,
+        isLoading
+    } = useQuery<Stats>({
+        queryKey: ['stats'],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:3000/api/workouts/stats`, {credentials: 'include'});
+            const data = await res.json();
+            if (!res.ok) throw data;
+            return data;
+        }
+    })
+
+    if (isLoading) return <Loader color="blue" />;
+    if (error) return <div>Error: {error.message}</div>;
+
+    console.log(stats)
+
     return (
-    <>
-        <Group wrap="nowrap">
-            <Avatar
-                src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
-                size={94}
-                radius="md"
-                alt="Robert Glassbreaker"
-            />
-            <div>
-                <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
-                    Software engineer
-                </Text>
+        <Box bg="var(--mantine-color-gray-0)" mih="100vh" py="xl">
+            <Container size="md">
+                <Stack gap="xl">
+                <Paper withBorder p="xl" radius="md" shadow="sm">
+                    <Stack align="center" gap="xs">
+                    <Avatar size={100} radius={100} color="blue" variant="light" src={data?.user.image} />
+                    
+                    <Stack gap={8} align="center">
+                        <Title order={2} fw={800}>{data?.user.name}</Title>
+                        
+                        <Group gap="xs" c="dimmed">
+                        <IconMail size={16} />
+                        <Text size="sm" lh={1}>{data?.user.email}</Text>
+                        </Group>
 
-                <Text fz="lg" fw={500}>
-                    {data?.user.name}
-                </Text>
+                        <Group gap="xs" c="dimmed">
+                        <IconCalendar size={16} />
+                        <Text size="sm" lh={1}>Member since {data?.user.createdAt.toLocaleDateString()}</Text>
+                        </Group>
+                    </Stack>
+                    </Stack>
+                </Paper>
 
-                <Group wrap="nowrap" gap={10} mt={3}>
-                <Text fz="xs" c="dimmed">
-                    robert@glassbreaker.io
-                </Text>
-                </Group>
+                <SimpleGrid 
+                    cols={{ base: 1, sm: 3 }}
+                    spacing="md"
+                >
+                    <StatsCard 
+                        label="Workouts" 
+                        value={stats?.total_workouts} 
+                        icon={<IconBarbell size={20} />} 
+                        color="blue" 
+                    />
 
-                <Group wrap="nowrap" gap={10} mt={5}>
-                <Text fz="xs" c="dimmed">
-                    +11 (876) 890 56 23
-                </Text>
-                </Group>
-            </div>
-            <Button onClick={handleSignOut}>Sign out</Button>
-        </Group>
+                    <StatsCard 
+                        label="Total Volume" 
+                        value={`${stats?.total_volume} kg`} 
+                        icon={<IconWeight size={20} />} 
+                        color="grape" 
+                    />
 
-    </>
+                    <StatsCard 
+                        label="Total Time" 
+                        value={`${stats?.total_time}h`} 
+                        icon={<IconClock size={20} />} 
+                        color="teal" 
+                    />
+                </SimpleGrid>
+
+                <Button 
+                    variant="light" 
+                    color="red" 
+                    leftSection={<IconLogout size={20} />}
+                    fullWidth
+                    size="md"
+                    radius="md"
+                    onClick={handleSignOut}
+                >
+                    Sign out
+                </Button>
+
+                </Stack>
+            </Container>
+        </Box>
     );
+}
+
+function StatsCard({ label, value, icon, color }: { label: string, value: any, icon: any, color: string }) {
+  return (
+    <Paper withBorder p="md" radius="md" shadow="xs" style={{ flex: 1, minWidth: '200px' }}>
+      <Stack gap={4} align="center">
+        <ThemeIcon variant="light" color={color} size="lg" radius="md">
+          {icon}
+        </ThemeIcon>
+        <Text fw={800} size="xl" mt="xs">{value}</Text>
+        <Text size="xs" fw={700} c="dimmed" tt="uppercase" lts="0.5px">{label}</Text>
+      </Stack>
+    </Paper>
+  );
 }

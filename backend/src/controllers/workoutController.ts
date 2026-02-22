@@ -71,3 +71,14 @@ export async function updateWorkout(req: Request, res: Response) {
         res.status(500).json( { message: "Internal server error" });
     }
 }
+
+export async function getStats(req: Request, res: Response) {
+    try {
+        const userId = req.user!.id;       
+        const stats = await WorkoutModel.getStats(userId);
+        res.status(200).json(stats);
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: "Internal server error" });
+    }
+}

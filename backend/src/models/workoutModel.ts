@@ -15,7 +15,7 @@ export async function getAllWorkouts(userId: string, cursor: string | null) {
         WHERE w.user_id = $1 AND w.id < $2 
         GROUP BY w.id 
         ORDER BY w.id DESC 
-        LIMIT $3;`;
+        LIMIT $3`;
     const { rows } = await db.query(query, [userId, startingId, limit + 1]);
 
     const hasNextPage = rows.length > limit;
@@ -23,6 +23,20 @@ export async function getAllWorkouts(userId: string, cursor: string | null) {
     const nextCursor = hasNextPage ? itemsToReturn[itemsToReturn.length - 1].id : null;
     
     return { itemsToReturn, nextCursor };
+}
+
+export async function getStats(userId: string) {
+    const query = 
+        `SELECT 
+            COUNT(w.id) AS total_workouts,
+            SUM(s.weight_kg * s.reps) AS total_volume,
+            SUM(EXTRACT(EPOCH FROM (w.completed_at - w.created_at)) / 3600) AS total_hours
+        FROM workouts w
+        LEFT JOIN exercises e ON w.id = e.workout_id
+        LEFT JOIN sets s ON e.id = s.exercise_id
+        WHERE w.user_id = $1 AND w.completed_at IS NOT NULL`;
+    const { rows } = await db.query(query, [userId]);
+    return rows[0]
 }
 
 export async function createWorkout(userId: string, workoutName: string) {
