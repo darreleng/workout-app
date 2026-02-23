@@ -2,6 +2,7 @@ import { Avatar, Box, Button, Container, Group, Loader, Paper, SimpleGrid, Stack
 import { authClient } from '../../auth-client';
 import { IconMail, IconBarbell, IconCalendar, IconLogout, IconClock, IconWeight } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
+import { formatSeconds } from '../../formatDuration';
 
 interface Stats {
     total_workouts: number;
@@ -33,8 +34,6 @@ export default function Profile() {
 
     if (isLoading) return <Loader color="blue" />;
     if (error) return <div>Error: {error.message}</div>;
-
-    console.log(stats)
 
     return (
         <Box bg="var(--mantine-color-gray-0)" mih="100vh" py="xl">
@@ -73,14 +72,14 @@ export default function Profile() {
 
                     <StatsCard 
                         label="Total Volume" 
-                        value={`${stats?.total_volume} kg`} 
+                        value={`${Number(stats?.total_volume)} kg`} 
                         icon={<IconWeight size={20} />} 
                         color="grape" 
                     />
 
                     <StatsCard 
                         label="Total Time" 
-                        value={`${stats?.total_time}h`} 
+                        value={`${formatSeconds(stats!.total_time)}`} 
                         icon={<IconClock size={20} />} 
                         color="teal" 
                     />

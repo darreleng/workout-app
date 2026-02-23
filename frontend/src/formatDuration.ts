@@ -14,6 +14,6 @@ export const formatDuration = (totalSeconds: number) => {
 export const formatSeconds = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
-    if (hours < 1) return `${minutes}min`;
-    return `${hours}h${minutes}m`;
+    if (hours < 1) return `${minutes} min`;
+    return `${hours} h ${minutes} m`;
 }

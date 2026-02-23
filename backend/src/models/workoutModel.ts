@@ -28,9 +28,9 @@ export async function getAllWorkouts(userId: string, cursor: string | null) {
 export async function getStats(userId: string) {
     const query = 
         `SELECT 
-            COUNT(w.id) AS total_workouts,
+            COUNT(DISTINCT w.id) AS total_workouts,
             SUM(s.weight_kg * s.reps) AS total_volume,
-            SUM(EXTRACT(EPOCH FROM (w.completed_at - w.created_at)) / 3600) AS total_hours
+            SUM(w.duration_seconds) AS total_time
         FROM workouts w
         LEFT JOIN exercises e ON w.id = e.workout_id
         LEFT JOIN sets s ON e.id = s.exercise_id
