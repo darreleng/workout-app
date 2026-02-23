@@ -59,6 +59,7 @@ export async function updateWorkout(req: Request, res: Response) {
         }
 
         const updateData: { name?: string; notes?: string } = {};
+        
 
         if (req.body.name) {
             const result = WorkoutNameSchema.safeParse(req.body);
@@ -66,7 +67,7 @@ export async function updateWorkout(req: Request, res: Response) {
             updateData.name = result.data.name;
         }
 
-        if (req.body.notes) updateData.name = updateData.notes;
+        if ('notes' in req.body) updateData.notes = req.body.notes;
 
         const updatedWorkout = await WorkoutModel.updateWorkout(userId, workoutId as string, updateData);
         if (!updatedWorkout) return res.status(404).json({ message: "Workout not found or unauthorized" });

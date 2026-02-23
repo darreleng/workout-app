@@ -52,7 +52,7 @@ export default function ExerciseCard(props: Exercise) {
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts', props.workout_id] });
+            queryClient.invalidateQueries({ queryKey: ['workouts'] });
             queryClient.invalidateQueries({ queryKey: ['exercises'] });
         },
         // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS

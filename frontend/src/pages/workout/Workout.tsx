@@ -37,6 +37,7 @@ export default function Workout(){
         },
         onSuccess: async () => {
             queryClient.removeQueries({ queryKey: ['activeWorkout'] });
+            queryClient.invalidateQueries({ queryKey: ['exercises']});
             queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
             navigate(`/workouts`, { replace: true });
         },
@@ -59,7 +60,7 @@ export default function Workout(){
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts', id] });
+            queryClient.invalidateQueries({ queryKey: ['workouts'] });
         }
     });
 
@@ -80,6 +81,7 @@ export default function Workout(){
     });
 
     const elapsedSeconds = useWorkoutTimer(workout?.created_at);
+    console.log(workout?.notes)
     
     // TODO: SKELETON
     if (isLoading) {
@@ -149,7 +151,7 @@ export default function Workout(){
                                 defaultValue={workout.notes}
                                 onBlur={(e) => {
                                     const newValue = e.target.value.trim();
-                                    if (newValue !== workout.notes) updateNotes.mutate(newValue );
+                                    if (newValue !== workout.notes) updateNotes.mutate(newValue);
                                 }}
                             />
                             <Divider my="sm" label="Finish Session" labelPosition="center" />

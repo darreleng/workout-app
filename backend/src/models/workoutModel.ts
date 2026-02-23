@@ -86,10 +86,10 @@ export async function updateWorkout(userId: string, workoutId: string, field: { 
     const query = 
         `UPDATE workouts SET 
             name = COALESCE($3, name), 
-            notes = COALESCE($4, notes) 
+            notes = COALESCE($4, notes)
         WHERE id = $2 AND user_id = $1
         RETURNING *`;
-    const values = [userId, workoutId, field.name, field.notes];
+    const values = [userId, workoutId, field.name ?? null, field.notes ?? null ];
     const { rows } = await db.query(query, values);
     return rows[0]; 
 }

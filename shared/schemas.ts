@@ -21,7 +21,9 @@ export type WorkoutProps = {
     name: string;
     id: string;
     created_at: string;
-    workout_total_volume: number
+    workout_total_volume: number;
+    duration_seconds: number;
+    notes: string;
 };
 
 export interface Exercise {
