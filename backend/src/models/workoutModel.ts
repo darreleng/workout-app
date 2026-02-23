@@ -39,6 +39,12 @@ export async function getStats(userId: string) {
     return rows[0]
 }
 
+export async function getActive(userId: string) {
+    const query = `SELECT id, name, created_at FROM workouts WHERE user_id = $1 AND completed_at IS NULL ORDER BY created_at DESC`;
+    const { rows } = await db.query(query, [userId]);
+    return rows[0]
+}
+
 export async function createWorkout(userId: string, workoutName: string) {
     const query = 'INSERT INTO workouts (user_id, name) VALUES ($1, $2) RETURNING *';
     const { rows } = await db.query(query, [userId, workoutName]);
@@ -83,7 +89,19 @@ export async function updateWorkout(userId: string, workoutId: string, field: { 
             notes = COALESCE($4, notes) 
         WHERE id = $2 AND user_id = $1
         RETURNING *`;
-    const values = [userId, workoutId, field.name ?? null, field.notes ?? null];
+    const values = [userId, workoutId, field.name, field.notes];
+    const { rows } = await db.query(query, values);
+    return rows[0]; 
+}
+
+export async function completeWorkout(userId: string, workoutId: string) {
+    const query = 
+        `UPDATE workouts SET 
+            completed_at = NOW(),
+            duration_seconds = EXTRACT(EPOCH FROM (NOW() - created_at))
+        WHERE id = $2 AND user_id = $1
+        RETURNING *`;
+    const values = [userId, workoutId];
     const { rows } = await db.query(query, values);
     return rows[0]; 
 }

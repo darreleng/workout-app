@@ -1,4 +1,4 @@
-import { Text, Box, Button, Loader, TextInput, Group, Stack, Container, Paper, Divider } from "@mantine/core";
+import { Text, Box, Button, Loader, TextInput, Group, Stack, Container, Paper, Divider, SimpleGrid, Modal } from "@mantine/core";
 import { IconStopwatch } from '@tabler/icons-react';
 import type { WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -7,9 +7,13 @@ import ExerciseCard from "./ExerciseCard";
 import AddExerciseButton from "./AddExerciseButton";
 import WorkoutNameInput from "./WorkoutNameInput";
 import { NotFoundRedirect } from "../../NotFoundRedirect";
+import { useWorkoutTimer } from "../../useWorkoutTimer";
+import { formatDuration } from "../../formatDuration";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function Workout(){
     const { id } = useParams();
+    const [opened, { open, close }] = useDisclosure(false); 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
@@ -29,12 +33,11 @@ export default function Workout(){
                 method: 'DELETE',
                 credentials: 'include',
             });
-            const data = await res.json();
-            if (!res.ok) throw data;
-            return data;
+            if (!res.ok) throw await res.json();
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
+            queryClient.removeQueries({ queryKey: ['activeWorkout'] });
+            queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
             navigate(`/workouts`, { replace: true });
         },
         // TODO: Think of error notifcation
@@ -60,6 +63,24 @@ export default function Workout(){
         }
     });
 
+    const completeWorkout = useMutation({
+        mutationFn: async (id: string) => {
+            const res = await fetch(`http://localhost:3000/api/workouts/${id}`, {
+                method: 'PATCH',
+                credentials: 'include'
+            });
+            if (!res.ok) throw new Error('Failed to complete workout');
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.removeQueries({ queryKey: ['activeWorkout'] });
+            queryClient.invalidateQueries({ queryKey: ['workouts'] });
+            navigate('/workouts');
+        }
+    });
+
+    const elapsedSeconds = useWorkoutTimer(workout?.created_at);
+    
     // TODO: SKELETON
     if (isLoading) {
         return <Loader color="blue" />;
@@ -74,47 +95,77 @@ export default function Workout(){
             <Container size="sm" py="md">
                 <Stack gap="lg">
                 
-                <Paper p="md" radius="md" withBorder shadow="xs">
-                    <Group justify="space-between" align="center">
-                    <WorkoutNameInput workoutName={workout.name} id={workout.id} />
-                    <Group gap="xs" c="blue.6">
-                        <IconStopwatch size={20} />
-                        <Text fw={700}>45:02</Text> {/* TODO: Fix */}
-                    </Group>
-                    </Group>
-                </Paper>
-
-                <Stack gap="md">
-                    {workout.exercises.map((exercise) => (
-                    <ExerciseCard key={exercise.id} {...exercise} />
-                    ))}
-                </Stack>
-
-                <Paper p="md" radius="md" withBorder>
-                    <Stack gap="md">
-                        <AddExerciseButton workoutId={id!} />
-                        <TextInput 
-                            label="Workout Notes" 
-                            placeholder="How was the workout?" 
-                            variant="filled"
-                            defaultValue={workout.notes}
-                            onBlur={(e) => {
-                                const newValue = e.target.value.trim();
-                                if (newValue !== workout.notes) updateNotes.mutate(newValue );
-                            }}
-                        />
-                        <Divider my="sm" label="Finish Session" labelPosition="center" />
-                        <Group grow>
-                            <Button variant="light" color="red" onClick={() => discardWorkout.mutate(id!)}>
-                                Discard
-                            </Button>
-                            <Button color="green" component={Link} to='/workouts' size="md">
-                                Save Workout
-                            </Button>
+                    <Paper p="md" radius="md" withBorder shadow="xs">
+                        <Group justify="space-between" align="center">
+                        <WorkoutNameInput workoutName={workout.name} id={workout.id} />
+                            <Group gap="xs" c="blue.6">
+                                <IconStopwatch size={20} />
+                                <Text fw={700} ff="monospace">
+                                    {workout.completed_at 
+                                    ? formatDuration(workout.duration_seconds) 
+                                    : formatDuration(elapsedSeconds)}
+                                </Text>
+                            </Group>
                         </Group>
+                    </Paper>
+
+                    <Modal 
+                        opened={opened} 
+                        onClose={close} 
+                        withCloseButton={false}
+                        centered
+                        radius="md"
+                        >
+                        <Stack gap="md">
+                            <Text size="sm" c="dimmed">
+                            Are you sure you want to end this session?
+                            </Text>
+
+                            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                                <Button variant="light" color="gray" onClick={close} size="md" radius="md">
+                                    Cancel
+                                </Button>
+                                
+                                <Button color="green" onClick={() => completeWorkout.mutate(workout.id)} size="md" radius="md">
+                                    Finish and Save
+                                </Button>
+                            </SimpleGrid>
+                        </Stack>
+                    </Modal>
+
+                    <Stack gap="md">
+                        {workout.exercises.map((exercise) => (
+                        <ExerciseCard key={exercise.id} {...exercise} />
+                        ))}
                     </Stack>
-                </Paper>
-                
+
+                    <Paper p="md" radius="md" withBorder>
+                        <Stack gap="md">
+                            <AddExerciseButton workoutId={id!} />
+                            <TextInput 
+                                label="Workout Notes" 
+                                placeholder="How was the workout?" 
+                                variant="filled"
+                                defaultValue={workout.notes}
+                                onBlur={(e) => {
+                                    const newValue = e.target.value.trim();
+                                    if (newValue !== workout.notes) updateNotes.mutate(newValue );
+                                }}
+                            />
+                            <Divider my="sm" label="Finish Session" labelPosition="center" />
+                            <Group grow>
+                                <Button variant="light" color="red" onClick={() => discardWorkout.mutate(id!)}>
+                                    Discard
+                                </Button>
+                                {workout.completed_at 
+                                    ? <Button color="green" component={Link} to='/workouts' size="md">
+                                        Save & Exit
+                                    </Button> 
+                                    : <Button onClick={open}>Finish</Button>
+                                }
+                            </Group>
+                        </Stack>
+                    </Paper>
                 </Stack>
             </Container>
         </Box>

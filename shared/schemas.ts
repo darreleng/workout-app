@@ -57,8 +57,9 @@ export type WorkoutWithExercisesAndSets = {
     id: string;
     name: string;
     notes: string;
-    // createdAt: string;
-    // completedAt: string;
+    created_at: string;
+    completed_at: string;
+    duration_seconds: number;
     // notes: string;
     exercises: Exercise[];
 };

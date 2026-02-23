@@ -172,7 +172,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
             </Modal>
 
             <Button leftSection={<IconPlus stroke={2} size={20} />} fullWidth onClick={open}>
-                Add exercise
+                Add Exercise
             </Button>
         </>
     )

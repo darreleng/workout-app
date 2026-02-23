@@ -3,9 +3,9 @@ import { notifications } from "@mantine/notifications";
 import { useDisclosure, useIntersection } from "@mantine/hooks";
 import { useEffect, useRef } from "react";
 import { IconPlus, IconX } from '@tabler/icons-react'
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation,  useQueryClient } from '@tanstack/react-query';
 import WorkoutCard from "./WorkoutCard";
-import { useNavigate } from "react-router";
+import { useNavigate, useOutletContext } from "react-router";
 import { WorkoutNameSchema, type WorkoutProps } from "../../../../shared/schemas";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
@@ -14,6 +14,9 @@ export default function Workouts() {
     const containerRef = useRef<HTMLDivElement>(null);
     const { ref, entry } = useIntersection({ root: containerRef.current });
     const [opened, { open, close }] = useDisclosure(false);
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    const activeWorkout = useOutletContext();
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -22,7 +25,6 @@ export default function Workouts() {
         validate: zod4Resolver(WorkoutNameSchema)
     });
     
-
     const {
         data: workouts,
         fetchNextPage,    
@@ -47,8 +49,6 @@ export default function Workouts() {
         }
     }, [entry, fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-    const queryClient = useQueryClient();
-    const navigate = useNavigate();
 
     const mutation = useMutation({
         mutationFn: async (workoutName: string) => {
@@ -114,6 +114,7 @@ export default function Workouts() {
                                 radius="md"
                                 size="md"
                                 variant="filled"
+                                disabled={!!activeWorkout}
                             >
                                 New Workout
                             </Button>

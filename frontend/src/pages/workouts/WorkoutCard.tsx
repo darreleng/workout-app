@@ -14,12 +14,11 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
                 method: 'DELETE',
                 credentials: 'include',
             });
-            const data = await res.json();
-            if (!res.ok) throw data;
-            return data;
+            if (!res.ok) throw await res.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts'] });
+            queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
+            queryClient.removeQueries({ queryKey: ['activeWorkout'] });
         },
         // TODO: Think of error notifcation
         onError: (error) => {
