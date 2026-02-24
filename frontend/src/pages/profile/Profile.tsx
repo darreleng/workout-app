@@ -41,21 +41,20 @@ export default function Profile() {
                 <Stack gap="xl">
                 <Paper withBorder p="xl" radius="md" shadow="sm">
                     <Stack align="center" gap="xs">
-                    <Avatar size={100} radius={100} color="blue" variant="light" src={data?.user.image} />
-                    
-                    <Stack gap={8} align="center">
-                        <Title order={2} fw={800}>{data?.user.name}</Title>
-                        
-                        <Group gap="xs" c="dimmed">
-                        <IconMail size={16} />
-                        <Text size="sm" lh={1}>{data?.user.email}</Text>
-                        </Group>
+                        <Avatar size={100} radius={100} color="blue" variant="light" src={data?.user.image} />
+                        <Stack gap={8} align="center">
+                            <Title order={2} fw={800}>{data?.user.name}</Title>
+                            
+                            <Group gap="xs" c="dimmed">
+                            <IconMail size={16} />
+                            <Text size="sm" lh={1}>{data?.user.email}</Text>
+                            </Group>
 
-                        <Group gap="xs" c="dimmed">
-                        <IconCalendar size={16} />
-                        <Text size="sm" lh={1}>Member since {data?.user.createdAt.toLocaleDateString()}</Text>
-                        </Group>
-                    </Stack>
+                            <Group gap="xs" c="dimmed">
+                            <IconCalendar size={16} />
+                            <Text size="sm" lh={1}>Member since {data?.user.createdAt.toLocaleDateString()}</Text>
+                            </Group>
+                        </Stack>
                     </Stack>
                 </Paper>
 

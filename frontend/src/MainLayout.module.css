@@ -1,13 +1,14 @@
 .navContainer {
     position: fixed;
-    bottom: 20px; 
+    bottom: 10px; 
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
-    max-width: 90vw; 
+    max-width: 95vw;
+    /* max-width: 90vw; 
     @mixin smaller-than xs {
         width: 90vw;
-    }
+    } */
 }
 
 .segmentedRoot {
@@ -54,5 +55,11 @@
     100% {
         transform: scale(1.2);
         opacity: 0;
+    }
+}
+
+@media (min-width: $mantine-breakpoint-lg) {
+    .navContainer {
+        bottom: 20px;
     }
 }

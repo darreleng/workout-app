@@ -1,0 +1,28 @@
+.responsiveContainer {
+    border: none;
+    box-shadow: none;
+    background-color: var(--mantine-color-white);
+    padding: var(--mantine-spacing-md)
+}
+
+.endBox {
+    padding-bottom: 50px;
+}
+
+@media (min-width: $mantine-breakpoint-lg) {
+    .responsiveContainer {
+        border: 1px solid var(--mantine-color-gray-3);
+        box-shadow: var(--mantine-shadow-xl);
+        border-radius: var(--mantine-radius-md);
+        height: 92vh
+    }
+
+    .wrapper {
+        box-sizing: border-box;
+        padding-top: var(--mantine-spacing-xl);
+    }
+
+    .endBox {
+        padding-bottom: var(--mantine-spacing-md);
+    }
+}

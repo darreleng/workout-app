@@ -108,7 +108,7 @@ export default function Progress(){
     const highestVolume = exTotalVolume.reduce((max, cur) => Math.max(max, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
    
     return (    
-        <Container size="md" py="xl">
+        <Container size="md" bg="var(--mantine-color-gray-0)" mih="100vh" py="xl">
             <Paper withBorder p={{ base: 'sm', sm: 'xl' }} radius="md" shadow="sm">
                 <Stack gap="xl">
                     <Group justify="space-between" align="flex-start">
@@ -143,25 +143,28 @@ export default function Progress(){
                             <Text size="xs" c="dimmed">(kg)</Text>
                         </Group>
                         
-                        <Paper withBorder p="md" radius="md" bg="var(--mantine-color-gray-0)">
-                            <LineChart
-                                h={300}
-                                data={exTotalVolume}
-                                dataKey="date"
-                                series={[{ name: 'totalVolume', color: 'blue.6' }]}
-                                curveType="monotone"
-                                tickLine='none'
-                                withXAxis={false}
-                                gridProps={{ yAxisId: "left" }}
-                                yAxisProps={{ 
-                                    domain: [Math.round(lowestVolume * .85), Math.round(highestVolume * 1.1)],
-                                    width: 42
-                                }}
-                                lineChartProps={{ syncId: 'chart' }}
-                                tooltipProps={{
-                                    content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='volume'/>,
-                                }}
-                            />
+                        <Paper withBorder h={300} p="md" radius="md" bg="var(--mantine-color-gray-0)">
+                            {exTotalVolume.length > 0 &&
+                                <LineChart
+                                    h={300}
+                                    w={'100%'}
+                                    data={exTotalVolume}
+                                    dataKey="date"
+                                    series={[{ name: 'totalVolume', color: 'blue.6' }]}
+                                    curveType="monotone"
+                                    tickLine='none'
+                                    withXAxis={false}
+                                    gridProps={{ yAxisId: "left" }}
+                                    yAxisProps={{ 
+                                        domain: [Math.round(lowestVolume * .85), Math.round(highestVolume * 1.1)],
+                                        width: 42
+                                    }}
+                                    lineChartProps={{ syncId: 'chart', width: 500 }}
+                                    tooltipProps={{
+                                        content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='volume'/>,
+                                    }}
+                                />
+                            }
                         </Paper>
                     </Stack>
 
@@ -183,28 +186,30 @@ export default function Progress(){
                             <Text size="xs" c="dimmed">Based on top sets</Text>
                         </Group>
 
-                        <Paper withBorder p="md" radius="md" bg="var(--mantine-color-gray-0)">
-                            <LineChart
-                                h={300}
-                                data={exOneRepMax}
-                                dataKey="date"
-                                series={[{ name: 'oneRepMax', color: 'grape.6' }]}
-                                curveType="monotone"
-                                tickLine='none'
-                                gridProps={{ yAxisId: "left" }}
-                                yAxisProps={{ 
-                                    domain: [Math.round(lowestOneRepMax * .9), Math.round(highestOneRepMax * 1.1)],
-                                    width: 42 
-                                }}
-                                xAxisProps={{
-                                    tickFormatter: (val) => new Date(val).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
-                                    fontSize: 10,
-                                }}
-                                lineChartProps={{ syncId: 'chart' }}
-                                tooltipProps={{
-                                    content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='weight' />,
-                                }}
-                            />
+                        <Paper withBorder h={300} p="md" radius="md" bg="var(--mantine-color-gray-0)">
+                            {exTotalVolume.length > 0 &&
+                                <LineChart
+                                    h={300}
+                                    data={exOneRepMax}
+                                    dataKey="date"
+                                    series={[{ name: 'oneRepMax', color: 'grape.6' }]}
+                                    curveType="monotone"
+                                    tickLine='none'
+                                    gridProps={{ yAxisId: "left" }}
+                                    yAxisProps={{ 
+                                        domain: [Math.round(lowestOneRepMax * .9), Math.round(highestOneRepMax * 1.1)],
+                                        width: 42 
+                                    }}
+                                    xAxisProps={{
+                                        tickFormatter: (val) => new Date(val).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
+                                        fontSize: 10,
+                                    }}
+                                    lineChartProps={{ syncId: 'chart' }}
+                                    tooltipProps={{
+                                        content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} chartType='weight' />,
+                                    }}
+                                />
+                            }
                         </Paper>
                     </Stack>
                 </Stack>

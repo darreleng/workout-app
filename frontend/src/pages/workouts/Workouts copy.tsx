@@ -1,4 +1,4 @@
-import { Box, Button, Center, Title, ScrollArea, Text, Loader, Container, Stack, Group, Modal, TextInput, Divider } from "@mantine/core";
+import { Box, Button, Center, Title, ScrollArea, Text, Loader, Container, Stack, Group, Modal, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useDisclosure, useIntersection } from "@mantine/hooks";
 import { useEffect, useRef } from "react";
@@ -9,7 +9,6 @@ import { useNavigate, useOutletContext } from "react-router";
 import { WorkoutNameSchema, type WorkoutProps } from "../../../../shared/schemas";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import classes from './Workouts.module.css';
 
 export default function Workouts() {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -25,7 +24,7 @@ export default function Workouts() {
         },
         validate: zod4Resolver(WorkoutNameSchema)
     });
-
+    
     const {
         data: workouts,
         fetchNextPage,    
@@ -95,38 +94,38 @@ export default function Workouts() {
                         label="New workout name"
                         {...form.getInputProps('name')}
                     />
-                    <Group justify="space-between" pt={'sm'}>
+                    <Group justify="flex-end" mt="md">
                         <Button variant="subtle" onClick={handleClose}>Cancel</Button>
                         <Button type="submit" loading={mutation.isPending}>Create</Button>
                     </Group>
                 </form>
             </Modal>
             
-            <Box className={classes.wrapper}>
-                <Container size="sm" className={classes.responsiveContainer}>
-                    <Group justify="space-between" mb='sm' className={classes.titleGroup}>
-                        <Title fw={900} size="h2" lts="-0.5px">Workouts</Title>
-                        <Button 
-                            leftSection={<IconPlus stroke={2} size={20}/>} 
-                            loading={mutation.isPending} 
-                            onClick={open}
-                            radius="md"
-                            size="sm"
-                            variant="filled"
-                            disabled={!!activeWorkout}
-                        >
-                            <Text hiddenFrom="sm">New</Text>
-                            <Text visibleFrom="sm">New Workout</Text>
-                        </Button>
-                    </Group>
-
-                    <Divider mr={'-md'} ml={'-md'}/>
+            <Box bg="var(--mantine-color-gray-0)" mih="100vh">
+                <Container size="sm" py="xl">
+                    <Stack gap="md" mb="xl">
+                        <Group justify="space-between" align="flex-end">
+                            <Title order={1} fw={900} lts="-0.5px">Workouts</Title>
+                            
+                            <Button 
+                                leftSection={<IconPlus stroke={2} size={20}/>} 
+                                loading={mutation.isPending} 
+                                onClick={open}
+                                radius="md"
+                                size="md"
+                                variant="filled"
+                                disabled={!!activeWorkout}
+                            >
+                                New Workout
+                            </Button>
+                        </Group>
+                    </Stack>
 
                     <ScrollArea 
                         viewportRef={containerRef} 
-                        type="never" 
-                        h={{ base: `${activeWorkout ? '77vh' : '100vh'}`, sm: `${activeWorkout ? '83vh' : '86vh'}` }}
-                        scrollbarSize={2}
+                        type="hover" 
+                        h="calc(100vh - 250px)"
+                        offsetScrollbars
                     >
                         <Stack gap="lg">
                             {workouts.pages.map((page, i) => (
@@ -137,12 +136,12 @@ export default function Workouts() {
                             </Stack>
                             ))}
                             
-                            <Box ref={ref} className={classes.endBox}>
+                            <Box ref={ref} py="xl">
                                 {isFetchingNextPage ? (
                                     <Center><Loader size="sm" variant="dots" /></Center>
                                 ) : (
                                     <Text ta="center" size="xs" c="dimmed" tt="uppercase" lts="1px">
-                                        {hasNextPage ? 'Loading more...' : 'End of your journey'}
+                                    {hasNextPage ? 'Loading more...' : 'End of your journey'}
                                     </Text>
                                 )}
                             </Box>
