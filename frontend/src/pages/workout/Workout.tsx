@@ -79,9 +79,9 @@ export default function Workout(){
             navigate('/workouts');
         }
     });
-
-    const elapsedSeconds = useWorkoutTimer(workout?.created_at);
-    console.log(workout?.notes)
+    
+    const activeStartTime = workout?.completed_at ? null : workout?.created_at;
+    const elapsedSeconds = useWorkoutTimer(activeStartTime);
     
     // TODO: SKELETON
     if (isLoading) {
