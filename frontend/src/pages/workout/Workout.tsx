@@ -87,6 +87,7 @@ export default function Workout(){
         onSuccess: () => {
             queryClient.removeQueries({ queryKey: ['activeWorkout'] });
             queryClient.invalidateQueries({ queryKey: ['workouts'] });
+            queryClient.invalidateQueries({ queryKey: ['stats'] });
             navigate('/workouts');
         }
     });
