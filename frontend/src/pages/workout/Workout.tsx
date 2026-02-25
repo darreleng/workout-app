@@ -15,7 +15,8 @@ import { useEffect, useState } from "react";
 
 export default function Workout(){
     const { id } = useParams();
-    const [opened, { open, close }] = useDisclosure(false); 
+    const [isFinishModalOpen, finishModal] = useDisclosure(false);
+    const [isDiscardModalOpen, discardModal] = useDisclosure(false);
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const [scroll] = useWindowScroll();
@@ -130,7 +131,7 @@ export default function Workout(){
 
                     <Paper p="md" radius="md" withBorder>
                         <Stack gap="md">
-                            <AddExerciseButton workoutId={id!} />
+                            <AddExerciseButton workoutId={workout.id} />
                             <TextInput 
                                 label="Workout Notes" 
                                 placeholder="Thoughts?" 
@@ -143,14 +144,14 @@ export default function Workout(){
                             />
                             <Divider my="xs" />
                             <Group grow>
-                                <Button variant="light" color="red" onClick={() => discardWorkout.mutate(id!)}>
+                                <Button variant="light" color="red" onClick={discardModal.open}>
                                     Discard
                                 </Button>
                                 {workout.completed_at 
                                     ? <Button color="green" component={Link} to='/workouts' size="md">
                                         Save & Exit
                                     </Button> 
-                                    : <Button onClick={open}>Finish</Button>
+                                    : <Button onClick={finishModal.open}>Finish</Button>
                                 }
                             </Group>
                         </Stack>
@@ -159,19 +160,19 @@ export default function Workout(){
             </Container>
 
             <Modal 
-                opened={opened} 
-                onClose={close} 
+                opened={isFinishModalOpen} 
+                onClose={finishModal.close} 
                 withCloseButton={false}
                 centered
                 radius="md"
                 >
                 <Stack gap="md">
                     <Text size="sm" c="dimmed">
-                    Are you sure you want to end this session?
+                    Are you sure you want to end this workout?
                     </Text>
 
                     <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                        <Button variant="light" color="gray" onClick={close} size="md" radius="md">
+                        <Button variant="light" color="gray" onClick={finishModal.close} size="md" radius="md">
                             Cancel
                         </Button>
                         
@@ -181,6 +182,31 @@ export default function Workout(){
                     </SimpleGrid>
                 </Stack>
             </Modal>
+
+            <Modal 
+                opened={isDiscardModalOpen} 
+                onClose={discardModal.close} 
+                withCloseButton={false}
+                centered
+                radius="md"
+                >
+                <Stack gap="md">
+                    <Text size="sm" c="dimmed">
+                    Are you sure you want to discard this workout?
+                    </Text>
+
+                    <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                        <Button variant="light" color="gray" onClick={discardModal.close} size="md" radius="md">
+                            Cancel
+                        </Button>
+                        
+                        <Button color="red" onClick={() => discardWorkout.mutate(workout.id)} size="md" radius="md">
+                            Discard
+                        </Button>
+                    </SimpleGrid>
+                </Stack>
+            </Modal>
+            
         </Box>
     )
 }
