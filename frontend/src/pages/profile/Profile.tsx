@@ -3,6 +3,7 @@ import { authClient } from '../../auth-client';
 import { IconMail, IconBarbell, IconCalendar, IconLogout, IconClock, IconWeight } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { formatSeconds } from '../../formatDuration';
+import { useOutletContext } from 'react-router';
 
 interface Stats {
     total_workouts: number;
@@ -11,7 +12,7 @@ interface Stats {
 }
 
 export default function Profile() {
-
+    const activeWorkout = useOutletContext();
     async function handleSignOut() {
         await authClient.signOut();
     }
@@ -36,10 +37,10 @@ export default function Profile() {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <Box bg="var(--mantine-color-gray-0)" mih="100vh" py="xl">
+        <Box bg="var(--mantine-color-gray-0)" mih="100vh" py="xl" pb={activeWorkout ? 120 : 64}>
             <Container size="md">
-                <Stack gap="xl">
-                <Paper withBorder p="xl" radius="md" shadow="sm">
+                <Stack gap='md'>
+                <Paper withBorder p="lg" radius="md" shadow="sm">
                     <Stack align="center" gap="xs">
                         <Avatar size={100} radius={100} color="blue" variant="light" src={data?.user.image} />
                         <Stack gap={8} align="center">
