@@ -2,11 +2,8 @@
     border: none;
     box-shadow: none;
     background-color: var(--mantine-color-white);
-    padding: var(--mantine-spacing-md)
-}
-
-.endBox {
-    padding-bottom: 50px;
+    padding: var(--mantine-spacing-md);
+    /* padding-bottom: 140px; */
 }
 
 .title {

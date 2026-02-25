@@ -4,6 +4,8 @@ import { type Exercise } from "../../../../shared/schemas";
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { IconInfoCircle, IconSearch } from '@tabler/icons-react';
+import classes from './Progress.module.css';
+import { useOutletContext } from 'react-router';
 
 interface ChartTooltipProps {
     label: React.ReactNode;
@@ -55,6 +57,7 @@ function ChartTooltip({ label, payload, chartType }: ChartTooltipProps) {
 
 export default function Progress(){
     const [value, setValue] = useState('');
+    const activeWorkout = useOutletContext();
 
     const { 
         data: exercises,
@@ -108,12 +111,11 @@ export default function Progress(){
     const highestVolume = exTotalVolume.reduce((max, cur) => Math.max(max, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
    
     return (    
-        <Container size="md" bg="var(--mantine-color-gray-0)" mih="100vh" py="xl">
-            <Paper withBorder p={{ base: 'sm', sm: 'xl' }} radius="md" shadow="sm">
+        <Box className={classes.wrapper} pb={activeWorkout ? 120 : 50} mah={{sm:'100vh'}}>
+            <Container size="xl" className={classes.responsiveContainer}>
                 <Stack gap="xl">
-                    <Group justify="space-between" align="flex-start">
-                        <Title order={1} fw={900} lts="-0.5px">Progress</Title>
-                        
+                    <Group justify="space-between" align="center">
+                        <Title className={classes.title}>Progress</Title>
                         <Select
                             placeholder="Search exercise..."
                             data={uniqueExerciseNames}
@@ -126,9 +128,7 @@ export default function Progress(){
                             w={{ base: '100%', sm: 250 }}
                         />
                     </Group>
-
-                    <Divider />
-
+                    <Divider mr={'-md'} ml={'-md'} visibleFrom='sm'/>
                     <Box h={40} display="flex" style={{ alignItems: 'center', justifyContent: 'center' }}>
                         {value ? (
                             <Title order={2} c="blue.7" ta="center">{value}</Title>
@@ -136,17 +136,16 @@ export default function Progress(){
                             <Text c="dimmed" fs="italic">Select an exercise to view charts</Text>
                         )}
                     </Box>
-
                     <Stack gap="xs">
                         <Group gap={4}>
                             <Title order={4}>Total Volume</Title>
-                            <Text size="xs" c="dimmed">(kg)</Text>
+                            <Text size="xs" c="dimmed" lh={0}>(kg)</Text>
                         </Group>
-                        
-                        <Paper withBorder h={300} p="md" radius="md" bg="var(--mantine-color-gray-0)">
+        
+                        <Paper withBorder h={{ base: 300, sm: 400}} p="md" radius="md" bg="gray.0">
                             {exTotalVolume.length > 0 &&
                                 <LineChart
-                                    h={300}
+                                    h={'100%'}
                                     w={'100%'}
                                     data={exTotalVolume}
                                     dataKey="date"
@@ -155,7 +154,7 @@ export default function Progress(){
                                     tickLine='none'
                                     withXAxis={false}
                                     gridProps={{ yAxisId: "left" }}
-                                    yAxisProps={{ 
+                                    yAxisProps={{
                                         domain: [Math.round(lowestVolume * .85), Math.round(highestVolume * 1.1)],
                                         width: 42
                                     }}
@@ -167,15 +166,14 @@ export default function Progress(){
                             }
                         </Paper>
                     </Stack>
-
                     <Stack gap="xs">
                         <Group justify="space-between">
                             <Group gap={4}>
                                 <Title order={4}>Est. 1RM</Title>
-                                <Tooltip 
-                                    label="Brzycki formula: weight / ( 1.0278 – 0.0278 × reps )" 
-                                    withArrow 
-                                    multiline 
+                                <Tooltip
+                                    label="Brzycki formula: weight / ( 1.0278 – 0.0278 × reps )"
+                                    withArrow
+                                    multiline
                                     w={180}
                                 >
                                 <ActionIcon variant="subtle" color="gray" radius="xl" size="sm">
@@ -185,20 +183,19 @@ export default function Progress(){
                             </Group>
                             <Text size="xs" c="dimmed">Based on top sets</Text>
                         </Group>
-
-                        <Paper withBorder h={300} p="md" radius="md" bg="var(--mantine-color-gray-0)">
+                        <Paper withBorder h={{ base: 300, sm: 400}} p="md" radius="md" bg="gray.0">
                             {exTotalVolume.length > 0 &&
                                 <LineChart
-                                    h={300}
+                                    h={'100%'}
                                     data={exOneRepMax}
                                     dataKey="date"
                                     series={[{ name: 'oneRepMax', color: 'grape.6' }]}
                                     curveType="monotone"
                                     tickLine='none'
                                     gridProps={{ yAxisId: "left" }}
-                                    yAxisProps={{ 
+                                    yAxisProps={{
                                         domain: [Math.round(lowestOneRepMax * .9), Math.round(highestOneRepMax * 1.1)],
-                                        width: 42 
+                                        width: 42
                                     }}
                                     xAxisProps={{
                                         tickFormatter: (val) => new Date(val).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
@@ -213,7 +210,7 @@ export default function Progress(){
                         </Paper>
                     </Stack>
                 </Stack>
-            </Paper>
-        </Container>
+            </Container>
+        </Box>
     );
 }

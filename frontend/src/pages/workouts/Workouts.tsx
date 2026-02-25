@@ -87,7 +87,53 @@ export default function Workouts() {
     }
 
     return (
-        <>
+        <Box className={classes.wrapper}>
+            <Container size="sm" className={classes.responsiveContainer}>
+                <Group justify="space-between" mb='sm' className={classes.titleGroup}>
+                    <Title className={classes.title}>Workouts</Title>
+                    <Button 
+                        leftSection={<IconPlus stroke={2} size={20}/>} 
+                        loading={mutation.isPending} 
+                        onClick={open}
+                        radius="md"
+                        size="sm"
+                        variant="filled"
+                        disabled={!!activeWorkout}
+                    >
+                        <Text hiddenFrom="sm">New</Text>
+                        <Text visibleFrom="sm">New Workout</Text>
+                    </Button>
+                </Group>
+
+                <Divider mr={'-md'} ml={'-md'}/>
+
+                <ScrollArea 
+                    viewportRef={containerRef} 
+                    type="never" 
+                    h={{ base: `${activeWorkout ? '77vh' : '100vh'}`, sm: `${activeWorkout ? '83vh' : '86vh'}` }}
+                    scrollbarSize={2}
+                >
+                    <Stack gap="lg">
+                        {workouts.pages.map((page, i) => (
+                        <Stack key={i} gap="lg">
+                            {page.itemsToReturn.map((workout: WorkoutProps) => (
+                                <WorkoutCard key={workout.id} {...workout} />
+                            ))}
+                        </Stack>
+                        ))}
+                        
+                        <Box ref={ref} className={classes.endBox}>
+                            {isFetchingNextPage ? (
+                                <Center><Loader size="sm" variant="dots" /></Center>
+                            ) : (
+                                <Text ta="center" size="xs" c="dimmed" tt="uppercase" lts="1px">
+                                    {hasNextPage ? 'Loading more...' : 'End of your journey'}
+                                </Text>
+                            )}
+                        </Box>
+                    </Stack>
+                </ScrollArea>
+            </Container>
             <Modal opened={opened} onClose={handleClose} withCloseButton={false} radius="md" centered>
                 <form onSubmit={form.onSubmit(values => mutation.mutate(values.name))}>
                     <TextInput
@@ -101,55 +147,6 @@ export default function Workouts() {
                     </Group>
                 </form>
             </Modal>
-            
-            <Box className={classes.wrapper}>
-                <Container size="sm" className={classes.responsiveContainer}>
-                    <Group justify="space-between" mb='sm' className={classes.titleGroup}>
-                        <Title fw={900} size="h2" lts="-0.5px">Workouts</Title>
-                        <Button 
-                            leftSection={<IconPlus stroke={2} size={20}/>} 
-                            loading={mutation.isPending} 
-                            onClick={open}
-                            radius="md"
-                            size="sm"
-                            variant="filled"
-                            disabled={!!activeWorkout}
-                        >
-                            <Text hiddenFrom="sm">New</Text>
-                            <Text visibleFrom="sm">New Workout</Text>
-                        </Button>
-                    </Group>
-
-                    <Divider mr={'-md'} ml={'-md'}/>
-
-                    <ScrollArea 
-                        viewportRef={containerRef} 
-                        type="never" 
-                        h={{ base: `${activeWorkout ? '77vh' : '100vh'}`, sm: `${activeWorkout ? '83vh' : '86vh'}` }}
-                        scrollbarSize={2}
-                    >
-                        <Stack gap="lg">
-                            {workouts.pages.map((page, i) => (
-                            <Stack key={i} gap="lg">
-                                {page.itemsToReturn.map((workout: WorkoutProps) => (
-                                    <WorkoutCard key={workout.id} {...workout} />
-                                ))}
-                            </Stack>
-                            ))}
-                            
-                            <Box ref={ref} className={classes.endBox}>
-                                {isFetchingNextPage ? (
-                                    <Center><Loader size="sm" variant="dots" /></Center>
-                                ) : (
-                                    <Text ta="center" size="xs" c="dimmed" tt="uppercase" lts="1px">
-                                        {hasNextPage ? 'Loading more...' : 'End of your journey'}
-                                    </Text>
-                                )}
-                            </Box>
-                        </Stack>
-                    </ScrollArea>
-                </Container>
-            </Box>
-        </>
+        </Box>
     )
 }
