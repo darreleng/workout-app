@@ -111,11 +111,19 @@ export default function ExerciseCard(props: Exercise) {
     
     return (
         <Paper withBorder radius="md" shadow="sm">
-            <Box p="md" style={{ borderBottom: '1px solid var(--mantine-color-gray-2)' }} bg="var(--mantine-color-gray-0)">
+            <Box px='sm' py='4' bdrs='8 8 0 0' bg="var(--mantine-color-gray-0)" style={{ borderBottom: '1px solid var(--mantine-color-gray-2)'}}>
                 <Group justify="space-between">
                     <TextInput 
                         variant="unstyled"
-                        styles={{ input: { fontWeight: 600, fontSize: '1.1rem' }}}
+                        flex={1}
+                        fw={600}
+                        styles={{ 
+                            input: { 
+                                fontSize: '1.1rem', 
+                                minHeight: 0,
+                                height: '100%'
+                            }
+                        }}
                         value={localName}
                         onChange={(e) => setLocalName(e.currentTarget.value)}
                         onBlur={(e) => {
@@ -131,7 +139,7 @@ export default function ExerciseCard(props: Exercise) {
             </Box>
 
             <Stack p="md" gap="xs">
-                <Group gap="xs" mb={4} px={4} wrap="nowrap">
+                <Group gap="xs" mb={4} wrap="nowrap">
                     <Text size="xs" fw={700} c="dimmed" style={{ flex: '0 0 45px', textAlign: 'center' }}>SET</Text> 
                     <Text size="xs" fw={700} c="dimmed" style={{ flex: 1, textAlign: 'center' }}>PREVIOUS</Text>
                     <Text size="xs" fw={700} c="dimmed" style={{ flex: 1, textAlign: 'center' }}>REPS</Text>
@@ -150,7 +158,6 @@ export default function ExerciseCard(props: Exercise) {
                 </Box>
             </Stack>
         </Paper>
-
     )
 }
 

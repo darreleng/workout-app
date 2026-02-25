@@ -66,10 +66,10 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
                     </Group>
                 </Stack>
 
-                <Menu shadow="md" width={200} position="bottom-end">
+                <Menu shadow="md" position="bottom-end">
                     <Menu.Target>
                         <ActionIcon variant="subtle" color="gray" size="lg" radius="xl">
-                        <IconDotsVertical size={20} stroke={1.5} />
+                            <IconDotsVertical size={20} stroke={1.5} />
                         </ActionIcon>
                     </Menu.Target>
 

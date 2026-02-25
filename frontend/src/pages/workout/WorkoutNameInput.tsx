@@ -37,12 +37,13 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
     return (
         <TextInput 
             variant="unstyled"
+            fw={700}
+            flex={1}
             styles={{
-                input: { 
-                fontSize: 'var(--mantine-font-size-xl)', 
-                fontWeight: 700,
-                padding: 0,
-                height: 'auto'
+                input: {
+                    height: '100%',
+                    fontSize: '1.2rem',
+                    minHeight: 0
                 }
             }}
             aria-label="Workout name"

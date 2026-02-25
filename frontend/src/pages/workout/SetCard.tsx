@@ -12,7 +12,7 @@ export default function SetCard(props: SetCardProps) {
 
     return(
         <Group gap="xs" wrap="nowrap" align="flex-start">
-            <Menu shadow="md">
+            <Menu shadow="md" position="bottom-start">
                 <Menu.Target>
                     <Box style={{ flex: '0 0 45px' }}>
                         <NumberInput 
@@ -26,7 +26,7 @@ export default function SetCard(props: SetCardProps) {
                     </Box>
                 </Menu.Target>
                 <Menu.Dropdown>
-                    <Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={() => props.deleteSet()}>
+                    <Menu.Item color="red" leftSection={<IconTrash size={16} />} onClick={() => props.deleteSet()}>
                         Delete Set
                     </Menu.Item>
                 </Menu.Dropdown>

@@ -9,13 +9,24 @@ import WorkoutNameInput from "./WorkoutNameInput";
 import { NotFoundRedirect } from "../../NotFoundRedirect";
 import { useWorkoutTimer } from "../../useWorkoutTimer";
 import { formatDuration } from "../../formatDuration";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useWindowScroll } from "@mantine/hooks";
+import classes from './Workout.module.css';
+import { useEffect, useState } from "react";
 
 export default function Workout(){
     const { id } = useParams();
     const [opened, { open, close }] = useDisclosure(false); 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const [scroll] = useWindowScroll();
+    const [hidden, setHidden] = useState(false);
+    const [lastScrollY, setLastScrollY] = useState(0);
+
+    useEffect(() => {
+        if (scroll.y > lastScrollY && scroll.y > 50) setHidden(true);
+        else setHidden(false);
+        setLastScrollY(scroll.y);
+    }, [scroll.y]);
 
     const { data: workout, error, isLoading } = useQuery<WorkoutWithExercisesAndSets>({
         queryKey: ['workouts', id],
@@ -93,13 +104,12 @@ export default function Workout(){
     }
 
     return (
-        <Box bg="var(--mantine-color-gray-0)" mih="100vh" pb={100}>
+        <Box bg="var(--mantine-color-gray-0)" mih="100vh">
             <Container size="sm" py="md">
-                <Stack gap="lg">
-                
-                    <Paper p="md" radius="md" withBorder shadow="xs">
-                        <Group justify="space-between" align="center">
-                        <WorkoutNameInput workoutName={workout.name} id={workout.id} />
+                <Stack gap="sm">
+                    <Paper p="sm" radius="md" withBorder shadow="xs" className={hidden ? classes.headerHidden : classes.header}>
+                        <Group justify="space-between" align="center" >
+                            <WorkoutNameInput workoutName={workout.name} id={workout.id} />
                             <Group gap="xs" c="blue.6">
                                 <IconStopwatch size={20} />
                                 <Text fw={700} ff="monospace">
@@ -111,33 +121,9 @@ export default function Workout(){
                         </Group>
                     </Paper>
 
-                    <Modal 
-                        opened={opened} 
-                        onClose={close} 
-                        withCloseButton={false}
-                        centered
-                        radius="md"
-                        >
-                        <Stack gap="md">
-                            <Text size="sm" c="dimmed">
-                            Are you sure you want to end this session?
-                            </Text>
-
-                            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                                <Button variant="light" color="gray" onClick={close} size="md" radius="md">
-                                    Cancel
-                                </Button>
-                                
-                                <Button color="green" onClick={() => completeWorkout.mutate(workout.id)} size="md" radius="md">
-                                    Finish and Save
-                                </Button>
-                            </SimpleGrid>
-                        </Stack>
-                    </Modal>
-
-                    <Stack gap="md">
+                    <Stack gap="sm">
                         {workout.exercises.map((exercise) => (
-                        <ExerciseCard key={exercise.id} {...exercise} />
+                            <ExerciseCard key={exercise.id} {...exercise} />
                         ))}
                     </Stack>
 
@@ -146,7 +132,7 @@ export default function Workout(){
                             <AddExerciseButton workoutId={id!} />
                             <TextInput 
                                 label="Workout Notes" 
-                                placeholder="How was the workout?" 
+                                placeholder="Thoughts?" 
                                 variant="filled"
                                 defaultValue={workout.notes}
                                 onBlur={(e) => {
@@ -154,7 +140,7 @@ export default function Workout(){
                                     if (newValue !== workout.notes) updateNotes.mutate(newValue);
                                 }}
                             />
-                            <Divider my="sm" label="Finish Session" labelPosition="center" />
+                            <Divider my="xs" />
                             <Group grow>
                                 <Button variant="light" color="red" onClick={() => discardWorkout.mutate(id!)}>
                                     Discard
@@ -170,6 +156,30 @@ export default function Workout(){
                     </Paper>
                 </Stack>
             </Container>
+
+            <Modal 
+                opened={opened} 
+                onClose={close} 
+                withCloseButton={false}
+                centered
+                radius="md"
+                >
+                <Stack gap="md">
+                    <Text size="sm" c="dimmed">
+                    Are you sure you want to end this session?
+                    </Text>
+
+                    <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                        <Button variant="light" color="gray" onClick={close} size="md" radius="md">
+                            Cancel
+                        </Button>
+                        
+                        <Button color="green" onClick={() => completeWorkout.mutate(workout.id)} size="md" radius="md">
+                            Finish and Save
+                        </Button>
+                    </SimpleGrid>
+                </Stack>
+            </Modal>
         </Box>
     )
 }

@@ -31,7 +31,7 @@ export default function AddSetButton({ exercise_id, workout_id }: { exercise_id:
 
     return (
         <Button leftSection={<IconPlus stroke={2} size={20} />} loading={mutation.isPending} fullWidth onClick={() => mutation.mutate()}>
-            Add set
+            Add Set
         </Button>
     );
 }
