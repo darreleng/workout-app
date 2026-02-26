@@ -33,7 +33,6 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
     return (
         <Paper 
             withBorder 
-            radius="md" 
             p="md" 
             shadow="sm"
             className={classes.myPaper}
@@ -42,7 +41,7 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
                 <Stack gap="xs" style={{ flex: 1 }}>
                     <Group gap={6}>
                         <IconCalendar size={14} color="var(--mantine-color-dimmed)" />
-                        <Text size="xs" c="dimmed" fw={500}>
+                        <Text size="xs" c="dimmed" fw={500} lh={0}>
                             {new Date(created_at).toLocaleDateString(undefined, { 
                                 weekday: 'short', 
                                 day: 'numeric', 
@@ -57,10 +56,10 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
                     </Title>
 
                     <Group gap="sm" mt="xs">
-                        <Badge variant="light" color="blue" leftSection={<IconBarbell size={12} />}>
+                        <Badge variant="light" radius={0} leftSection={<IconBarbell size={12} />}>
                             {Number(workout_total_volume) || 0} kg
                         </Badge>
-                        <Badge variant="light" color="gray" leftSection={<IconClock size={12} />}>
+                        <Badge variant="light" color="dark.2" radius={0} leftSection={<IconClock size={12} />}>
                             {formatSeconds(duration_seconds) || '--'}
                         </Badge>
                     </Group>
@@ -68,7 +67,7 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
 
                 <Menu shadow="md" position="bottom-end">
                     <Menu.Target>
-                        <ActionIcon variant="subtle" color="gray" size="lg" radius="xl">
+                        <ActionIcon variant="subtle" color="gray" size="lg">
                             <IconDotsVertical size={20} stroke={1.5} />
                         </ActionIcon>
                     </Menu.Target>
@@ -96,43 +95,30 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
                 </Menu>
                 
             </Group>
-{notes && (
-        <UnstyledButton 
-            onClick={toggle} 
-            w="100%" 
-            mt="sm"
-            style={{ textAlign: 'left' }}
-        >
-            <Box 
-                p="xs" 
-                bg="var(--mantine-color-gray-0)" 
-                style={{ 
-                    borderRadius: 'var(--mantine-radius-sm)',
-                    transition: 'background-color 150ms ease',
-                }}
-                // Subtle hover effect
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--mantine-color-gray-1)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--mantine-color-gray-0)'}
-            >
-                <Group justify="space-between" mb={2}>
-                    <Group gap={4}>
-                        <IconNote size={12} color="var(--mantine-color-dimmed)" />
-                        <Text size="xs" fw={700} c="dimmed" tt="uppercase">Notes</Text>
-                    </Group>
-                    
-                    {/* Visual toggle cue */}
-                    <Group gap={2} c="dimmed">
-                        <Text size="xs" fw={500}>{opened ? 'Show less' : 'Show more'}</Text>
-                        {opened ? <IconChevronUp size={12} /> : <IconChevronDown size={12} />}
-                    </Group>
-                </Group>
-
-                <Text size="sm" c="gray.7" lineClamp={opened ? 0 : 2}>
-                    {notes}
-                </Text>
-            </Box>
-        </UnstyledButton>
-    )}
+            {notes && (
+                <UnstyledButton 
+                    onClick={toggle} 
+                    w="100%" 
+                    mt="sm"
+                    style={{ textAlign: 'left' }}
+                >
+                    <Box p="xs" bg="dark.5" >
+                        <Group justify="space-between" mb={2}>
+                            <Group gap={4} c="dimmed">
+                                <IconNote size={12} />
+                                <Text size="xs" fw={800} tt="uppercase">Notes</Text>
+                            </Group>
+                            <Group gap={2} c="dimmed">
+                                <Text size="xs" fw={500}>{opened ? 'Show less' : 'Show more'}</Text>
+                                {opened ? <IconChevronUp size={12} /> : <IconChevronDown size={12} />}
+                            </Group>
+                        </Group>
+                        <Text size="sm" c="dimmed" lineClamp={opened ? 0 : 2}>
+                            {notes}
+                        </Text>
+                    </Box>
+                </UnstyledButton>
+            )}
         </Paper>
     );
 }

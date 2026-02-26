@@ -1,3 +1,10 @@
+.responsiveContainer {
+    border: none;
+    box-shadow: none;
+    padding: var(--mantine-spacing-md);
+    height: 100vh;
+}
+
 .header {
     position: sticky;
     top: var(--mantine-spacing-md); 
@@ -14,3 +21,23 @@
     transform: translateY(-120%);
     opacity: 0;
 }
+
+.stackGap {
+    gap: var(--mantine-spacing-sm);
+}
+
+@media (min-width: $mantine-breakpoint-sm) {
+    .wrapper {
+        padding-top: var(--mantine-spacing-xl);
+    }
+    .responsiveContainer {
+        border: 1px solid var(--mantine-color-dark-6);
+        box-shadow: var(--mantine-shadow-xl);
+        padding: var(--mantine-spacing-xl);
+        height: auto;
+    }
+    .stackGap {
+        gap: var(--mantine-spacing-lg);
+    }
+}
+

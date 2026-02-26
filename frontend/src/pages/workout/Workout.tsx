@@ -1,4 +1,4 @@
-import { Text, Box, Button, Loader, TextInput, Group, Stack, Container, Paper, Divider, SimpleGrid, Modal } from "@mantine/core";
+import { Text, Box, Button, Loader, Textarea, Group, Stack, Container, Paper, Divider, SimpleGrid, Modal } from "@mantine/core";
 import { IconStopwatch } from '@tabler/icons-react';
 import type { WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -106,13 +106,13 @@ export default function Workout(){
     }
 
     return (
-        <Box bg="var(--mantine-color-gray-0)" mih="100vh">
-            <Container size="sm" py="md">
-                <Stack gap="sm">
-                    <Paper p="sm" radius="md" withBorder shadow="xs" className={hidden ? classes.headerHidden : classes.header}>
+        <Box className={classes.wrapper}>
+            <Container size="sm" className={classes.responsiveContainer}>
+                <Stack className={classes.stackGap}>
+                    <Paper p="sm" withBorder shadow="xs" className={hidden ? classes.headerHidden : classes.header}>
                         <Group justify="space-between" align="center" >
                             <WorkoutNameInput workoutName={workout.name} id={workout.id} />
-                            <Group gap="xs" c="blue.6">
+                            <Group gap="xs" c={'volt'}>
                                 <IconStopwatch size={20} />
                                 <Text fw={700} ff="monospace">
                                     {workout.completed_at 
@@ -123,19 +123,22 @@ export default function Workout(){
                         </Group>
                     </Paper>
 
-                    <Stack gap="sm">
+                    <Stack className={classes.stackGap}>
                         {workout.exercises.map((exercise) => (
                             <ExerciseCard key={exercise.id} {...exercise} />
                         ))}
                     </Stack>
 
-                    <Paper p="md" radius="md" withBorder>
+                    <Paper p="md" withBorder>
                         <Stack gap="md">
                             <AddExerciseButton workoutId={workout.id} />
-                            <TextInput 
+                            <Textarea 
                                 label="Workout Notes" 
-                                placeholder="Thoughts?" 
                                 variant="filled"
+                                autosize
+                                c={'dimmed'}
+                                styles={{input: {color: 'var(--mantine-color-dimmed)'}}}
+                                minRows={1}
                                 defaultValue={workout.notes}
                                 onBlur={(e) => {
                                     const newValue = e.target.value.trim();
@@ -144,11 +147,11 @@ export default function Workout(){
                             />
                             <Divider my="xs" />
                             <Group grow>
-                                <Button variant="light" color="red" onClick={discardModal.open}>
+                                <Button color='red' variant="subtle" onClick={discardModal.open}>
                                     Discard
                                 </Button>
                                 {workout.completed_at 
-                                    ? <Button color="green" component={Link} to='/workouts' size="md">
+                                    ? <Button component={Link} to='/workouts'>
                                         Save & Exit
                                     </Button> 
                                     : <Button onClick={finishModal.open}>Finish</Button>
@@ -164,20 +167,17 @@ export default function Workout(){
                 onClose={finishModal.close} 
                 withCloseButton={false}
                 centered
-                radius="md"
                 >
                 <Stack gap="md">
                     <Text size="sm" c="dimmed">
-                    Are you sure you want to end this workout?
+                        Are you sure you want to finish this workout?
                     </Text>
-
                     <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                        <Button variant="light" color="gray" onClick={finishModal.close} size="md" radius="md">
+                        <Button variant="light" color="gray" onClick={finishModal.close}>
                             Cancel
                         </Button>
-                        
-                        <Button color="green" onClick={() => completeWorkout.mutate(workout.id)} size="md" radius="md">
-                            Finish and Save
+                        <Button onClick={() => completeWorkout.mutate(workout.id)}>
+                            Finish
                         </Button>
                     </SimpleGrid>
                 </Stack>
@@ -188,19 +188,16 @@ export default function Workout(){
                 onClose={discardModal.close} 
                 withCloseButton={false}
                 centered
-                radius="md"
                 >
                 <Stack gap="md">
                     <Text size="sm" c="dimmed">
-                    Are you sure you want to discard this workout?
+                        Are you sure you want to discard this workout?
                     </Text>
-
                     <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                        <Button variant="light" color="gray" onClick={discardModal.close} size="md" radius="md">
+                        <Button variant="light" color="gray" onClick={discardModal.close}>
                             Cancel
                         </Button>
-                        
-                        <Button color="red" onClick={() => discardWorkout.mutate(workout.id)} size="md" radius="md">
+                        <Button color="red" onClick={() => discardWorkout.mutate(workout.id)}>
                             Discard
                         </Button>
                     </SimpleGrid>

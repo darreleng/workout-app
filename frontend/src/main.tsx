@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css';
 import '@mantine/charts/styles.css';
-import { MantineProvider } from '@mantine/core'
+import { Container, Divider, MantineProvider, createTheme } from '@mantine/core'
 import { Notifications } from '@mantine/notifications';
 import MainLayout from './MainLayout'
 import Home from './pages/home/Home'
@@ -29,6 +29,42 @@ const queryClient = new QueryClient({
         staleTime: Infinity
       }
     }
+});
+
+const theme = createTheme({
+    primaryColor: 'volt',
+    colors: {
+        volt: ['#f4ffcc', '#e6ff99', '#d7ff66', '#c8ff33', '#b9ff00', '#a4e600', '#8fcc00', '#7ab300', '#669900', '#528000'],
+        dark: ['#C1C2C5', '#A6A7AB', '#909296', '#5C5F66', '#373A40', '#2C2E33', '#25262b', '#1A1B1E', '#141517', '#101113'],
+    },
+    defaultRadius: '0',
+    fontFamily: 'Inter, sans-serif', 
+    headings: {
+        fontFamily: 'Archivo, sans-serif',
+        fontWeight: '900',
+    },
+
+    components: {
+        Container: {
+            defaultProps: {
+                bg: 'dark.8',
+                shadow: 'md'
+            }
+        },
+        Paper: {
+            defaultProps: {
+                bg: 'dark.6',
+                shadow: 'md',
+            },
+        },
+        Button: {
+            defaultProps: {
+                fw: 800,
+                tt: 'uppercase',
+                lts: '0.5px',
+            },
+        },
+    },
 });
 
 const router = createBrowserRouter([
@@ -63,11 +99,11 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <MantineProvider>
+      <MantineProvider theme={theme} forceColorScheme="dark">
         <Notifications position='bottom-center' zIndex={9999}/>
         <RouterProvider router={router}/>
       </MantineProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </StrictMode>,
 )

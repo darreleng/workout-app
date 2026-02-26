@@ -95,17 +95,16 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         <>
             <Modal 
                 opened={opened} 
-                onClose={handleClose} 
+                onClose={handleClose}
                 title={<Text fw={700}>Add Exercise</Text>} 
                 yOffset={isMobile ? 0 : '5dvh'}
                 fullScreen={isMobile}
                 size="md"
                 padding="0"
-                radius="md"
                 styles={{
                     content: { height: '100dvh', display: 'flex', flexDirection: 'column' },
                     body: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' },
-                    header: { padding: '1rem 1rem 0 1rem', minHeight: 'auto'}
+                    header: { padding: '1rem 1rem 0 1rem', minHeight: 'auto', backgroundColor: 'var(--mantine-color-dark-6)'}
                 }}
             >
                 <form onSubmit={(e) => handleAdd(e)} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -118,7 +117,6 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                             onChange={(e) => setSearch(e.currentTarget.value)}
                             variant="filled"
                             size="md"
-                            radius="md"
                             data-autofocus
                         />
                     </Box>
@@ -134,7 +132,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                                     key={ex.name}
                                     p='md'
                                     styles={{
-                                        root: { border: 0, borderBottom: '1px solid var(--mantine-color-gray-2)' }
+                                        root: { borderBottom: '1px solid var(--mantine-color-dark-4)' }
                                     }}
                                     component='button'
                                     onClick={(e) => handleAdd(e, ex.name)}
@@ -157,11 +155,10 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                         )}
                     </ScrollArea>
 
-                    <Box p="md" bg="var(--mantine-color-gray-0)" style={{ borderTop: '1px solid var(--mantine-color-gray-2)' }}>
+                    <Box p="md" style={{ borderTop: '1px solid var(--mantine-color-dark-4)' }}>
                         <Button 
                             fullWidth 
                             size="md" 
-                            radius="md"
                             onClick={(e) => handleAdd(e)}
                             disabled={!search}
                         >
@@ -171,7 +168,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                 </form>
             </Modal>
 
-            <Button leftSection={<IconPlus stroke={2} size={20} />} fullWidth onClick={open}>
+            <Button variant='light' leftSection={<IconPlus stroke={2} size={20} />} fullWidth onClick={open}>
                 Add Exercise
             </Button>
         </>

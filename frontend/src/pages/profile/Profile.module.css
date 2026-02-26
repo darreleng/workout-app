@@ -1,13 +1,7 @@
 .responsiveContainer {
     border: none;
     box-shadow: none;
-    background-color: var(--mantine-color-white);
     padding: var(--mantine-spacing-md);
-}
-
-.title {
-    font-size: var(--mantine-h2-font-size);
-    letter-spacing: -.5px;
 }
 
 @media (min-width: $mantine-breakpoint-sm) {
@@ -20,9 +14,5 @@
     .wrapper {
         box-sizing: border-box;
         padding-top: var(--mantine-spacing-xl);
-    }
-
-    .title {
-        font-size: var(--mantine-h1-font-size);
     }
 }

@@ -4,6 +4,7 @@ import { IconMail, IconBarbell, IconCalendar, IconLogout, IconClock, IconWeight 
 import { useQuery } from '@tanstack/react-query';
 import { formatSeconds } from '../../formatDuration';
 import { useOutletContext } from 'react-router';
+import classes from './Profile.module.css';
 
 interface Stats {
     total_workouts: number;
@@ -37,23 +38,21 @@ export default function Profile() {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <Box bg="var(--mantine-color-gray-0)" mih="100vh" py="xl" pb={activeWorkout ? 120 : 64}>
-            <Container size="md">
-                <Stack gap='md'>
-                <Paper withBorder p="lg" radius="md" shadow="sm">
+        <Box className={classes.wrapper} pb={{ base: activeWorkout ? 80 : 56 }}>
+            <Container size="sm" className={classes.responsiveContainer}>
+                <Stack>
+                <Paper withBorder p="lg">
                     <Stack align="center" gap="xs">
-                        <Avatar size={100} radius={100} color="blue" variant="light" src={data?.user.image} />
+                        <Avatar size={100} color="volt" radius={0} variant="light" src={data?.user.image} />
                         <Stack gap={8} align="center">
                             <Title order={2} fw={800}>{data?.user.name}</Title>
-                            
                             <Group gap="xs" c="dimmed">
-                            <IconMail size={16} />
-                            <Text size="sm" lh={1}>{data?.user.email}</Text>
+                                <IconMail size={16} />
+                                <Text size="sm" lh={1}>{data?.user.email}</Text>
                             </Group>
-
                             <Group gap="xs" c="dimmed">
-                            <IconCalendar size={16} />
-                            <Text size="sm" lh={1}>Member since {data?.user.createdAt.toLocaleDateString()}</Text>
+                                <IconCalendar size={16} />
+                                <Text size="sm" lh={1}>Member since {data?.user.createdAt.toLocaleDateString()}</Text>
                             </Group>
                         </Stack>
                     </Stack>
@@ -61,27 +60,27 @@ export default function Profile() {
 
                 <SimpleGrid 
                     cols={{ base: 1, sm: 3 }}
-                    spacing="md"
+                    spacing="xs"
                 >
                     <StatsCard 
                         label="Workouts" 
                         value={stats?.total_workouts} 
                         icon={<IconBarbell size={20} />} 
-                        color="blue" 
+                        color="volt" 
                     />
 
                     <StatsCard 
                         label="Total Volume" 
                         value={`${Number(stats?.total_volume)} kg`} 
                         icon={<IconWeight size={20} />} 
-                        color="grape" 
+                        color="grape.6" 
                     />
 
                     <StatsCard 
                         label="Total Time" 
                         value={`${formatSeconds(stats!.total_time)}`} 
                         icon={<IconClock size={20} />} 
-                        color="teal" 
+                        color="cyan.5" 
                     />
                 </SimpleGrid>
 
@@ -91,7 +90,6 @@ export default function Profile() {
                     leftSection={<IconLogout size={20} />}
                     fullWidth
                     size="md"
-                    radius="md"
                     onClick={handleSignOut}
                 >
                     Sign out
@@ -105,10 +103,10 @@ export default function Profile() {
 
 function StatsCard({ label, value, icon, color }: { label: string, value: any, icon: any, color: string }) {
   return (
-    <Paper withBorder p="md" radius="md" shadow="xs" style={{ flex: 1, minWidth: '200px' }}>
+    <Paper withBorder p="md" shadow="xs" style={{ flex: 1, minWidth: '200px' }}>
       <Stack gap={4} align="center">
-        <ThemeIcon variant="light" color={color} size="lg" radius="md">
-          {icon}
+        <ThemeIcon variant="light" color={color} size="lg">
+            {icon}
         </ThemeIcon>
         <Text fw={800} size="xl" mt="xs">{value}</Text>
         <Text size="xs" fw={700} c="dimmed" tt="uppercase" lts="0.5px">{label}</Text>

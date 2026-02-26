@@ -53,104 +53,87 @@ export default function MainLayout() {
         <>
             <Outlet context={activeWorkout} />
             <Box className={classes.navContainer} >
-                <Stack gap={8}>
+                <Stack gap={0}>
                 {activeWorkout && (
-                    <Paper 
-                        withBorder 
-                        shadow="md" 
-                        radius="xl" 
-                        p="xs" 
-                        bg="var(--mantine-color-blue-filled)"
-                        c="white"
-                        style={{ cursor: 'pointer' }}
-                    >
-                        <Group justify="space-between" wrap="nowrap">
-                            <Group 
-                                gap="xs" 
-                                style={{ flex: 1 }} 
-                                onClick={() => navigate(`/workouts/${activeWorkout.id}`)}
-                            >
-                                <Box className={classes.iconWrapper}>
-                                    <Box className={classes.ripple} />
-                                    <IconPointFilled 
-                                        size={18} 
-                                        color="white" 
-                                        style={{ position: 'relative', zIndex: 1 }} 
-                                    />
-                                </Box>
-                                <Group gap={20} flex='1' justify="space-between">
-                                    <Text size="sm" opacity={'.8'} fw={800}>{activeWorkout.name}</Text>
-                                    <Text size="sm" fw={800}>{elapsedSeconds}</Text>
-                                </Group>
+                    <Group justify="space-between" align="center" className={classes.activeWorkout}>
+                        <Group 
+                            gap="xs" 
+                            flex='1'
+                            align='1'
+                            onClick={() => navigate(`/workouts/${activeWorkout.id}`)}
+                        >
+                            <Box className={classes.iconWrapper}>
+                                <Box className={classes.ripple} />
+                                <IconPointFilled size={16} color="white" />
+                            </Box>
+                            <Group flex='1' align='center' justify="space-between">
+                                <Text size="xs" lh={0} c={'dark.9'} fw={800}>{activeWorkout.name}</Text>
+                                <Text size="xs" lh={0} c={'dark.9'} fw={800}>{elapsedSeconds}</Text>
                             </Group>
-
-                            <ActionIcon 
-                                variant="subtle" 
-                                color="white" 
-                                radius="xl"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    open();
-                                }}
-                            >
-                                <IconTrash size={16} />
-                            </ActionIcon>
                         </Group>
-                    </Paper>
+
+                        <ActionIcon 
+                            variant="subtle" 
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                open();
+                            }}
+                        >
+                            <IconTrash size={16} color="white" />
+                        </ActionIcon>
+                    </Group>
+
                 )}
 
-                    <Modal opened={opened} onClose={close} title={<Text fw={700}>Discard active workout?</Text>} centered radius="md">
+                    <Modal opened={opened} onClose={close} withCloseButton={false} centered>
                         <Stack gap="md">
-                            <Text size="sm" c="dimmed">This will permanently delete your current progress.</Text>
+                            <Text size="sm" c="dimmed">Are you sure you want to discard this workout?</Text>
                             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                                <Button variant="light" color="gray" onClick={close}>Keep Workout</Button>
+                                <Button variant="light" color="gray" onClick={close}>Cancel</Button>
                                 <Button color="red" onClick={() => { discardWorkout.mutate(activeWorkout!.id); close(); }}>Discard</Button>
                             </SimpleGrid>
                         </Stack>
                     </Modal>
 
-                    <Paper shadow="lg" radius="xl" withBorder className={classes.segmentedRoot}>
-                        <SegmentedControl
-                            radius="xl"
-                            size="md"
-                            withItemsBorders={false}
-                            classNames={{
-                                root: classes.segmentedRoot,
-                                indicator: classes.indicator,
-                            }}
-                            value={currentValue}
-                            onChange={(value) => navigate(`/${value.toLowerCase()}`)}
-                            data={[
-                                { 
-                                    value: 'profile', 
-                                    label: (
-                                        <Center style={{ gap: 10 }}>
-                                            <IconUser size={16} />
-                                            <Text size="sm">Profile</Text>
-                                        </Center>
-                                    ) 
-                                },
-                                { 
-                                    value: 'workouts', 
-                                    label: (
-                                        <Center style={{ gap: 10 }}>
-                                            <IconBarbell size={16} />
-                                            <Text size="sm">Workouts</Text>
-                                        </Center>
-                                    ) 
-                                },
-                                { 
-                                    value: 'progress', 
-                                    label: (
-                                        <Center style={{ gap: 10 }}>
-                                            <IconChartBar size={16} />
-                                            <Text size="sm">Progress</Text>
-                                        </Center>
-                                    ) 
-                                }
-                            ]}
-                        />
-                    </Paper>
+                    <SegmentedControl
+                        withItemsBorders={false}
+                        classNames={{
+                            root: classes.segmentedRoot,
+                            indicator: classes.indicator,
+                            label: classes.label
+                        }}
+                        value={currentValue}
+                        onChange={(value) => navigate(`/${value.toLowerCase()}`)}
+                        data={[
+                            { 
+                                value: 'profile', 
+                                label: (
+                                    <Center style={{ gap: 10 }}>
+                                        <IconUser size={16} />
+                                        <Text className={classes.labelText}>Profile</Text>
+                                    </Center>
+                                ) 
+                            },
+                            { 
+                                value: 'workouts', 
+                                label: (
+                                    <Center style={{ gap: 10 }}>
+                                        <IconBarbell size={16} />
+                                        <Text className={classes.labelText}>Workouts</Text>
+                                    </Center>
+                                ) 
+                            },
+                            { 
+                                value: 'progress', 
+                                label: (
+                                    <Center style={{ gap: 10 }}>
+                                        <IconChartBar size={16} />
+                                        <Text className={classes.labelText}>Progress</Text>
+                                    </Center>
+                                ) 
+                            }
+                        ]}
+                    />
                 </Stack>
             </Box>
         </>

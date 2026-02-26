@@ -89,40 +89,33 @@ export default function Workouts() {
     return (
         <Box className={classes.wrapper}>
             <Container size="sm" className={classes.responsiveContainer}>
-                <Group justify="space-between" mb='sm' className={classes.titleGroup}>
+                <Group justify="space-between" className={classes.titleGroup}>
                     <Title className={classes.title}>Workouts</Title>
                     <Button 
                         leftSection={<IconPlus stroke={2} size={20}/>} 
                         loading={mutation.isPending} 
                         onClick={open}
-                        radius="md"
-                        size="sm"
-                        variant="filled"
                         disabled={!!activeWorkout}
                     >
-                        <Text hiddenFrom="sm">New</Text>
-                        <Text visibleFrom="sm">New Workout</Text>
+                        <Text hiddenFrom="sm" fw={800}>New</Text>
+                        <Text visibleFrom="sm" fw={800}>New Workout</Text>
                     </Button>
                 </Group>
-
-                <Divider mr={'-md'} ml={'-md'}/>
 
                 <ScrollArea 
                     viewportRef={containerRef} 
                     type="never" 
-                    h={{ base: `${activeWorkout ? '77vh' : '100vh'}`, sm: `${activeWorkout ? '83vh' : '86vh'}` }}
-                    scrollbarSize={2}
                 >
-                    <Stack gap="lg">
+                    <Stack className={classes.stackGap}>
                         {workouts.pages.map((page, i) => (
-                        <Stack key={i} gap="lg">
+                        <Stack key={i} className={classes.stackGap}>
                             {page.itemsToReturn.map((workout: WorkoutProps) => (
                                 <WorkoutCard key={workout.id} {...workout} />
                             ))}
                         </Stack>
                         ))}
                         
-                        <Box ref={ref} className={classes.endBox}>
+                        <Box ref={ref} pb={{ base: `${activeWorkout ? '72' : '42'}`, sm: `${activeWorkout ? '8' : '0'}`}}>
                             {isFetchingNextPage ? (
                                 <Center><Loader size="sm" variant="dots" /></Center>
                             ) : (
@@ -134,7 +127,7 @@ export default function Workouts() {
                     </Stack>
                 </ScrollArea>
             </Container>
-            <Modal opened={opened} onClose={handleClose} withCloseButton={false} radius="md" centered>
+            <Modal opened={opened} onClose={handleClose} withCloseButton={false} centered>
                 <form onSubmit={form.onSubmit(values => mutation.mutate(values.name))}>
                     <TextInput
                         withAsterisk

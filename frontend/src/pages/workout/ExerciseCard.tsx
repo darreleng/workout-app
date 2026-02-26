@@ -110,8 +110,8 @@ export default function ExerciseCard(props: Exercise) {
     if (error) return <div>Error: {error.message}</div>;
     
     return (
-        <Paper withBorder radius="md" shadow="sm">
-            <Box px='sm' py='4' bdrs='8 8 0 0' bg="var(--mantine-color-gray-0)" style={{ borderBottom: '1px solid var(--mantine-color-gray-2)'}}>
+        <Paper withBorder shadow="sm">
+            <Box px='sm' py='4' style={{ borderBottom: '1px solid var(--mantine-color-gray-8)'}}>
                 <Group justify="space-between">
                     <TextInput 
                         variant="unstyled"

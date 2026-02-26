@@ -18,10 +18,10 @@ function ChartTooltip({ label, payload, chartType }: ChartTooltipProps) {
     const dateDisplay = label ? new Date(label as string).toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
     return (
-        <Paper px="md" py="xs" withBorder shadow="xl" radius="md" style={{ pointerEvents: 'none' }}>
+        <Paper px="md" py="xs" bg={'dark.4'} withBorder>
             <Stack gap={2}>
                 <Text size="xs" c="dimmed" fw={700} tt="uppercase" lts="0.5px">
-                {dateDisplay}
+                    {dateDisplay}
                 </Text>
 
                 {payload.map((item: any) => (
@@ -30,7 +30,6 @@ function ChartTooltip({ label, payload, chartType }: ChartTooltipProps) {
                         w={10} 
                         h={10} 
                         style={{ 
-                            borderRadius: '50%', 
                             backgroundColor: item.color || 'blue' 
                         }} 
                         />
@@ -111,9 +110,9 @@ export default function Progress(){
     const highestVolume = exTotalVolume.reduce((max, cur) => Math.max(max, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
    
     return (    
-        <Box className={classes.wrapper} pb={activeWorkout ? 120 : 50} mah={{sm:'100vh'}}>
-            <Container size="xl" className={classes.responsiveContainer}>
-                <Stack gap="xl">
+        <Box className={classes.wrapper}>
+            <Container size="xl" pb={{ base: `${activeWorkout ? 100 : 72}`, sm: `${activeWorkout ? 32 : 0}`}} className={classes.responsiveContainer}>
+                <Stack gap="lg">
                     <Group justify="space-between" align="center">
                         <Title className={classes.title}>Progress</Title>
                         <Select
@@ -131,7 +130,7 @@ export default function Progress(){
                     <Divider mr={'-md'} ml={'-md'} visibleFrom='sm'/>
                     <Box h={40} display="flex" style={{ alignItems: 'center', justifyContent: 'center' }}>
                         {value ? (
-                            <Title order={2} c="blue.7" ta="center">{value}</Title>
+                            <Title order={2} c="volt">{value}</Title>
                             ) : (
                             <Text c="dimmed" fs="italic">Select an exercise to view charts</Text>
                         )}
@@ -142,14 +141,14 @@ export default function Progress(){
                             <Text size="xs" c="dimmed" lh={0}>(kg)</Text>
                         </Group>
         
-                        <Paper withBorder h={{ base: 300, sm: 400}} p="md" radius="md" bg="gray.0">
+                        <Paper withBorder h={{ base: 300, sm: 400}} p="md">
                             {exTotalVolume.length > 0 &&
                                 <LineChart
                                     h={'100%'}
                                     w={'100%'}
                                     data={exTotalVolume}
                                     dataKey="date"
-                                    series={[{ name: 'totalVolume', color: 'blue.6' }]}
+                                    series={[{ name: 'totalVolume', color: 'cyan.5' }]}
                                     curveType="monotone"
                                     tickLine='none'
                                     withXAxis={false}
@@ -183,7 +182,7 @@ export default function Progress(){
                             </Group>
                             <Text size="xs" c="dimmed">Based on top sets</Text>
                         </Group>
-                        <Paper withBorder h={{ base: 300, sm: 400}} p="md" radius="md" bg="gray.0">
+                        <Paper withBorder h={{ base: 300, sm: 400}} p="md">
                             {exTotalVolume.length > 0 &&
                                 <LineChart
                                     h={'100%'}

@@ -28,7 +28,7 @@ export default function DeleteExerciseButton({ workoutId, exerciseId }: { workou
     return (
         <Menu shadow="md" position='bottom-end'>
             <Menu.Target>
-                <ActionIcon variant="subtle" color="gray" size="lg" radius="xl">
+                <ActionIcon variant="subtle" color="gray" size="lg">
                     <IconDotsVertical size={20} stroke={1.5} />
                 </ActionIcon>
             </Menu.Target>

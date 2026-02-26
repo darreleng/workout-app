@@ -42,8 +42,8 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
             styles={{
                 input: {
                     height: '100%',
-                    fontSize: '1.2rem',
-                    minHeight: 0
+                    fontSize: '1.5rem',
+                    minHeight: 0,
                 }
             }}
             aria-label="Workout name"
