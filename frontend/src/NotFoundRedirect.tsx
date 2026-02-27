@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Center, Stack, Title, Text, Button } from '@mantine/core';
 
-//TODO: touch up
-
-export function NotFoundRedirect() {
+export default function NotFoundRedirect() {
     const navigate = useNavigate();
     const [countdown, setCountdown] = useState(5);
 
@@ -28,7 +26,7 @@ export function NotFoundRedirect() {
             <Stack align="center">
                 <Title order={2}>404</Title>
                 <Text c="dimmed">
-                    It looks like this workout does not exist or does not belong to you. 
+                    Oops... Page not found.
                     Redirecting to your list of workouts in {countdown}s...
                 </Text>
                 <Button variant="light" onClick={() => navigate('/workouts')}>

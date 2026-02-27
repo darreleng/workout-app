@@ -1,8 +1,7 @@
-import { Box, Button, Center, Title, ScrollArea, Text, Loader, Container, Stack, Group, Modal, TextInput, Divider } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
+import { Box, Button, Center, Title, ScrollArea, Text, Loader, Container, Stack, Group, Modal, TextInput } from "@mantine/core";
 import { useDisclosure, useIntersection } from "@mantine/hooks";
 import { useEffect, useRef } from "react";
-import { IconPlus, IconX } from '@tabler/icons-react'
+import { IconPlus } from '@tabler/icons-react'
 import { useInfiniteQuery, useMutation,  useQueryClient } from '@tanstack/react-query';
 import WorkoutCard from "./WorkoutCard";
 import { useNavigate, useOutletContext } from "react-router";
@@ -59,7 +58,6 @@ export default function Workouts() {
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify({ workoutName })
             });
-
             if (!res.ok) throw await res.json();
             return res.json();
         },
@@ -67,19 +65,10 @@ export default function Workouts() {
             queryClient.invalidateQueries({ queryKey: ['workouts'] });
             navigate(`/workouts/${newWorkout.id}`);
         },
-        onError: (error) => {
-            notifications.show({
-                title: 'Failed to start a new workout',
-                message: error.message,
-                color: 'red',
-                autoClose: 2000,
-                icon: <IconX stroke={2} size={20} />,            
-            });
-        }
     });
 
-    if (isPending) return <div><Loader size='sm' /></div>; 
-    if (error) return <div>Error: {error.message}</div>;
+    if (isPending) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (error) return ;
 
     function handleClose() {
         close()

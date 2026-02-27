@@ -1,14 +1,12 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css';
 import '@mantine/charts/styles.css';
-import { Container, Divider, MantineProvider, createTheme } from '@mantine/core'
-import { Notifications } from '@mantine/notifications';
+import { MantineProvider, createTheme } from '@mantine/core'
+import { notifications, Notifications } from '@mantine/notifications';
 import MainLayout from './MainLayout'
 import Home from './pages/home/Home'
 import ProtectedRoute from './ProtectedRoute'
@@ -22,13 +20,37 @@ import Profile from './pages/profile/Profile'
 import PublicRoute from './PublicRoute'
 import Workout from './pages/workout/Workout';
 import Progress from './pages/progress/Progress'
+import { IconX } from '@tabler/icons-react';
+import NotFoundRedirect from './NotFoundRedirect';
 
 const queryClient = new QueryClient({
     defaultOptions: {
-      queries: {
-        staleTime: Infinity
-      }
-    }
+        queries: {
+            staleTime: Infinity
+        }
+    },
+    queryCache: new QueryCache({
+        onError: (error) => {
+            notifications.show({
+                title: 'Error',
+                message: error.message || 'Something went wrong with fetching data from the server',
+                color: 'red',
+                autoClose: 2000,
+                icon: <IconX stroke={2} size={20} /> 
+            });
+        },
+    }),
+    mutationCache: new MutationCache({
+        onError: (error) => {
+            notifications.show({
+                title: 'Error',
+                message: error.message || 'Something went wrong with processing the action',
+                color: 'red',
+                autoClose: 2000,
+                icon: <IconX stroke={2} size={20} /> 
+            });
+        },
+    }),
 });
 
 const theme = createTheme({
@@ -92,9 +114,9 @@ const router = createBrowserRouter([
       },
     { path: "/workouts/:id", Component: Workout}
     ]
-  }
+  },
+  { Component: NotFoundRedirect, path: "*"}
 ])
-
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -103,7 +125,6 @@ createRoot(document.getElementById('root')!).render(
         <Notifications position='bottom-center' zIndex={9999}/>
         <RouterProvider router={router}/>
       </MantineProvider>
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </StrictMode>,
 )

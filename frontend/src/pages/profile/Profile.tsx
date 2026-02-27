@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Container, Group, Loader, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from '@mantine/core';
+import { Avatar, Box, Button, Center, Container, Group, Loader, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import { authClient } from '../../auth-client';
 import { IconMail, IconBarbell, IconCalendar, IconLogout, IconClock, IconWeight } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
@@ -34,8 +34,8 @@ export default function Profile() {
         }
     })
 
-    if (isLoading) return <Loader color="blue" />;
-    if (error) return <div>Error: {error.message}</div>;
+    if (isLoading) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (error) return ;
 
     return (
         <Box className={classes.wrapper} pb={{ base: activeWorkout ? 80 : 56 }}>

@@ -24,10 +24,6 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
             queryClient.invalidateQueries({ queryKey: ['exercises'] });
             queryClient.removeQueries({ queryKey: ['activeWorkout'] });
         },
-        // TODO: Think of error notifcation
-        onError: (error) => {
-            console.log(error);
-        }
     })
 
     return (

@@ -1,5 +1,4 @@
 import { TextInput } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { WorkoutNameSchema } from "../../../../shared/schemas";
@@ -23,15 +22,6 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['workouts'] });
         },
-        // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
-        onError: (error) => {
-            notifications.show({
-                title: 'Failed to modify workout name',
-                message: error.message,
-                color: 'red',
-                autoClose: 2000,
-            });
-        }
     });
     
     return (

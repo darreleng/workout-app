@@ -1,4 +1,4 @@
-import { Text, Box, Button, Loader, Textarea, Group, Stack, Container, Paper, Divider, SimpleGrid, Modal } from "@mantine/core";
+import { Text, Box, Button, Loader, Textarea, Group, Stack, Container, Paper, Divider, SimpleGrid, Modal, Center } from "@mantine/core";
 import { IconStopwatch } from '@tabler/icons-react';
 import type { WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -6,7 +6,7 @@ import { useNavigate, useParams, Link } from "react-router";
 import ExerciseCard from "./ExerciseCard";
 import AddExerciseButton from "./AddExerciseButton";
 import WorkoutNameInput from "./WorkoutNameInput";
-import { NotFoundRedirect } from "../../NotFoundRedirect";
+import NotFoundRedirect from "../../NotFoundRedirect";
 import { useWorkoutTimer } from "../../useWorkoutTimer";
 import { formatDuration } from "../../formatDuration";
 import { useDisclosure, useWindowScroll } from "@mantine/hooks";
@@ -53,10 +53,6 @@ export default function Workout(){
             queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
             navigate(`/workouts`, { replace: true });
         },
-        // TODO: Think of error notifcation
-        onError: (error) => {
-            console.log(error);
-        }
     })
 
     const updateNotes = useMutation({
@@ -96,14 +92,9 @@ export default function Workout(){
     const activeStartTime = workout?.completed_at ? null : workout?.created_at;
     const elapsedSeconds = useWorkoutTimer(activeStartTime);
     
-    // TODO: SKELETON
-    if (isLoading) {
-        return <Loader color="blue" />;
-    }
+    if (isLoading) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
 
-    if (error || !workout) {
-        return <NotFoundRedirect />;
-    }
+    if (error || !workout) return <NotFoundRedirect />;
 
     return (
         <Box className={classes.wrapper}>

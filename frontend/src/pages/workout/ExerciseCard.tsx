@@ -5,8 +5,6 @@ import SetCard from "./SetCard";
 import DeleteExerciseButton from "./DeleteExerciseButton";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { notifications } from "@mantine/notifications";
-import { IconX } from "@tabler/icons-react";
 
 export default function ExerciseCard(props: Exercise) {
     const queryClient = useQueryClient();
@@ -28,15 +26,6 @@ export default function ExerciseCard(props: Exercise) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['exercises'] });
         },
-        // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
-        onError: (error) => {
-            notifications.show({
-                title: 'Failed to modify exercise name',
-                message: error.message,
-                color: 'red',
-                autoClose: 2000,
-            });
-        }
     });
 
     const updateSetField = useMutation({
@@ -55,16 +44,6 @@ export default function ExerciseCard(props: Exercise) {
             queryClient.invalidateQueries({ queryKey: ['workouts'] });
             queryClient.invalidateQueries({ queryKey: ['exercises'] });
         },
-        // TODO: REMOVE OR REWORK ERROR NOTIFICATIONS
-        onError: (error) => {
-            notifications.show({
-                title: 'Failed to modify set',
-                message: error.message,
-                color: 'red',
-                autoClose: 2000,
-                icon: <IconX stroke={2} size={20} />,            
-            });
-        }
     });
     
     const deleteSet = useMutation({
@@ -80,13 +59,6 @@ export default function ExerciseCard(props: Exercise) {
             queryClient.invalidateQueries({ queryKey: ['workouts', props.workout_id] });
             queryClient.invalidateQueries({ queryKey: ['exercises'] });
         },
-        onError: (error) => {
-            notifications.show({ 
-                title: 'Error', 
-                message: error.message, 
-                color: 'red' 
-            });
-        }
     });
 
     const { 

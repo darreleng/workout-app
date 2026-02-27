@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@mantine/core';
-import { IconPlus, IconX } from '@tabler/icons-react';
-import { notifications } from "@mantine/notifications";
+import { IconPlus } from '@tabler/icons-react';
 
 export default function AddSetButton({ exercise_id, workout_id }: { exercise_id: string, workout_id: string }) {
     const queryClient = useQueryClient();
@@ -18,15 +17,6 @@ export default function AddSetButton({ exercise_id, workout_id }: { exercise_id:
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['workouts', workout_id] })
         },
-        onError: (error) => {
-            notifications.show({
-                title: 'Failed to add a set',
-                message: error.message,
-                color: 'red',
-                autoClose: 2000,
-                icon: <IconX stroke={2} size={20} />,            
-            });
-        }
     });
 
     return (

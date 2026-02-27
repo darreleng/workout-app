@@ -1,5 +1,5 @@
 import { LineChart } from '@mantine/charts';
-import { Box, Paper, Title, Loader, Text, Select, Tooltip, ActionIcon, Group, Container, Divider, Stack } from '@mantine/core';
+import { Box, Paper, Title, Loader, Text, Select, Tooltip, ActionIcon, Group, Container, Divider, Stack, Center } from '@mantine/core';
 import { type Exercise } from "../../../../shared/schemas";
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -108,6 +108,9 @@ export default function Progress(){
     const highestOneRepMax = exOneRepMax.reduce((max, cur) => Math.max(max, cur.oneRepMax), exOneRepMax[0]?.oneRepMax || 0);
     const lowestVolume = exTotalVolume.reduce((min, cur) => Math.min(min, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
     const highestVolume = exTotalVolume.reduce((max, cur) => Math.max(max, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
+
+    if (isPending) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (error) return ;
    
     return (    
         <Box className={classes.wrapper}>
