@@ -68,18 +68,22 @@ const theme = createTheme({
         fontFamily: 'Archivo, sans-serif',
         fontWeight: '900',
     },
-
+    shadows: {
+        xs: 'none',
+        sm: 'none',
+        md: 'none',
+        lg: 'none',
+        xl: 'none',
+    },
     components: {
         Container: {
             defaultProps: {
                 bg: 'dark.8',
-                shadow: 'md'
             }
         },
         Paper: {
             defaultProps: {
                 bg: 'dark.6',
-                shadow: 'md',
             },
         },
         Button: {

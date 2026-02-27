@@ -73,8 +73,8 @@ export default function Progress(){
         },
     });
 
-    if (isPending) return <div><Loader size='sm' /></div>; 
-    if (error) return <div>Error: {error.message}</div>;
+    if (isPending) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (error) return ;
 
     const uniqueExerciseNames = [... new Set(exercises.map(ex => ex.name))];
 
@@ -108,13 +108,10 @@ export default function Progress(){
     const highestOneRepMax = exOneRepMax.reduce((max, cur) => Math.max(max, cur.oneRepMax), exOneRepMax[0]?.oneRepMax || 0);
     const lowestVolume = exTotalVolume.reduce((min, cur) => Math.min(min, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
     const highestVolume = exTotalVolume.reduce((max, cur) => Math.max(max, cur.totalVolume), exTotalVolume[0]?.totalVolume || 0);
-
-    if (isPending) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
-    if (error) return ;
    
     return (    
         <Box className={classes.wrapper}>
-            <Container size="xl" pb={{ base: `${activeWorkout ? 100 : 72}`, sm: `${activeWorkout ? 32 : 0}`}} className={classes.responsiveContainer}>
+            <Container size="xl" pb={{ base: `${activeWorkout ? 100 : 72}`, sm: `${activeWorkout ? 32 : 40}`}} className={classes.responsiveContainer}>
                 <Stack gap="lg">
                     <Group justify="space-between" align="center">
                         <Title className={classes.title}>Progress</Title>

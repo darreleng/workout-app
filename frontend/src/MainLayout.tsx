@@ -27,7 +27,7 @@ export default function MainLayout() {
             if (!res.ok) return null;
             return res.json();
         },
-        refetchInterval: 60000,
+        staleTime: 0
     });
 
     const discardWorkout = useMutation({
