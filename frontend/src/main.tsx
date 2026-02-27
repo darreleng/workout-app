@@ -22,7 +22,6 @@ import Workout from './pages/workout/Workout';
 import Progress from './pages/progress/Progress'
 import { IconX } from '@tabler/icons-react';
 import NotFoundRedirect from './NotFoundRedirect';
-import { bg } from 'zod/v4/locales';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -99,8 +98,7 @@ const theme = createTheme({
 const router = createBrowserRouter([
   { Component: PublicRoute,
     children: [
-    //   { path: "/", Component: Home },
-      { path: "/", element: <Navigate to="/sigin" replace /> },
+      { path: "/", Component: Home },
       { Component: AuthLayout, 
         children: [
           { path: "/signup", Component: SignUp },

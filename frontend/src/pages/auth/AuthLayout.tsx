@@ -1,6 +1,5 @@
 import { Outlet } from "react-router";
 import { Paper, Center } from "@mantine/core";
-import { clamp } from "@mantine/hooks";
 
 export default function AuthLayout() {
     return (
