@@ -2,6 +2,7 @@ import { TextInput } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { WorkoutNameSchema } from "../../../../shared/schemas";
+import classes from './WorkoutNameInput.module.css';
 
 export default function WorkoutNameInput({ workoutName, id }: { workoutName: string, id: string}) {
     const [nameError, setNameError] = useState(false);
@@ -27,15 +28,8 @@ export default function WorkoutNameInput({ workoutName, id }: { workoutName: str
     return (
         <TextInput 
             variant="unstyled"
-            fw={700}
             flex={1}
-            styles={{
-                input: {
-                    height: '100%',
-                    fontSize: '1.5rem',
-                    minHeight: 0,
-                }
-            }}
+            classNames={{ input: classes.input }}
             aria-label="Workout name"
             defaultValue={workoutName} 
             error={nameError}

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, TextInput, Modal, ScrollArea, Stack, Text, Loader, Box, Center, NavLink } from '@mantine/core';
+import { Button, TextInput, Modal, ScrollArea, Stack, Text, Loader, Box, Center, NavLink, Notification } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useState } from 'react';
 import { ExerciseNameSchema } from '../../../../shared/schemas';
@@ -81,7 +81,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         const result = ExerciseNameSchema.safeParse(valueToValidate);
         if (!result.success) return setNameError(result.error.issues[0].message);
         const isDuplicate = exerciseNames?.some(name => name.toLowerCase() === valueToValidate.toLocaleLowerCase());
-        if (isDuplicate) return alert('This exercise already exists in your workout');
+        if (isDuplicate) <Notification>This exercise already exists in your workout</Notification>;
         mutation.mutate(result.data);
     };
 

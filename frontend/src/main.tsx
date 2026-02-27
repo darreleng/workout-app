@@ -22,6 +22,7 @@ import Workout from './pages/workout/Workout';
 import Progress from './pages/progress/Progress'
 import { IconX } from '@tabler/icons-react';
 import NotFoundRedirect from './NotFoundRedirect';
+import { bg } from 'zod/v4/locales';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -46,6 +47,8 @@ const queryClient = new QueryClient({
                 title: 'Error',
                 message: error.message || 'Something went wrong with processing the action',
                 color: 'red',
+                bg: 'var(--mantine-color-dark-4)',
+                bd: '1px solid var(--mantine-color-dark-3)',
                 autoClose: 2000,
                 icon: <IconX stroke={2} size={20} /> 
             });

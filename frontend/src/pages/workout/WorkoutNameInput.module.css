@@ -1,0 +1,10 @@
+.input {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+@media (min-width: $mantine-breakpoint-sm) {
+    .input {
+        font-size: 1.5rem;
+    }
+}
