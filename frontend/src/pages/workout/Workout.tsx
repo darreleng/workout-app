@@ -32,7 +32,7 @@ export default function Workout(){
     const { data: workout, error, isLoading } = useQuery<WorkoutWithExercisesAndSets>({
         queryKey: ['workouts', id],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${id}`, {credentials: 'include'});
+            const res = await fetch(`/api/workouts/${id}`, {credentials: 'include'});
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
@@ -41,7 +41,7 @@ export default function Workout(){
 
     const discardWorkout = useMutation({
         mutationFn: async (workoutId: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {
+            const res = await fetch(`/api/workouts/${workoutId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -57,7 +57,7 @@ export default function Workout(){
 
     const updateNotes = useMutation({
         mutationFn: async (notes: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${id}`, {
+            const res = await fetch(`/api/workouts/${id}`, {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json'},
@@ -74,7 +74,7 @@ export default function Workout(){
 
     const completeWorkout = useMutation({
         mutationFn: async (id: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${id}`, {
+            const res = await fetch(`/api/workouts/${id}`, {
                 method: 'PATCH',
                 credentials: 'include'
             });

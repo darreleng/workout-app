@@ -66,7 +66,7 @@ export default function Progress(){
     } = useQuery<Exercise[]>({
         queryKey: ['exercises'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:3000/api/exercises`, {credentials: 'include'});
+            const res = await fetch(`/api/exercises`, {credentials: 'include'});
             const data = await res.json();
             if (!res.ok) throw data;
             return data;

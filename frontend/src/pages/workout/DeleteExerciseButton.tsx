@@ -7,7 +7,7 @@ export default function DeleteExerciseButton({ workoutId, exerciseId }: { workou
 
     const mutation = useMutation({
         mutationFn: async ({ workoutId, exerciseId }: { workoutId: string, exerciseId: string }) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}/exercises/${exerciseId}`, {
+            const res = await fetch(`/api/workouts/${workoutId}/exercises/${exerciseId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });

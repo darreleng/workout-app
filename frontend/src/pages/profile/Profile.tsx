@@ -27,7 +27,7 @@ export default function Profile() {
     } = useQuery<Stats>({
         queryKey: ['stats'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:3000/api/workouts/stats`, {credentials: 'include'});
+            const res = await fetch(`/api/workouts/stats`, {credentials: 'include'});
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
@@ -43,16 +43,16 @@ export default function Profile() {
                 <Stack>
                 <Paper withBorder p="lg">
                     <Stack align="center" gap="xs">
-                        <Avatar size={100} color="volt" radius={0} variant="light" src={data?.user.image} />
+                        <Avatar size={100} color="volt" radius={0} variant="light" src={data?.user?.image} />
                         <Stack gap={8} align="center">
-                            <Title order={2} fw={800}>{data?.user.name}</Title>
+                            <Title order={2} fw={800}>{data?.user?.name}</Title>
                             <Group gap="xs" c="dimmed">
                                 <IconMail size={16} />
-                                <Text size="sm" lh={1}>{data?.user.email}</Text>
+                                <Text size="sm" lh={1}>{data?.user?.email}</Text>
                             </Group>
                             <Group gap="xs" c="dimmed">
                                 <IconCalendar size={16} />
-                                <Text size="sm" lh={1}>Member since {data?.user.createdAt.toLocaleDateString()}</Text>
+                                <Text size="sm" lh={1}>Member since {data?.user?.createdAt.toLocaleDateString()}</Text>
                             </Group>
                         </Stack>
                     </Stack>

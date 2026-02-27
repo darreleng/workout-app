@@ -20,7 +20,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
     } = useQuery({
         queryKey: ['exercises'],
         queryFn: async (): Promise<Exercise[]> => {
-            const res = await fetch(`http://localhost:3000/api/exercises`, {credentials: 'include'});
+            const res = await fetch(`/api/exercises`, {credentials: 'include'});
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
@@ -38,7 +38,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
     
     const mutation = useMutation({
         mutationFn: async (exerciseName: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}/exercises`, {
+            const res = await fetch(`/api/workouts/${workoutId}/exercises`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ exerciseName }),
@@ -60,7 +60,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
     const { data: currentWorkout } = useQuery<WorkoutWithExercisesAndSets>({
         queryKey: ['workouts', workoutId],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {credentials: 'include'});
+            const res = await fetch(`/api/workouts/${workoutId}`, {credentials: 'include'});
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
@@ -81,7 +81,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         const result = ExerciseNameSchema.safeParse(valueToValidate);
         if (!result.success) return setNameError(result.error.issues[0].message);
         const isDuplicate = exerciseNames?.some(name => name.toLowerCase() === valueToValidate.toLocaleLowerCase());
-        if (isDuplicate) return alert('This exercise already exists in your workout'); // TODO: proper error notification
+        if (isDuplicate) return alert('This exercise already exists in your workout');
         mutation.mutate(result.data);
     };
 

@@ -35,7 +35,7 @@ export default function Workouts() {
     } = useInfiniteQuery({
         queryKey: ['workouts'],
         queryFn: async ({ pageParam }) => {
-            const response = await fetch(`http://localhost:3000/api/workouts?cursor=${encodeURIComponent(pageParam)}`, { credentials: 'include' });
+            const response = await fetch(`/api/workouts?cursor=${encodeURIComponent(pageParam)}`, { credentials: 'include' });
             if (!response.ok) throw await response.json();
             return response.json();
         },
@@ -52,7 +52,7 @@ export default function Workouts() {
 
     const mutation = useMutation({
         mutationFn: async (workoutName: string) => {
-            const res = await fetch('http://localhost:3000/api/workouts', { 
+            const res = await fetch('/api/workouts', { 
                 method: 'POST', 
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json'},

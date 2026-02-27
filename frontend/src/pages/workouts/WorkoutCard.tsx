@@ -13,7 +13,7 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
 
     const mutation = useMutation({
         mutationFn: async (workoutId: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {
+            const res = await fetch(`/api/workouts/${workoutId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });

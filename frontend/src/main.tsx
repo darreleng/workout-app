@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css';
@@ -92,7 +92,8 @@ const theme = createTheme({
 const router = createBrowserRouter([
   { Component: PublicRoute,
     children: [
-      { path: "/", Component: Home },
+    //   { path: "/", Component: Home },
+      { path: "/", element: <Navigate to="/workouts" replace /> },
       { Component: AuthLayout, 
         children: [
           { path: "/signup", Component: SignUp },

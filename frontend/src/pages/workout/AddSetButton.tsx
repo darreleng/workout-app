@@ -6,7 +6,7 @@ export default function AddSetButton({ exercise_id, workout_id }: { exercise_id:
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${workout_id}/exercises/${exercise_id}/sets`, {
+            const res = await fetch(`/api/workouts/${workout_id}/exercises/${exercise_id}/sets`, {
                 method: 'POST',
                 credentials: 'include'
             });

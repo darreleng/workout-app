@@ -13,7 +13,7 @@ export default function ExerciseCard(props: Exercise) {
 
     const updateExerciseName = useMutation({
         mutationFn: async (name: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.id}`, {
+            const res = await fetch(`/api/workouts/${props.workout_id}/exercises/${props.id}`, {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json'},
@@ -30,7 +30,7 @@ export default function ExerciseCard(props: Exercise) {
 
     const updateSetField = useMutation({
         mutationFn: async ({ updatedField, value, setId }: { updatedField: string, value: number, setId: string })=> {
-            const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.id}/sets/${setId}`, {
+            const res = await fetch(`/api/workouts/${props.workout_id}/exercises/${props.id}/sets/${setId}`, {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json'},
@@ -48,7 +48,7 @@ export default function ExerciseCard(props: Exercise) {
     
     const deleteSet = useMutation({
         mutationFn: async (setId: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${props.workout_id}/exercises/${props.id}/sets/${setId}`, {
+            const res = await fetch(`/api/workouts/${props.workout_id}/exercises/${props.id}/sets/${setId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -68,7 +68,7 @@ export default function ExerciseCard(props: Exercise) {
     } = useQuery({
         queryKey: ['exercises'],
         queryFn: async (): Promise<Exercise[]> => {
-            const res = await fetch(`http://localhost:3000/api/exercises`, {credentials: 'include'});
+            const res = await fetch(`/api/exercises`, {credentials: 'include'});
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
