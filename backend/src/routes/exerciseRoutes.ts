@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createExercise, deleteExercise, getExercises, updateName } from "src/controllers/exerciseController";
-import authMiddleware from "src/middleware/authMiddleware";
+import { createExercise, deleteExercise, getExercises, updateName } from "../controllers/exerciseController";
+import authMiddleware from "../middleware/authMiddleware";
 import setRouter from './setRoutes';
 
 const router = Router({mergeParams: true});

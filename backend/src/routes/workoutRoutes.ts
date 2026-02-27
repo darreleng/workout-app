@@ -1,6 +1,6 @@
 import { Router } from "express";
 import exerciseRouter from './exerciseRoutes';
-import authMiddleware from "src/middleware/authMiddleware";
+import authMiddleware from "../middleware/authMiddleware";
 import { getAllWorkouts, createWorkout, getWorkoutWithExercisesAndSets, deleteWorkout, updateWorkout, getStats, getActive } from "src/controllers/workoutController";
 
 const router = Router();

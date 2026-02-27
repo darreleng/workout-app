@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createSet, updateSet, deleteSet } from "src/controllers/setController";
-import authMiddleware from "src/middleware/authMiddleware";
+import { createSet, updateSet, deleteSet } from "../controllers/setController";
+import authMiddleware from "../middleware/authMiddleware";
 
 const router = Router({mergeParams: true});
 

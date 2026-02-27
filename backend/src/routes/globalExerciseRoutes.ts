@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getExercises } from "src/controllers/globalExerciseController";
-import authMiddleware from "src/middleware/authMiddleware";
+import { getExercises } from "../controllers/globalExerciseController";
+import authMiddleware from "../middleware/authMiddleware";
 
 const router = Router();
 
