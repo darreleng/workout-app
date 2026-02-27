@@ -57,7 +57,6 @@ export default function SignUp() {
                         label="Name"
                         placeholder="John"
                         {...form.getInputProps('name')}
-                        radius="md"
                     />
 
                     <TextInput
@@ -65,7 +64,6 @@ export default function SignUp() {
                         label="Email"
                         placeholder="hello@email.com"
                         {...form.getInputProps('email')}
-                        radius="md"
                     />
                 
                     <PasswordInput
@@ -73,7 +71,6 @@ export default function SignUp() {
                         label="Password"
                         placeholder="Your password"
                         {...form.getInputProps('password')}
-                        radius="md"
                     />
 
                     {serverError && serverError}
@@ -91,7 +88,7 @@ export default function SignUp() {
                         
                     </Stack>
 
-                    <Button type="submit" radius="xl" loading={loading}>Sign up</Button>
+                    <Button type="submit" loading={loading}>Sign up</Button>
                 </Group>
 
             </form>

@@ -64,7 +64,7 @@ export default function SignIn() {
             </Text>
 
             <Group grow mb="md" mt="md">
-                <GoogleButton radius="xl" onClick={handleGoogleSignIn}>Google</GoogleButton>
+                <GoogleButton radius="0" onClick={handleGoogleSignIn}>Google</GoogleButton>
             </Group>
 
             <Divider label="Or email" labelPosition="center" my="lg" />
@@ -76,7 +76,6 @@ export default function SignIn() {
                         label="Email"
                         placeholder="hello@email.com"
                         {...form.getInputProps('email')}
-                        radius="md"
                     />
                 
                     <PasswordInput
@@ -84,7 +83,6 @@ export default function SignIn() {
                         label="Password"
                         placeholder="Your password"
                         {...form.getInputProps('password')}
-                        radius="md"
                     />
 
                     {serverError && serverError}
@@ -102,7 +100,7 @@ export default function SignIn() {
                         
                     </Stack>
 
-                    <Button type="submit" radius="xl" loading={loading}>Sign in</Button>
+                    <Button type="submit" loading={loading}>Sign in</Button>
                 </Group>
 
             </form>

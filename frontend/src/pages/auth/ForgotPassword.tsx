@@ -50,7 +50,6 @@ export default function ForgotPassword() {
                         label="Email"
                         placeholder="hello@email.com"
                         {...form.getInputProps('email')}
-                        radius="md"
                     />
 
                     <Group justify="space-between" mt="xl">
@@ -58,7 +57,7 @@ export default function ForgotPassword() {
                             Back to sign in
                         </Anchor>
 
-                        <Button type="submit" radius="xl" loading={loading}>Reset</Button>
+                        <Button type="submit" loading={loading}>Reset</Button>
                     </Group>
                 </form>
             }

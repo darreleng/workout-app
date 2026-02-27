@@ -23,7 +23,7 @@ export default function MainLayout() {
     const { data: activeWorkout } = useQuery<ActiveWorkout>({
         queryKey: ['activeWorkout'],
         queryFn: async () => {
-            const res = await fetch('http://localhost:3000/api/workouts/active', { credentials: 'include' });
+            const res = await fetch('/api/workouts/active', { credentials: 'include' });
             if (!res.ok) return null;
             return res.json();
         },
@@ -32,7 +32,7 @@ export default function MainLayout() {
 
     const discardWorkout = useMutation({
         mutationFn: async (workoutId: string) => {
-            const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {
+            const res = await fetch(`/api/workouts/${workoutId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
