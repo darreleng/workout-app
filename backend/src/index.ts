@@ -7,7 +7,7 @@ import workoutRoutes from './routes/workoutRoutes';
 import globalExerciseRoutes from "./routes/globalExerciseRoutes";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(
@@ -29,3 +29,7 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(root, 'index.html'));
     });
 }
+
+app.listen(PORT as number, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
+});
