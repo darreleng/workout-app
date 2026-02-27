@@ -14,7 +14,7 @@ export async function getAllWorkouts(userId: string, cursor: string | null) {
         LEFT JOIN sets s ON e.id = s.exercise_id
         WHERE w.user_id = $1 AND w.id < $2 
         GROUP BY w.id 
-        ORDER BY w.id DESC 
+        ORDER BY created_at DESC 
         LIMIT $3`;
     const { rows } = await db.query(query, [userId, startingId, limit + 1]);
 

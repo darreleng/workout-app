@@ -18,7 +18,7 @@ export async function getAllWorkouts(req: Request, res: Response) {
         const userId = req.user!.id;       
         const cursor = typeof req.query.cursor === 'string' ? req.query.cursor : null;
         const workouts = await WorkoutModel.getAllWorkouts(userId, cursor);
-        res.status(200).json(workouts);
+        res.status(200).json(workouts ?? []);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
     }
@@ -30,7 +30,7 @@ export async function getWorkoutWithExercisesAndSets(req: Request, res: Response
         const userId = req.user!.id;
         const workout = await WorkoutModel.getWorkoutWithExercisesAndSets(userId, workoutId as string);
         if (!workout) return res.status(404).json({ message: "Workout not found or unauthorised" });
-        res.status(200).json(workout);
+        res.status(200).json(workout ?? []);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
     }
@@ -83,7 +83,7 @@ export async function getStats(req: Request, res: Response) {
     try {
         const userId = req.user!.id;       
         const stats = await WorkoutModel.getStats(userId);
-        res.status(200).json(stats);
+        res.status(200).json(stats ?? []);
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: "Internal server error" });
@@ -94,7 +94,7 @@ export async function getActive(req: Request, res: Response) {
     try {
         const userId = req.user!.id;       
         const stats = await WorkoutModel.getActive(userId);
-        res.status(200).json(stats);
+        res.status(200).json(stats ?? null);
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: "Internal server error" });

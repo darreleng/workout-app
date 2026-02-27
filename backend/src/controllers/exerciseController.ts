@@ -11,7 +11,7 @@ export async function getExercises(req: Request, res: Response) {
         if (!workout) return res.status(404).json({ message: "Workout not found or unauthorised" });
 
         const exercises = await ExerciseModel.getExercises(userId, workoutId as string);
-        res.status(200).json(exercises);
+        res.status(200).json(exercises ?? []);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error." });

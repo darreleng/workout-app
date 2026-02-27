@@ -45,14 +45,14 @@ export default function Profile() {
                     <Stack align="center" gap="xs">
                         <Avatar size={100} color="volt" radius={0} variant="light" src={data?.user?.image} />
                         <Stack gap={8} align="center">
-                            <Title order={2} fw={800}>{data?.user?.name}</Title>
+                            <Title order={2} fw={800}>{data?.user.name}</Title>
                             <Group gap="xs" c="dimmed">
                                 <IconMail size={16} />
-                                <Text size="sm" lh={1}>{data?.user?.email}</Text>
+                                <Text size="sm" lh={1}>{data?.user.email}</Text>
                             </Group>
                             <Group gap="xs" c="dimmed">
                                 <IconCalendar size={16} />
-                                <Text size="sm" lh={1}>Member since {data?.user?.createdAt.toLocaleDateString()}</Text>
+                                <Text size="sm" lh={1}>Member since {data?.user.createdAt.toLocaleDateString()}</Text>
                             </Group>
                         </Stack>
                     </Stack>

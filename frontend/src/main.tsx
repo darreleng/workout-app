@@ -96,7 +96,7 @@ const router = createBrowserRouter([
   { Component: PublicRoute,
     children: [
     //   { path: "/", Component: Home },
-      { path: "/", element: <Navigate to="/workouts" replace /> },
+      { path: "/", element: <Navigate to="/sigin" replace /> },
       { Component: AuthLayout, 
         children: [
           { path: "/signup", Component: SignUp },

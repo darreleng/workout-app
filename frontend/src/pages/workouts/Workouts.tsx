@@ -36,8 +36,9 @@ export default function Workouts() {
         queryKey: ['workouts'],
         queryFn: async ({ pageParam }) => {
             const response = await fetch(`/api/workouts?cursor=${encodeURIComponent(pageParam)}`, { credentials: 'include' });
-            if (!response.ok) throw await response.json();
-            return response.json();
+            const data = await response.json();
+            if (!response.ok) throw data;
+            return data;
         },
         initialPageParam: '',
         getNextPageParam: (lastPage) => lastPage.nextCursor,

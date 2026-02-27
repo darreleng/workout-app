@@ -4,6 +4,7 @@
     padding: var(--mantine-spacing-md);
     display: flex;
     flex-direction: column;
+    height: 100vh;
 }
 
 .stackGap {
