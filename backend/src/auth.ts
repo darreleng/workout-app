@@ -7,7 +7,8 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const auth = betterAuth({
     database: pool,
     trustedOrigins: [
-        "http://localhost:5173"
+        "http://localhost:5173",
+        process.env.CLIENT_URL as string
     ],
     emailAndPassword: { 
         enabled: true, 

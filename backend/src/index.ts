@@ -1,4 +1,5 @@
 import express from "express";
+import path from 'path';
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth";
 import cors from 'cors';
@@ -10,18 +11,21 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(
-  cors({
-    origin: "http://localhost:5173", 
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], 
-    credentials: true, 
-  })
+    cors({
+        origin: process.env.CLIENT_URL || "http://localhost:5173", 
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], 
+        credentials: true, 
+    })
 );
 
 app.all("/api/auth/{*any}", toNodeHandler(auth));
 app.use('/api/workouts', workoutRoutes);
 app.use('/api/exercises', globalExerciseRoutes);
 
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+if (process.env.NODE_ENV === 'production') {
+    const root = path.join(__dirname, '../../client/dist');
+    app.use(express.static(root));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(root, 'index.html'));
+    });
+}
