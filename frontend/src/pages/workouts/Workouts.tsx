@@ -117,15 +117,15 @@ export default function Workouts() {
                     </Stack>
                 </ScrollArea>
             </Container>
-            <Modal opened={opened} onClose={handleClose} withCloseButton={false} centered>
+            <Modal opened={opened} onClose={handleClose} withCloseButton={false} yOffset={'20vh'} >
                 <form onSubmit={form.onSubmit(values => mutation.mutate(values.name))}>
                     <TextInput
                         withAsterisk
-                        label="New workout name"
+                        label="Workout Name"
                         {...form.getInputProps('name')}
                     />
                     <Group justify="space-between" pt={'sm'}>
-                        <Button variant="subtle" onClick={handleClose}>Cancel</Button>
+                        <Button variant="subtle" color="gray" onClick={handleClose}>Cancel</Button>
                         <Button type="submit" loading={mutation.isPending}>Create</Button>
                     </Group>
                 </form>
