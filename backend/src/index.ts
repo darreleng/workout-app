@@ -25,7 +25,7 @@ app.use('/api/exercises', globalExerciseRoutes);
 if (process.env.NODE_ENV === 'production') {
     const root = path.join(__dirname, '../../../../frontend/dist');
     app.use(express.static(root));
-    app.get('/:any*', (req, res) => {
+    app.get('/{*splat}', (req, res) => {
         res.sendFile(path.join(root, 'index.html'));
     });
 }
