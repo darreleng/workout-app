@@ -1,4 +1,4 @@
-import { pool as db } from "src/db/db";
+import { pool as db } from "../db/db";
 
 export async function createExercise(userId: string, workoutId: string, exerciseName: string) {
     const client = await db.connect();

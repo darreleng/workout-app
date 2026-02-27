@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as globalExerciseModel from "src/models/globalExerciseModel";
+import * as globalExerciseModel from "../models/globalExerciseModel";
 
 export async function getExercises(req: Request, res: Response) {
     try {

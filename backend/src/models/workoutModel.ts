@@ -1,4 +1,4 @@
-import { pool as db } from "src/db/db";
+import { pool as db } from "../db/db";
 import { getExercises } from "./exerciseModel";
 import { getSets } from "./setModel";
 

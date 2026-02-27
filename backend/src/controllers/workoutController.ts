@@ -1,6 +1,6 @@
-import * as WorkoutModel from "src/models/workoutModel";
+import * as WorkoutModel from "../models/workoutModel";
 import { Request, Response } from "express";
-import { WorkoutNameSchema } from "@shared/schemas.js";
+import { WorkoutNameSchema } from "../../../shared/schemas";
 
 export async function createWorkout(req: Request, res: Response) {
     try {

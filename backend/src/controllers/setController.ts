@@ -1,6 +1,6 @@
-import * as SetModel from "src/models/setModel";
+import * as SetModel from "../models/setModel";
 import { Request, Response } from "express";
-import { UpdateSetSchema } from "@shared/schemas";
+import { UpdateSetSchema } from "../../../shared/schemas";
 
 export async function createSet(req: Request, res: Response) {
     try {
