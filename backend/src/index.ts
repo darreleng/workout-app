@@ -23,9 +23,9 @@ app.use('/api/workouts', workoutRoutes);
 app.use('/api/exercises', globalExerciseRoutes);
 
 if (process.env.NODE_ENV === 'production') {
-    const root = path.join(__dirname, '../../client/dist');
+    const root = path.join(__dirname, '../../../../frontend/dist');
     app.use(express.static(root));
-    app.get('*', (req, res) => {
+    app.get('/:any*', (req, res) => {
         res.sendFile(path.join(root, 'index.html'));
     });
 }
