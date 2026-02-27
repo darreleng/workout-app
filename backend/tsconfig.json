@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node24/tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
       "@shared/*": ["../shared/*"]
@@ -12,20 +13,3 @@
     "../shared/**/*"
   ]
 }
-
-
-// {
-//   "extends": "@tsconfig/node24/tsconfig.json",
-//   "compilerOptions": {
-//     "outDir": "./dist",
-//     // "rootDir": "./",
-//     "baseUrl": ".",
-//     "paths": {
-//       "@shared/*": ["../shared/*"]
-//     }
-//   },
-//   "include": [
-//     "src/**/*",
-//     "../shared/**/*"
-//   ]
-// }
