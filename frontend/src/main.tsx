@@ -68,7 +68,7 @@ const theme = createTheme({
         fontWeight: '900',
     },
     shadows: {
-        xs: 'none',
+        xs: '0px 5px 15px 0px rgba(0,0,0,0.3)',
         sm: 'none',
         md: 'none',
         lg: 'none',

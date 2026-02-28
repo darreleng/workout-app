@@ -14,7 +14,7 @@ export default function SetCard(props: SetCardProps) {
 
     return(
         <Group gap="xs" wrap="nowrap" align="flex-start">
-            <Menu shadow="md" position="bottom-start">
+            <Menu shadow="xs" position="bottom-start">
                 <Menu.Target>
                     <Box style={{ flex: '0 0 45px' }}>
                         <NumberInput 

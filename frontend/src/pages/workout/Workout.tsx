@@ -9,9 +9,9 @@ import WorkoutNameInput from "./WorkoutNameInput";
 import NotFoundRedirect from "../../NotFoundRedirect";
 import { useWorkoutTimer } from "../../useWorkoutTimer";
 import { formatDuration } from "../../formatDuration";
-import { useDisclosure, useWindowScroll } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 import classes from './Workout.module.css';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Workout(){
     const { id } = useParams();
