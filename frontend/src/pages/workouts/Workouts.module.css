@@ -1,6 +1,5 @@
 .responsiveContainer {
     border: none;
-    box-shadow: none;
     padding: var(--mantine-spacing-md);
     display: flex;
     flex-direction: column;
@@ -23,7 +22,6 @@
 @media (min-width: $mantine-breakpoint-sm) {
     .responsiveContainer {
         border: 1px solid var(--mantine-color-dark-6);
-        box-shadow: var(--mantine-shadow-xl);
         height: 92vh;
         padding: var(--mantine-spacing-xl);
         padding-bottom: var(--mantine-spacing-md);

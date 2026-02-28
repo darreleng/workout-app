@@ -1,8 +1,10 @@
-import { ActionIcon, Menu } from '@mantine/core';
+import { ActionIcon, Button, Menu, Modal, SimpleGrid, Stack, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { IconTrash, IconDotsVertical } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function DeleteExerciseButton({ workoutId, exerciseId }: { workoutId: string, exerciseId: string}) {
+    const [opened, { open, close }] = useDisclosure(false);
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
@@ -29,11 +31,20 @@ export default function DeleteExerciseButton({ workoutId, exerciseId }: { workou
                 </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-                <Menu.Item color="red" onClick={() => mutation.mutate({workoutId, exerciseId})} leftSection={<IconTrash size={16} />} >
+                <Menu.Item color="red" onClick={open} leftSection={<IconTrash size={16} />} >
                     Delete Exercise
                 </Menu.Item>
             </Menu.Dropdown>
-        </Menu> 
 
+            <Modal opened={opened} onClose={close} withCloseButton={false} centered>
+                <Stack gap="md">
+                    <Text size="sm" c="dimmed">Are you sure you want to delete this exercise?</Text>
+                    <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                        <Button variant="light" color="gray" onClick={close}>Cancel</Button>
+                        <Button color="red" onClick={() => mutation.mutate({workoutId, exerciseId})}>Delete</Button>
+                    </SimpleGrid>
+                </Stack>
+            </Modal>
+        </Menu> 
     )
 }

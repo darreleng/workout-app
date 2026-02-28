@@ -1,12 +1,12 @@
-import { Box, Group, Paper, Stack, TextInput, Text, Loader } from "@mantine/core";
+import { Box, Group, Paper, Stack, TextInput, Text, Loader, Center } from "@mantine/core";
 import { ExerciseNameSchema, type Exercise } from "../../../../shared/schemas";
 import AddSetButton from "./AddSetButton";
 import SetCard from "./SetCard";
 import DeleteExerciseButton from "./DeleteExerciseButton";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export default function ExerciseCard(props: Exercise) {
+const ExerciseCard = memo(function ExerciseCard(props: Exercise) {
     const queryClient = useQueryClient();
     const [localName, setLocalName] = useState(props.name);
     const [nameError, setNameError] = useState(false);
@@ -78,8 +78,8 @@ export default function ExerciseCard(props: Exercise) {
                                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     });
 
-    if (isPending) return <div><Loader size='sm' /></div>; 
-    if (error) return <div>Error: {error.message}</div>;
+    if (isPending) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (error) return ;
     
     return (
         <Paper withBorder shadow="sm">
@@ -130,7 +130,7 @@ export default function ExerciseCard(props: Exercise) {
                 </Box>
             </Stack>
         </Paper>
-    )
-}
+    );
+});
 
-
+export default ExerciseCard;

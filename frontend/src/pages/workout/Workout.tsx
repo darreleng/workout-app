@@ -1,4 +1,4 @@
-import { Text, Box, Button, Loader, Textarea, Group, Stack, Container, Paper, Divider, SimpleGrid, Modal, Center } from "@mantine/core";
+import { Text, Box, Button, Loader, Textarea, Group, Stack, Container, Paper, Divider, SimpleGrid, Modal, Center, ScrollArea } from "@mantine/core";
 import { IconStopwatch } from '@tabler/icons-react';
 import type { WorkoutWithExercisesAndSets } from "../../../../shared/schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -19,15 +19,14 @@ export default function Workout(){
     const [isDiscardModalOpen, discardModal] = useDisclosure(false);
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const [scroll] = useWindowScroll();
     const [hidden, setHidden] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
 
-    useEffect(() => {
-        if (scroll.y > lastScrollY && scroll.y > 50) setHidden(true);
-        else setHidden(false);
-        setLastScrollY(scroll.y);
-    }, [scroll.y]);
+    const handleScroll = ({ y }: { x: number; y: number }) => {
+        const isScrollingDown = y > lastScrollY && y > 50;
+        if (isScrollingDown !== hidden) setHidden(isScrollingDown);
+        setLastScrollY(y);
+    };
 
     const { data: workout, error, isLoading } = useQuery<WorkoutWithExercisesAndSets>({
         queryKey: ['workouts', id],
@@ -99,58 +98,60 @@ export default function Workout(){
     return (
         <Box className={classes.wrapper}>
             <Container size="sm" className={classes.responsiveContainer}>
-                <Stack className={classes.stackGap}>
-                    <Paper p="sm" withBorder shadow="xs" className={hidden ? classes.headerHidden : classes.header}>
-                        <Group justify="space-between" align="center" >
-                            <WorkoutNameInput workoutName={workout.name} id={workout.id} />
-                            <Group gap="xs" c={'volt'}>
-                                <IconStopwatch size={20} />
-                                <Text fw={700} ff="monospace">
-                                    {workout.completed_at 
-                                    ? formatDuration(workout.duration_seconds) 
-                                    : formatDuration(elapsedSeconds)}
-                                </Text>
-                            </Group>
-                        </Group>
-                    </Paper>
-
+                <ScrollArea onScrollPositionChange={handleScroll} type="never">
                     <Stack className={classes.stackGap}>
-                        {workout.exercises.map((exercise) => (
-                            <ExerciseCard key={exercise.id} {...exercise} />
-                        ))}
-                    </Stack>
-
-                    <Paper p="md" withBorder>
-                        <Stack gap="md">
-                            <AddExerciseButton workoutId={workout.id} />
-                            <Textarea 
-                                label="Workout Notes" 
-                                variant="filled"
-                                autosize
-                                c={'dimmed'}
-                                styles={{input: {color: 'var(--mantine-color-dimmed)'}}}
-                                minRows={1}
-                                defaultValue={workout.notes}
-                                onBlur={(e) => {
-                                    const newValue = e.target.value.trim();
-                                    if (newValue !== workout.notes) updateNotes.mutate(newValue);
-                                }}
-                            />
-                            <Divider my="xs" />
-                            <Group grow>
-                                <Button color='red' variant="subtle" onClick={discardModal.open}>
-                                    Discard
-                                </Button>
-                                {workout.completed_at 
-                                    ? <Button component={Link} to='/workouts'>
-                                        Save & Exit
-                                    </Button> 
-                                    : <Button onClick={finishModal.open}>Finish</Button>
-                                }
+                        <Paper p="sm" withBorder className={hidden ? classes.headerHidden : classes.header}>
+                            <Group justify="space-between" align="center" >
+                                <WorkoutNameInput workoutName={workout.name} id={workout.id} />
+                                <Group gap="xs" c={'volt'}>
+                                    <IconStopwatch size={20} />
+                                    <Text fw={700} ff="monospace">
+                                        {workout.completed_at 
+                                        ? formatDuration(workout.duration_seconds) 
+                                        : formatDuration(elapsedSeconds)}
+                                    </Text>
+                                </Group>
                             </Group>
+                        </Paper>
+
+                        <Stack className={classes.stackGap}>
+                            {workout.exercises.map((exercise) => (
+                                <ExerciseCard key={exercise.id} {...exercise} />
+                            ))}
                         </Stack>
-                    </Paper>
-                </Stack>
+
+                        <Paper p="md" withBorder>
+                            <Stack gap="md">
+                                <AddExerciseButton workoutId={workout.id} />
+                                <Textarea 
+                                    label="Workout Notes" 
+                                    variant="filled"
+                                    autosize
+                                    c={'dimmed'}
+                                    styles={{input: {color: 'var(--mantine-color-dimmed)'}}}
+                                    minRows={1}
+                                    defaultValue={workout.notes}
+                                    onBlur={(e) => {
+                                        const newValue = e.target.value.trim();
+                                        if (newValue !== workout.notes) updateNotes.mutate(newValue);
+                                    }}
+                                />
+                                <Divider my="xs" />
+                                <Group grow>
+                                    <Button color='red' variant="subtle" onClick={discardModal.open}>
+                                        Discard
+                                    </Button>
+                                    {workout.completed_at 
+                                        ? <Button component={Link} to='/workouts'>
+                                            Save & Exit
+                                        </Button> 
+                                        : <Button onClick={finishModal.open}>Finish</Button>
+                                    }
+                                </Group>
+                            </Stack>
+                        </Paper>
+                    </Stack>
+                </ScrollArea>
             </Container>
 
             <Modal 

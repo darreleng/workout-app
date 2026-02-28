@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Paper, Stack, Text, Title, Menu, Badge, Box, UnstyledButton } from "@mantine/core";
+import { ActionIcon, Group, Paper, Stack, Text, Title, Menu, Badge, Box, UnstyledButton, Button, Modal, SimpleGrid } from "@mantine/core";
 import { IconBarbell, IconCalendar, IconChevronDown, IconChevronUp, IconClock, IconDotsVertical, IconEdit, IconNote, IconTrash } from '@tabler/icons-react';
 import { Link } from "react-router";
 import type { WorkoutProps } from "../../../../shared/schemas";
@@ -10,6 +10,7 @@ import { useDisclosure } from "@mantine/hooks";
 export default function WorkoutCard({ id, name, created_at, workout_total_volume, duration_seconds, notes }: WorkoutProps) {
     const queryClient = useQueryClient();
     const [opened, { toggle }] = useDisclosure(false);
+    const [isDeleteModalOpen, deleteModal] = useDisclosure(false);
 
     const mutation = useMutation({
         mutationFn: async (workoutId: string) => {
@@ -75,19 +76,26 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
                             to={`/workouts/${id}`} 
                             leftSection={<IconEdit size={16} />}
                         >
-                        View/Edit Workout
+                            View/Edit Workout
                         </Menu.Item>
                         <Menu.Item 
                             color="red" 
                             leftSection={<IconTrash size={16} />} 
-                            onClick={(e) => {
-                                e.stopPropagation(); 
-                                mutation.mutate(id);
-                            }}
+                            onClick={deleteModal.open}
                         >
-                        Delete Workout
+                            Delete Workout
                         </Menu.Item>
                     </Menu.Dropdown>
+
+                    <Modal opened={isDeleteModalOpen} onClose={deleteModal.close} withCloseButton={false} centered>
+                        <Stack gap="md">
+                            <Text size="sm" c="dimmed">Are you sure you want to delete this workout?</Text>
+                            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                                <Button variant="light" color="gray" onClick={deleteModal.close}>Cancel</Button>
+                                <Button color="red" onClick={(e) => {e.stopPropagation(); mutation.mutate(id);}}>Delete</Button>
+                            </SimpleGrid>
+                        </Stack>
+                    </Modal>
                 </Menu>
                 
             </Group>
