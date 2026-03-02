@@ -27,14 +27,25 @@ export async function getAllWorkouts(userId: string, cursor: string | null) {
 
 export async function getStats(userId: string) {
     const query = 
-        `SELECT 
-            COUNT(DISTINCT w.id) AS total_workouts,
-            SUM(s.weight_kg * s.reps) AS total_volume,
-            SUM(w.duration_seconds) AS total_time
-        FROM workouts w
-        LEFT JOIN exercises e ON w.id = e.workout_id
-        LEFT JOIN sets s ON e.id = s.exercise_id
-        WHERE w.user_id = $1 AND w.completed_at IS NOT NULL`;
+        `WITH workout_stats AS (
+            SELECT 
+                COUNT(id) AS workout_count,
+                SUM(duration_seconds) AS time_sum
+            FROM workouts
+            WHERE user_id = $1 AND completed_at IS NOT NULL
+        ),
+        volume_stats AS (
+            SELECT ROUND(SUM(s.weight_kg * s.reps)) AS volume_sum
+            FROM sets s
+            JOIN exercises e ON s.exercise_id = e.id
+            JOIN workouts w ON e.workout_id = w.id
+            WHERE w.user_id = $1 AND w.completed_at IS NOT NULL
+        )
+        SELECT 
+            workout_count AS total_workouts,
+            volume_sum AS total_volume,
+            time_sum AS total_time
+        FROM workout_stats, volume_stats`;
     const { rows } = await db.query(query, [userId]);
     return rows[0]
 }
