@@ -73,7 +73,7 @@ export default function Progress(){
         },
     });
 
-    if (isPending) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (isPending) return <Center h={'100svh'}><Loader size='xl' /></Center>; 
     if (error) return ;
 
     const uniqueExerciseNames = [... new Set(exercises.map(ex => ex.name))];

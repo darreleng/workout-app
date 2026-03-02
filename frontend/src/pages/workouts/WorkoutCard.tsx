@@ -24,11 +24,12 @@ export default function WorkoutCard({ id, name, created_at, duration_seconds, no
             queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
             queryClient.invalidateQueries({ queryKey: ['exercises'] });
             queryClient.removeQueries({ queryKey: ['activeWorkout'] });
+            queryClient.invalidateQueries({ queryKey: ['stats'] });
         },
     })
 
     return (
-        <Paper withBorder p="md" shadow="sm"className={classes.myPaper}>
+        <Paper withBorder shadow="sm"className={classes.myPaper}>
             <Group justify="space-between" align="flex-start" wrap="nowrap">
                 <Stack gap="xs" style={{ flex: 1 }}>
                     <Group justify="space-between">

@@ -68,7 +68,7 @@ export default function Workouts() {
         },
     });
 
-    if (isPending) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (isPending) return <Center h={'100svh'}><Loader size='xl' /></Center>; 
     if (error) return ;
 
     function handleClose() {

@@ -39,17 +39,18 @@ export default function Workout(){
     });
 
     const discardWorkout = useMutation({
-        mutationFn: async (workoutId: string) => {
-            const res = await fetch(`/api/workouts/${workoutId}`, {
+        mutationFn: async (id: string) => {
+            const res = await fetch(`/api/workouts/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
             if (!res.ok) throw await res.json();
         },
-        onSuccess: async () => {
+        onSuccess: () => {
             queryClient.removeQueries({ queryKey: ['activeWorkout'] });
-            queryClient.invalidateQueries({ queryKey: ['exercises']});
+            queryClient.invalidateQueries({ queryKey: ['exercises'] });
             queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
+            queryClient.invalidateQueries({ queryKey: ['stats'] });
             navigate(`/workouts`, { replace: true });
         },
     })
@@ -82,7 +83,7 @@ export default function Workout(){
         },
         onSuccess: () => {
             queryClient.removeQueries({ queryKey: ['activeWorkout'] });
-            queryClient.invalidateQueries({ queryKey: ['workouts'] });
+            queryClient.invalidateQueries({ queryKey: ['workouts'], exact: true });
             queryClient.invalidateQueries({ queryKey: ['stats'] });
             navigate('/workouts');
         }
@@ -91,7 +92,7 @@ export default function Workout(){
     const activeStartTime = workout?.completed_at ? null : workout?.created_at;
     const elapsedSeconds = useWorkoutTimer(activeStartTime);
     
-    if (isLoading) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (isLoading) return <Center h={'100svh'}><Loader size='xl' /></Center>; 
 
     if (error || !workout) return <NotFoundRedirect />;
 

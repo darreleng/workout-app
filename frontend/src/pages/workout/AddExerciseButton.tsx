@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, TextInput, Modal, ScrollArea, Stack, Text, Loader, Box, Center, NavLink, Notification } from '@mantine/core';
+import { Button, TextInput, Modal, ScrollArea, Stack, Text, Box, Center, NavLink, Notification } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useState } from 'react';
 import { ExerciseNameSchema } from '../../../../shared/schemas';
@@ -67,8 +67,8 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
         }
     });
 
-    if (isPending) return <div><Loader size='sm' /></div>; 
-    if (error) return <div>Error: {error.message}</div>;
+    if (isPending) return;
+    if (error) return;
 
     const exerciseNames = currentWorkout?.exercises?.map(exercise => exercise.name);
     const filteredHistory = history.filter((item) =>

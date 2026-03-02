@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Center, Container, Group, Loader, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import { authClient } from '../../auth-client';
-import { IconMail, IconBarbell, IconCalendar, IconLogout, IconClock, IconWeight } from '@tabler/icons-react';
+import { IconMail, IconBarbell, IconCalendar, IconLogout, IconWeight, IconStopwatch } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { formatSeconds } from '../../formatDuration';
 import { useOutletContext } from 'react-router';
@@ -34,7 +34,7 @@ export default function Profile() {
         }
     })
 
-    if (isLoading) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (isLoading) return <Center h={'100svh'}><Loader size='xl' /></Center>; 
     if (error) return ;
 
     return (
@@ -79,7 +79,7 @@ export default function Profile() {
                     <StatsCard 
                         label="Total Time" 
                         value={`${formatSeconds(stats!.total_time)}`} 
-                        icon={<IconClock size={20} />} 
+                        icon={<IconStopwatch size={20} />} 
                         color="cyan.5" 
                     />
                 </SimpleGrid>

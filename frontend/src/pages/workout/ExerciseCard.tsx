@@ -78,7 +78,7 @@ const ExerciseCard = memo(function ExerciseCard(props: Exercise) {
                                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     });
 
-    if (isPending) return <Center h={'100vh'}><Loader size='xl' /></Center>; 
+    if (isPending) return <Center h={'100svh'}><Loader size='xl' /></Center>; 
     if (error) return ;
     
     return (
