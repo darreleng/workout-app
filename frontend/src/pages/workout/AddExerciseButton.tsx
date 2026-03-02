@@ -135,6 +135,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                                         root: { borderBottom: '1px solid var(--mantine-color-dark-4)' }
                                     }}
                                     component='button'
+                                    disabled={mutation.isPending}
                                     onClick={(e) => handleAdd(e, ex.name)}
                                     label={<Text fw={600} size="md" ta="left">{ex.name}</Text>}
                                     description={<Text size="xs" c="dimmed" ta="left">Used in {ex.workoutCount} workouts</Text>}
@@ -147,7 +148,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                             <Center py="xl" px="md">
                                 <Stack align="center" gap="xs">
                                     <Text c="dimmed" size="sm">No results for "{search}"</Text>
-                                        <Button variant="light" size="xs" onClick={(e) => handleAdd(e)}>
+                                        <Button variant="light" size="xs" loading={mutation.isPending} onClick={(e) => handleAdd(e)}>
                                         Add "{search}"
                                         </Button>
                                 </Stack>
@@ -159,6 +160,7 @@ export default function AddExerciseButton({ workoutId }: { workoutId: string }) 
                         <Button 
                             fullWidth 
                             size="md" 
+                            loading={mutation.isPending}
                             onClick={(e) => handleAdd(e)}
                             disabled={!search}
                         >

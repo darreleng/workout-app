@@ -9,8 +9,8 @@ export default function ProtectedRoute() {
 
     if (isPending) {
         return (
-            <Center h="100vh">
-                <Loader color="blue" />
+            <Center h="100svh">
+                <Loader />
             </Center>
         );
     }

@@ -7,7 +7,7 @@ import classes from './WorkoutCard.module.css';
 import { formatSeconds} from "../../formatDuration";
 import { useDisclosure } from "@mantine/hooks";
 
-export default function WorkoutCard({ id, name, created_at, workout_total_volume, duration_seconds, notes }: WorkoutProps) {
+export default function WorkoutCard({ id, name, created_at, duration_seconds, notes }: WorkoutProps) {
     const queryClient = useQueryClient();
     const [opened, { toggle }] = useDisclosure(false);
     const [isDeleteModalOpen, deleteModal] = useDisclosure(false);
@@ -42,7 +42,7 @@ export default function WorkoutCard({ id, name, created_at, workout_total_volume
                                     year: "numeric"
                                 })}
                             </Text>
-                            <Badge ml={10} variant="light" color="dark.2" radius={0} leftSection={<IconStopwatch size={12} />}>
+                            <Badge ml={10} px={6} variant="light" color="dark.2" radius={0} leftSection={<IconStopwatch size={12} />}>
                                 {formatSeconds(duration_seconds) || '--'}
                             </Badge>
                         </Group>

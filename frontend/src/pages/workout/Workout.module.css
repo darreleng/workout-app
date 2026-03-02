@@ -3,7 +3,7 @@
     padding: var(--mantine-spacing-md);
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100svh;
 }
 
 .header {
@@ -37,7 +37,7 @@
     .responsiveContainer {
         border: 1px solid var(--mantine-color-dark-6);
         padding: var(--mantine-spacing-xl);
-        height: 92vh;
+        height: 92svh;
     }
     .stackGap {
         gap: var(--mantine-spacing-lg);

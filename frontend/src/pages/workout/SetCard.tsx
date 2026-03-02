@@ -67,16 +67,16 @@ export default function SetCard(props: SetCardProps) {
                 if (value !== props.reps) props.updateSetField('reps', result.data!);
                 setRepsError(false);                
             }}
-            style={{ flex: 1 }}
+            flex={1}
             styles={{ input: { textAlign: 'center' } }}
-            />
+        />
 
         {/* WEIGHT */}
         <NumberInput 
             hideControls 
-            allowDecimal={false} 
             aria-label="Weight (kg)"
-            defaultValue={props.weight_kg || undefined}
+            decimalScale={2}
+            defaultValue={Number(props.weight_kg) || undefined}
             error={weightError}
             onBlur={(e) => {
                 const value = Number(e.target.value);
@@ -85,9 +85,9 @@ export default function SetCard(props: SetCardProps) {
                 if (value !== props.weight_kg) props.updateSetField('weight_kg', result.data!);
                 setWeightError(false);                
             }}
-            style={{ flex: 1 }}
+            flex={1}
             styles={{ input: { textAlign: 'center' } }}
-            />
+        />
         </Group>
     )
 }
