@@ -1,12 +1,11 @@
 import { authClient } from "./auth-client";
-import { Outlet, useNavigate, useLocation } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import { Center, Loader, Stack, Text } from "@mantine/core";
 import { useEffect } from "react";
 
 export default function ProtectedRoute() {
     const { data: session, isPending, error, refetch } = authClient.useSession();
     const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
         let interval: any;
@@ -18,6 +17,13 @@ export default function ProtectedRoute() {
 
         return () => clearInterval(interval);
     }, [error, refetch]);
+
+    useEffect(() => {
+        if (!isPending && !session) {
+            navigate('/signin');
+        }
+    }, [session, isPending, navigate]);
+
 
     if (isPending || error) {
         return (
@@ -31,8 +37,6 @@ export default function ProtectedRoute() {
             </Center>
         );
     }
-
-    if (!session) navigate('/signin', { replace: true, state: { from: location } });
 
     return (
         <Outlet />

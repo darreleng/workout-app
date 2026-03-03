@@ -18,6 +18,12 @@ export default function PublicRoute() {
         return () => clearInterval(interval);
     }, [error, refetch]);
 
+        useEffect(() => {
+        if (!isPending && !session) {
+            navigate('/signin');
+        }
+    }, [session, isPending, navigate]);
+
     if (isPending || error) {
         return (
             <Center h="100svh">
@@ -30,8 +36,6 @@ export default function PublicRoute() {
             </Center>
         );
     }
-
-    if (session) navigate('/workouts', { replace: true });
 
     return (
         <Outlet />

@@ -1,10 +1,11 @@
 import { Avatar, Box, Button, Center, Container, Group, Loader, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import { authClient } from '../../auth-client';
 import { IconMail, IconBarbell, IconCalendar, IconLogout, IconWeight, IconStopwatch } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatSeconds } from '../../formatDuration';
-import { useOutletContext } from 'react-router';
+import { useNavigate, useOutletContext } from 'react-router';
 import classes from './Profile.module.css';
+import { useState } from 'react';
 
 interface Stats {
     total_workouts: number;
@@ -13,29 +14,41 @@ interface Stats {
 }
 
 export default function Profile() {
+    const queryClient = useQueryClient();
     const activeWorkout = useOutletContext();
-    async function handleSignOut() {
-        await authClient.signOut();
-    }
+    const [isSigningOut, setIsSigningOut] = useState(false);
+    const navigate = useNavigate();
+    const { data: session } = authClient.useSession();
 
-    const { data } = authClient.useSession();
+    async function handleSignOut() {
+        setIsSigningOut(true);
+        await authClient.signOut({
+            fetchOptions: {
+                onSuccess: () => {
+                    navigate('/signin');
+                    queryClient.clear();
+                }
+            }
+        });
+    }
 
     const {
         data: stats,
         error,
         isLoading
     } = useQuery<Stats>({
-        queryKey: ['stats'],
+        queryKey: ['stats', session?.user?.id],
         queryFn: async () => {
             const res = await fetch(`/api/workouts/stats`, {credentials: 'include'});
             const data = await res.json();
             if (!res.ok) throw data;
             return data;
-        }
+        },
+        enabled: !isSigningOut
     })
 
     if (isLoading) return <Center h={'100svh'}><Loader size='xl' /></Center>; 
-    if (error) return ;
+    if (!session || error) return null;
 
     return (
         <Box className={classes.wrapper} pb={{ base: activeWorkout ? 80 : 56 }}>
@@ -43,16 +56,16 @@ export default function Profile() {
                 <Stack>
                 <Paper withBorder p="lg">
                     <Stack align="center" gap="xs">
-                        <Avatar size={100} color="volt" radius={0} variant="light" src={data?.user?.image} />
+                        <Avatar size={100} color="volt" radius={0} variant="light" src={session?.user?.image} />
                         <Stack gap={8} align="center">
-                            <Title order={2} fw={800}>{data?.user.name}</Title>
+                            <Title order={2} fw={800}>{session?.user.name}</Title>
                             <Group gap="xs" c="dimmed">
                                 <IconMail size={16} />
-                                <Text size="sm" lh={1}>{data?.user.email}</Text>
+                                <Text size="sm" lh={1}>{session?.user.email}</Text>
                             </Group>
                             <Group gap="xs" c="dimmed">
                                 <IconCalendar size={16} />
-                                <Text size="sm" lh={1}>Member since {data?.user.createdAt.toLocaleDateString()}</Text>
+                                <Text size="sm" lh={1}>Member since {session?.user.createdAt.toLocaleDateString()}</Text>
                             </Group>
                         </Stack>
                     </Stack>
@@ -78,7 +91,7 @@ export default function Profile() {
 
                     <StatsCard 
                         label="Total Time" 
-                        value={`${formatSeconds(stats!.total_time)}`} 
+                        value={stats ? formatSeconds(stats.total_time) : '0:00'}
                         icon={<IconStopwatch size={20} />} 
                         color="cyan.5" 
                     />
