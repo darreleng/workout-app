@@ -5,6 +5,10 @@ import { WorkoutNameSchema } from "../../../shared/schemas";
 export async function createWorkout(req: Request, res: Response) {
     try {
         const { id } = req.user!;
+
+        const activeWorkout = await WorkoutModel.getActive(id);
+        if (activeWorkout) return res.status(409).json({ message: "You already have an active workout session" });
+
         const { workoutName } = req.body;
         const newWorkout = await WorkoutModel.createWorkout(id, workoutName);
         res.status(201).json(newWorkout)
@@ -70,7 +74,7 @@ export async function updateWorkout(req: Request, res: Response) {
         if ('notes' in req.body) updateData.notes = req.body.notes;
 
         const updatedWorkout = await WorkoutModel.updateWorkout(userId, workoutId as string, updateData);
-        if (!updatedWorkout) return res.status(404).json({ message: "Workout not found or unauthorized" });
+        if (!updatedWorkout) return res.status(404).json({ message: "Workout not found or unauthorised" });
         return res.status(200).json(updatedWorkout);
 
     } catch (error) {
