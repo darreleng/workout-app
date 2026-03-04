@@ -12,7 +12,7 @@ vi.mock('./middleware/authMiddleware', () => ({
     }
 }));
 
-describe('User Workouts CRUD API', () => {
+describe('Workouts CRUD API', () => {
     let createdWorkoutId: string;
 
     afterAll(async () => {

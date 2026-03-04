@@ -1,0 +1,76 @@
+import request from 'supertest';
+import app from './app.js';
+import { pool } from './db/db.js';
+
+const userA_ID = 'D37ANAH2R0YxD9IuncVsVybnjk5vbRxN';
+
+vi.mock('./middleware/authMiddleware', () => ({
+    default: (req: any, res: any, next: any) => {
+        req.user = { id: userA_ID }; 
+        next();
+    }
+}));
+
+describe('Exercise CRUD Integration', () => {
+    const workoutId = '00000000-0000-0000-0000-000000000020';
+    let createdExerciseId: string;
+
+    beforeAll(async () => {
+        await pool.query(
+            'INSERT INTO workouts (id, name, user_id) VALUES ($1, $2, $3)', 
+            [workoutId, 'CRUD Workout', userA_ID]);
+    });
+
+    afterAll(async () => {
+        await pool.query('DELETE FROM workouts WHERE id = $1', [workoutId]);
+    });
+
+    
+    it('creates an exercise and automatically creates Set 1', async () => {
+        const response = await request(app)
+        .post(`/api/workouts/${workoutId}/exercises`)
+        .send({ exerciseName: 'Deadlift' });
+        
+        expect(response.status).toBe(201);
+        expect(response.body.set_number).toBe(1); 
+        
+        createdExerciseId = response.body.exercise_id;
+    });
+    
+    it('returns 400 if an exercise with the same name already exists in that workout', async () => {
+        const response = await request(app)
+            .post(`/api/workouts/${workoutId}/exercises`)
+            .send({ exerciseName: 'Deadlift' });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe('This exercise already exists in your workout');
+    });
+
+    it('returns 400 and a validation error message if the exercise name is missing or empty', async () => {
+        const response = await request(app)
+            .post(`/api/workouts/${workoutId}/exercises`)
+            .send({ exerciseName: "" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain('Exercise name must at least be 1 character');
+    });
+
+    it('updates the exercise name', async () => {
+        const response = await request(app)
+            .patch(`/api/workouts/${workoutId}/exercises/${createdExerciseId}`)
+            .send({ name: 'Sumo Deadlift' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe('Exercise name updated');
+    });
+
+    it('deletes the exercise', async () => {
+        const response = await request(app)
+            .delete(`/api/workouts/${workoutId}/exercises/${createdExerciseId}`);
+
+        expect(response.status).toBe(200);
+        
+        const dbCheck = await pool.query('SELECT * FROM exercises WHERE id = $1', [createdExerciseId]);
+        expect(dbCheck.rows.length).toBe(0);
+    });
+});
