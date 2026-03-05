@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true,
+    "types": ["vitest/globals"]
+  },
+  "include": [
+    "src/**/*.test.ts", 
+    "src/**/*.tsx", 
+    "src/mocks/*.ts",
+    "src/tests/setup.ts"
+  ],
+  "exclude": []
+}

@@ -37,7 +37,7 @@ export default function SetCard(props: SetCardProps) {
                         <Text size="sm" c="dimmed">Are you sure you want to delete this set?</Text>
                         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                             <Button variant="light" color="gray" onClick={close}>Cancel</Button>
-                            <Button color="red" onClick={() => props.deleteSet()}>Delete</Button>
+                            <Button color="red" onClick={() => {props.deleteSet(); close()}}>Delete</Button>
                         </SimpleGrid>
                     </Stack>
                 </Modal>
