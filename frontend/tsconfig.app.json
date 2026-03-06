@@ -26,5 +26,5 @@
 
   },
   "include": ["src", "../shared/**/*", "postcss.config.cjs"],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/tests/setup.ts"]
+  "exclude": ["src/mocks", "src/tests"]
 }
