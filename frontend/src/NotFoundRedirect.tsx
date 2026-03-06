@@ -22,7 +22,7 @@ export default function NotFoundRedirect() {
     }, [navigate]);
 
     return (
-        <Center h="80vh">
+        <Center h="80vh" px="md">
             <Stack align="center">
                 <Title order={2}>404</Title>
                 <Text c="dimmed">

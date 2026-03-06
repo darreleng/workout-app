@@ -26,7 +26,13 @@ import NotFoundRedirect from './NotFoundRedirect';
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: Infinity
+            staleTime: Infinity,
+            retry: (failureCount, error) => {
+                if (error.cause === 'Failed to load resource: the server responded with a status of 404 (Not Found)') {
+                    return false;
+                }
+                return failureCount < 0;
+            },
         }
     },
     queryCache: new QueryCache({
